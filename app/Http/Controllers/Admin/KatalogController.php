@@ -11,13 +11,23 @@ class KatalogController extends Controller
 {
     public function index()
     {
-        $produks = Produk::with('inventaris')->orderBy('created_at', 'desc')->paginate(12);
-        
-        $totalProducts = Produk::count();
-        $activeListings = Produk::whereHas('inventaris', function($q) {
-            $q->where('status_stok', 'Dijual');
+        $allowedSpecies = ['Domba', 'Kambing Etawa', 'Kambing Kibas'];
+
+        $produks = Produk::with('inventaris')
+            ->whereHas('inventaris', function ($q) use ($allowedSpecies) {
+                $q->whereIn('jenis', $allowedSpecies);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        $totalProducts = Produk::whereHas('inventaris', function ($q) use ($allowedSpecies) {
+            $q->whereIn('jenis', $allowedSpecies);
         })->count();
-        
+        $activeListings = Produk::whereHas('inventaris', function($q) use ($allowedSpecies) {
+            $q->whereIn('jenis', $allowedSpecies)
+              ->where('status_stok', 'Dijual');
+        })->count();
+
         return view('admin.katalog.index', compact('produks', 'totalProducts', 'activeListings'));
     }
 
@@ -48,7 +58,7 @@ class KatalogController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
-        
+
         if ($produk->inventaris) {
             $produk->inventaris->update(['status_stok' => 'Tersedia']);
         }

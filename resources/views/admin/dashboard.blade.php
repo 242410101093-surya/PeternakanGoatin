@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Stat Card 2 -->
     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-gutter ambient-shadow-hover transition-shadow relative overflow-hidden">
         <div class="absolute top-0 right-0 p-4 opacity-10">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Stat Card 3 -->
     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-gutter ambient-shadow-hover transition-shadow relative overflow-hidden">
         <div class="absolute top-0 right-0 p-4 opacity-10">
@@ -94,11 +94,11 @@
                 <div class="border-b border-outline w-full"></div>
             </div>
             <!-- Data Points -->
-            <div class="ml-10 flex-1 flex items-end justify-around h-full pb-8 relative">
+            <div class="ml-10 flex-1 h-full pb-8 relative">
                 <!-- Simulated curve using SVG -->
                 <svg class="absolute inset-0 w-full h-full pb-8 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <path d="M 5,80 Q 20,70 35,60 T 65,40 T 95,20" fill="none" stroke="#4a7c59" stroke-width="2" vector-effect="non-scaling-stroke"></path>
-                    <path d="M 5,100 L 5,80 Q 20,70 35,60 T 65,40 T 95,20 L 95,100 Z" fill="url(#grad1)" opacity="0.2"></path>
+                    <path d="M 5,80 Q 12.5,75 20,70 T 35,60 T 50,52 T 70,35 T 95,20" fill="none" stroke="#4a7c59" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+                    <path d="M 5,100 L 5,80 Q 12.5,75 20,70 T 35,60 T 50,52 T 70,35 T 95,20 L 95,100 Z" fill="url(#grad1)" opacity="0.2"></path>
                     <defs>
                         <linearGradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
                             <stop offset="0%" style="stop-color:#4a7c59;stop-opacity:1"></stop>
@@ -106,23 +106,23 @@
                         </linearGradient>
                     </defs>
                 </svg>
-                <div class="w-2 h-2 bg-primary rounded-full z-10 mb-[20%] relative group cursor-pointer">
-                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Jan: 12M</div>
+                <div class="absolute left-[5%] bottom-[20%] w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full z-10 relative group cursor-pointer" style="transform: translateX(-50%);">
+                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-[10px] sm:text-xs hidden group-hover:block whitespace-nowrap">Jan: 12M</div>
                 </div>
-                <div class="w-2 h-2 bg-primary rounded-full z-10 mb-[30%] relative group cursor-pointer">
-                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Feb: 18M</div>
+                <div class="absolute left-[20%] bottom-[30%] w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full z-10 relative group cursor-pointer" style="transform: translateX(-50%);">
+                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-[10px] sm:text-xs hidden group-hover:block whitespace-nowrap">Feb: 18M</div>
                 </div>
-                <div class="w-2 h-2 bg-primary rounded-full z-10 mb-[40%] relative group cursor-pointer">
-                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Mar: 25M</div>
+                <div class="absolute left-[35%] bottom-[40%] w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full z-10 relative group cursor-pointer" style="transform: translateX(-50%);">
+                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-[10px] sm:text-xs hidden group-hover:block whitespace-nowrap">Mar: 25M</div>
                 </div>
-                <div class="w-2 h-2 bg-primary rounded-full z-10 mb-[50%] relative group cursor-pointer">
-                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Apr: 32M</div>
+                <div class="absolute left-[50%] bottom-[50%] w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full z-10 relative group cursor-pointer" style="transform: translateX(-50%);">
+                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-[10px] sm:text-xs hidden group-hover:block whitespace-nowrap">Apr: 32M</div>
                 </div>
-                <div class="w-2 h-2 bg-primary rounded-full z-10 mb-[65%] relative group cursor-pointer">
-                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">May: 40M</div>
+                <div class="absolute left-[70%] bottom-[65%] w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full z-10 relative group cursor-pointer" style="transform: translateX(-50%);">
+                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-[10px] sm:text-xs hidden group-hover:block whitespace-nowrap">May: 40M</div>
                 </div>
-                <div class="w-2 h-2 bg-primary rounded-full z-10 mb-[80%] relative group cursor-pointer">
-                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-xs hidden group-hover:block whitespace-nowrap">Jun: 48M</div>
+                <div class="absolute left-[95%] bottom-[80%] w-2 h-2 sm:w-3 sm:h-3 bg-primary rounded-full z-10 relative group cursor-pointer" style="transform: translateX(-50%);">
+                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-inverse-surface text-on-secondary px-2 py-1 rounded text-[10px] sm:text-xs hidden group-hover:block whitespace-nowrap">Jun: 48M</div>
                 </div>
             </div>
             <!-- X-Axis Labels -->
@@ -136,7 +136,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Secondary Chart Area -->
     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-gutter ambient-shadow-hover transition-shadow flex flex-col">
         <h3 class="font-h3 text-h3 text-on-surface mb-stack-md">User Distribution</h3>

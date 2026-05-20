@@ -112,7 +112,7 @@
 
     <!-- Centered Form Area -->
     <div class="w-full max-w-md bg-surface-container-lowest p-8 sm:p-10 rounded-2xl shadow-[0_8px_30px_rgba(74,124,89,0.12)] border border-surface-variant">
-        
+
         <!-- Brand Logo -->
         <div class="flex items-center justify-center gap-stack-sm mb-stack-xl">
             <div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container">
@@ -120,13 +120,19 @@
             </div>
             <span class="font-h2 text-h2 text-primary">Goatin</span>
         </div>
-        
+
         <!-- Welcome Text -->
         <div class="mb-stack-lg text-center">
             <h1 class="font-h2 text-h2 text-on-surface mb-stack-xs">Selamat Datang</h1>
             <p class="font-body-md text-body-md text-on-surface-variant">Silakan masuk untuk melanjutkan pemantauan.</p>
         </div>
-        
+
+        @if(session('status'))
+            <div class="mb-stack-md rounded-lg border border-primary-container bg-primary-fixed-dim p-4 text-sm text-on-secondary-container">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <!-- Login Form -->
         <form action="{{ route('login.submit') }}" class="space-y-stack-md" method="POST">
             @csrf
@@ -145,14 +151,14 @@
                     <p class="mt-2 text-sm text-error">{{ $message }}</p>
                 @enderror
             </div>
-            
+
             <!-- Password Input -->
             <div>
                 <div class="flex items-center justify-between mb-stack-xs">
                     <label class="block font-label-sm text-label-sm text-on-surface-variant" for="password">
                         Password
                     </label>
-                    <a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors" href="#">
+                    <a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors" href="{{ route('password.request') }}">
                         Lupa password?
                     </a>
                 </div>
@@ -166,7 +172,7 @@
                     <p class="mt-2 text-sm text-error">{{ $message }}</p>
                 @enderror
             </div>
-            
+
             <!-- Remember Me -->
             <div class="flex items-center pt-stack-xs pb-stack-sm">
                 <input class="h-4 w-4 text-primary focus:ring-primary border-outline-variant rounded bg-surface-container-low" id="remember-me" name="remember-me" type="checkbox"/>
@@ -174,7 +180,7 @@
                     Ingat saya
                 </label>
             </div>
-            
+
             <!-- Submit Button -->
             <div>
                 <button class="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg font-label-sm text-label-sm text-on-primary bg-primary hover:bg-primary-container hover:text-on-primary-container focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors shadow-[0_4px_20px_rgba(74,124,89,0.1)]" type="submit">
@@ -187,11 +193,11 @@
         <!-- Register Link -->
         <div class="mt-stack-md text-center">
             <p class="font-body-md text-body-md text-on-surface-variant">
-                Belum punya akun? 
+                Belum punya akun?
                 <a href="{{ route('register') }}" class="text-primary font-semibold hover:text-primary-container hover:underline transition-colors">Daftar sekarang</a>
             </p>
         </div>
     </div>
-    
+
 </body>
 </html>

@@ -15,53 +15,53 @@
         theme: {
           extend: {
             "colors": {
-                    "surface-bright": "#f9f9f9",
-                    "on-secondary-container": "#406e50",
-                    "inverse-surface": "#2f3131",
-                    "tertiary-fixed-dim": "#ffb68c",
-                    "on-primary-fixed": "#00210e",
+                    "surface-bright": "#ffffff",
+                    "on-secondary-container": "#16431b",
+                    "inverse-surface": "#1a1c1a",
+                    "tertiary-fixed-dim": "#f7d69a",
+                    "on-primary-fixed": "#0f2b10",
                     "error-container": "#ffdad6",
-                    "tertiary-fixed": "#ffdbc9",
+                    "tertiary-fixed": "#fde8c1",
                     "on-secondary": "#ffffff",
-                    "on-secondary-fixed": "#00210f",
-                    "background": "#f9f9f9",
-                    "secondary-fixed": "#bbefc9",
-                    "surface-container-highest": "#e2e2e2",
-                    "on-tertiary-fixed": "#321200",
-                    "surface-dim": "#dadada",
-                    "inverse-primary": "#9dd3aa",
-                    "on-primary-container": "#e1ffe5",
+                    "on-secondary-fixed": "#0d2c17",
+                    "background": "#f8f7ed",
+                    "secondary-fixed": "#dff2dd",
+                    "surface-container-highest": "#e8efe6",
+                    "on-tertiary-fixed": "#4d2d0a",
+                    "surface-dim": "#dadacc",
+                    "inverse-primary": "#d8edd7",
+                    "on-primary-container": "#0f2a10",
                     "on-primary": "#ffffff",
-                    "surface-container-low": "#f3f3f3",
-                    "on-primary-fixed-variant": "#1e5031",
-                    "inverse-on-surface": "#f1f1f1",
+                    "surface-container-low": "#f8f9f4",
+                    "on-primary-fixed-variant": "#203c23",
+                    "inverse-on-surface": "#f4f5f1",
                     "error": "#ba1a1a",
-                    "primary": "#316342",
-                    "secondary-fixed-dim": "#a0d2ae",
-                    "on-tertiary-fixed-variant": "#753401",
-                    "on-tertiary-container": "#fff5f1",
-                    "tertiary": "#8c4513",
-                    "primary-fixed-dim": "#9dd3aa",
-                    "outline": "#717971",
-                    "on-surface-variant": "#414942",
-                    "surface": "#f9f9f9",
-                    "surface-variant": "#e2e2e2",
+                    "primary": "#1e4e2f",
+                    "secondary-fixed-dim": "#bdd9b2",
+                    "on-tertiary-fixed-variant": "#5f3f15",
+                    "on-tertiary-container": "#2f1d07",
+                    "tertiary": "#d89e2a",
+                    "primary-fixed-dim": "#b7dbb8",
+                    "outline": "#9fae9a",
+                    "on-surface-variant": "#525f52",
+                    "surface": "#ffffff",
+                    "surface-variant": "#e8efe6",
                     "surface-container-lowest": "#ffffff",
-                    "surface-tint": "#376847",
-                    "primary-container": "#4a7c59",
-                    "surface-container": "#eeeeee",
-                    "primary-fixed": "#b9efc5",
-                    "tertiary-container": "#aa5d2a",
-                    "secondary-container": "#bbefc9",
-                    "on-tertiary": "#ffffff",
-                    "on-surface": "#1a1c1c",
+                    "surface-tint": "#3f7a50",
+                    "primary-container": "#4e7f58",
+                    "surface-container": "#f2f6f0",
+                    "primary-fixed": "#d8efd8",
+                    "tertiary-container": "#fde4a9",
+                    "secondary-container": "#dff2dd",
+                    "on-tertiary": "#1f2b0b",
+                    "on-surface": "#1a1c1a",
                     "on-error": "#ffffff",
-                    "secondary": "#3a684a",
-                    "on-secondary-fixed-variant": "#215034",
-                    "outline-variant": "#c1c9bf",
-                    "surface-container-high": "#e8e8e8",
+                    "secondary": "#5f984d",
+                    "on-secondary-fixed-variant": "#2d4f28",
+                    "outline-variant": "#c7d0c0",
+                    "surface-container-high": "#e5efe2",
                     "on-error-container": "#93000a",
-                    "on-background": "#1a1c1c"
+                    "on-background": "#1a1c1a"
             },
             "borderRadius": {
                     "DEFAULT": "0.25rem",
@@ -107,25 +107,25 @@
         body { font-family: 'Manrope', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
-        .ambient-shadow { box-shadow: 4px 4px 24px rgba(74, 124, 89, 0.1); }
-        .ambient-shadow-hover:hover { box-shadow: 0px 8px 32px rgba(74, 124, 89, 0.15); transform: translateY(-2px); transition: all 0.3s ease; }
-        
+        .ambient-shadow { box-shadow: 4px 4px 24px rgba(30, 78, 47, 0.12); }
+        .ambient-shadow-hover:hover { box-shadow: 0px 8px 32px rgba(30, 78, 47, 0.15); transform: translateY(-2px); transition: all 0.3s ease; }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #e2e2e2; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-surface text-on-surface font-body-md min-h-screen flex">
-    
+
     <!-- Sidebar -->
     @include('partials.admin.sidebar')
 
     <!-- Main Content Wrapper -->
     <div class="flex-1 md:ml-64 flex flex-col min-h-screen">
-        
+
         <!-- Top Navbar -->
         @include('partials.admin.navbar')
-        
+
         <!-- Canvas / Page Content -->
         @yield('content')
 

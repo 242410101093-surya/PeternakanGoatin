@@ -3,8 +3,10 @@
 @section('title', 'Account Management')
 
 @section('content')
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto space-y-stack-xl">
 <!-- Page Header -->
-<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
     <div>
         <h2 class="font-h2 text-h2 text-on-surface mb-1">Account Management</h2>
         <p class="font-body-md text-body-md text-on-surface-variant">Manage users, roles, and platform access.</p>
@@ -111,6 +113,7 @@
     <!-- Pagination -->
     <div class="p-4 border-t border-surface-variant bg-surface-bright">
         {{ $users->links() }}
+    </div>
     </div>
 </div>
 @endsection

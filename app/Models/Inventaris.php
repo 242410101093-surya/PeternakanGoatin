@@ -35,4 +35,9 @@ class Inventaris extends Model
     {
         return $this->hasMany(PertumbuhanTernak::class, 'inventaris_id');
     }
+
+    public static function lowStockCount()
+    {
+        return self::where('status_stok', 'Dijual')->count();
+    }
 }

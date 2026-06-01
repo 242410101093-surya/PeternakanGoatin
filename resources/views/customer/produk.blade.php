@@ -10,25 +10,68 @@
             <h1 class="font-h1 text-h1 text-primary mb-stack-xs">Katalog Ternak</h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant">Pilih bibit kambing dan domba berkualitas tinggi untuk kebutuhan peternakan Anda.</p>
         </div>
-        <!-- Filters & Search -->
-        <div class="flex gap-stack-sm flex-wrap">
-            <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-                <input class="pl-10 pr-4 py-2 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md text-on-surface w-full md:w-64" placeholder="Cari kambing..." type="text"/>
-            </div>
-            <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-lowest border border-outline-variant hover:ambient-shadow transition-all text-on-surface font-label-sm text-label-sm">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">filter_list</span>
-                Filter
-            </button>
-        </div>
+        <!-- Filter Compact Button -->
+        <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container transition-colors">
+            <span class="material-symbols-outlined text-on-surface">tune</span>
+            <span class="font-label-sm text-label-sm text-on-surface">Filter</span>
+        </button>
     </header>
 
-    <!-- Categories / Chips -->
-    <div class="flex gap-stack-sm overflow-x-auto pb-stack-sm mb-stack-lg scrollbar-hide">
-        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm transition-all">Semua Jenis</button>
-        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm transition-all border border-outline-variant">Kambing Etawa</button>
-        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm transition-all border border-outline-variant">Kambing Kibas</button>
-        <button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm transition-all border border-outline-variant">Domba</button>
+    <!-- Filter Section (Hidden by default) -->
+    <div id="filterPanel" class="hidden bg-surface-container-lowest border border-outline-variant rounded-xl p-6 mb-stack-lg">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-body-lg text-body-lg text-on-surface font-semibold">Filter Pencarian Ternak</h2>
+            <button type="button" onclick="document.getElementById('filterPanel').classList.add('hidden')" class="text-on-surface-variant hover:text-error">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <form method="GET" action="{{ route('customer.produk') }}" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- Jenis Ternak Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Jenis Ternak</label>
+                    <select name="jenis" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
+                        <option value="">Semua Jenis</option>
+                        <option value="Domba" {{ request('jenis') == 'Domba' ? 'selected' : '' }}>Domba</option>
+                        <option value="Kambing Etawa" {{ request('jenis') == 'Kambing Etawa' ? 'selected' : '' }}>Kambing Etawa</option>
+                        <option value="Kambing Gibas" {{ request('jenis') == 'Kambing Gibas' ? 'selected' : '' }}>Kambing Gibas</option>
+                    </select>
+                </div>
+
+                <!-- Umur Minimum Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Umur Min (Bulan)</label>
+                    <input type="number" step="1" name="min_umur" placeholder="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('min_umur') }}">
+                </div>
+
+                <!-- Umur Maximum Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Umur Max (Bulan)</label>
+                    <input type="number" step="1" name="max_umur" placeholder="999" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('max_umur') }}">
+                </div>
+
+                <!-- Berat Minimum Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Berat Min (KG)</label>
+                    <input type="number" step="0.1" name="min_berat" placeholder="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('min_berat') }}">
+                </div>
+
+                <!-- Berat Maximum Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Berat Max (KG)</label>
+                    <input type="number" step="0.1" name="max_berat" placeholder="999" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('max_berat') }}">
+                </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="flex gap-3 justify-end pt-4 border-t border-surface-variant">
+                <a href="{{ route('customer.produk') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Reset Filter</a>
+                <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm font-label-sm text-label-sm">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                    Cari Ternak
+                </button>
+            </div>
+        </form>
     </div>
 
     <!-- Product Grid (Bento Style approach) -->

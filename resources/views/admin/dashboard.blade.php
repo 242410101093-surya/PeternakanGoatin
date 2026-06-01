@@ -3,12 +3,14 @@
 @section('title', 'Dashboard Overview')
 
 @section('content')
-<div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-stack-lg">
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto space-y-stack-xl">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md mb-stack-lg">
     <div>
         <h2 class="font-h2 text-h2 text-on-surface mb-stack-xs">Dashboard Overview</h2>
         <p class="font-body-md text-body-md text-on-surface-variant">Welcome back. Here's a summary of Goatin platform activity.</p>
     </div>
-    <button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity flex items-center gap-2 ambient-shadow">
+    <button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity flex items-center gap-2 ambient-shadow whitespace-nowrap">
         <span class="material-symbols-outlined text-sm">download</span>
         Export Report
     </button>
@@ -97,12 +99,12 @@
             <div class="ml-10 flex-1 h-full pb-8 relative">
                 <!-- Simulated curve using SVG -->
                 <svg class="absolute inset-0 w-full h-full pb-8 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <path d="M 5,80 Q 12.5,75 20,70 T 35,60 T 50,52 T 70,35 T 95,20" fill="none" stroke="#4a7c59" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+                    <path d="M 5,80 Q 12.5,75 20,70 T 35,60 T 50,52 T 70,35 T 95,20" fill="none" stroke="#4e7f58" stroke-width="2" vector-effect="non-scaling-stroke"></path>
                     <path d="M 5,100 L 5,80 Q 12.5,75 20,70 T 35,60 T 50,52 T 70,35 T 95,20 L 95,100 Z" fill="url(#grad1)" opacity="0.2"></path>
                     <defs>
                         <linearGradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#4a7c59;stop-opacity:1"></stop>
-                            <stop offset="100%" style="stop-color:#4a7c59;stop-opacity:0"></stop>
+                            <stop offset="0%" style="stop-color:#4e7f58;stop-opacity:1"></stop>
+                            <stop offset="100%" style="stop-color:#4e7f58;stop-opacity:0"></stop>
                         </linearGradient>
                     </defs>
                 </svg>
@@ -175,6 +177,8 @@
                     <span class="font-label-sm text-label-sm font-semibold">25%</span>
                 </div>
             </div>
+        </div>
+    </div>
         </div>
     </div>
 </div>

@@ -9,11 +9,32 @@ use Illuminate\Support\Facades\Storage;
 
 class ArtikelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $artikels = Artikel::orderBy('created_at', 'desc')->paginate(10);
+        $query = Artikel::query();
+
+        // Search by judul or konten
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('konten', 'like', "%{$search}%")
+                  ->orWhere('kategori', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by kategori
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->input('kategori'));
+        }
+
+        $artikels = $query->orderBy('created_at', 'desc')->paginate(10);
         $totalArtikels = Artikel::count();
-        return view('admin.artikel.index', compact('artikels', 'totalArtikels'));
+
+        // Get unique kategori for filter dropdown
+        $kategoriOptions = Artikel::distinct()->pluck('kategori')->filter()->sort();
+
+        return view('admin.artikel.index', compact('artikels', 'totalArtikels', 'kategoriOptions'));
     }
 
     public function store(Request $request)

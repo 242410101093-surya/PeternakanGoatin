@@ -149,5 +149,52 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ]);
+
+        // Seed 17 Stock Inventaris untuk Dijual dengan Produk di Catalog
+        $jenisList = [
+            ['jenis' => 'Domba', 'ras' => 'Domba'],
+            ['jenis' => 'Kambing Etawa', 'ras' => 'Kambing Etawa'],
+            ['jenis' => 'Kambing Gibas', 'ras' => 'Kambing Gibas'],
+        ];
+        $genderList = ['Jantan', 'Betina'];
+        $hargaRanges = [
+            'Domba' => [2500000, 4500000],
+            'Kambing Etawa' => [3000000, 5000000],
+            'Kambing Gibas' => [2000000, 4000000],
+        ];
+
+        for ($i = 0; $i < 17; $i++) {
+            $randomJenis = $jenisList[array_rand($jenisList)];
+            $randomGender = $genderList[array_rand($genderList)];
+            $randomUmur = rand(4, 24);
+            $randomBerat = rand(20, 60) + (rand(0, 9) / 10);
+            
+            // Generate random price based on jenis
+            $hargaRange = $hargaRanges[$randomJenis['jenis']];
+            $randomHarga = rand($hargaRange[0], $hargaRange[1]);
+
+            // Insert ke Inventaris
+            $inventarisId = DB::table('inventaris')->insertGetId([
+                'jenis' => $randomJenis['jenis'],
+                'ras' => $randomJenis['ras'],
+                'gender' => $randomGender,
+                'umur' => $randomUmur,
+                'berat' => $randomBerat,
+                'status_stok' => 'Dijual',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Insert ke Produk (Catalog)
+            DB::table('produks')->insert([
+                'inventaris_id' => $inventarisId,
+                'nama_produk' => $randomJenis['jenis'] . ' ' . $randomGender . ' (Umur: ' . $randomUmur . ' bln)',
+                'spesifikasi' => 'Jenis: ' . $randomJenis['ras'] . ' | Gender: ' . $randomGender . ' | Berat: ' . $randomBerat . ' kg | Umur: ' . $randomUmur . ' bulan',
+                'harga' => $randomHarga,
+                'foto' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }

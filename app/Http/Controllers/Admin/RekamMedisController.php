@@ -12,8 +12,38 @@ class RekamMedisController extends Controller
 {
     public function index(Request $request)
     {
-        $rekamMedis = RekamMedis::with('inventaris')->orderBy('tanggal', 'desc')->get();
-        $inventarisList = Inventaris::all();
+        $query = RekamMedis::with('inventaris');
+
+        // Search by inventaris jenis or ras
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('inventaris', function($q) use ($search) {
+                $q->where('jenis', 'like', "%{$search}%")
+                  ->orWhere('ras', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by specific inventaris
+        if ($request->filled('inventaris_id')) {
+            $query->where('inventaris_id', $request->input('inventaris_id'));
+        }
+
+        // Filter by diagnosis
+        if ($request->filled('diagnosis')) {
+            $query->where('diagnosis', 'like', '%' . $request->input('diagnosis') . '%');
+        }
+
+        // Filter by date range
+        if ($request->filled('tanggal_dari')) {
+            $query->whereDate('tanggal', '>=', $request->input('tanggal_dari'));
+        }
+
+        if ($request->filled('tanggal_sampai')) {
+            $query->whereDate('tanggal', '<=', $request->input('tanggal_sampai'));
+        }
+
+        $rekamMedis = $query->orderBy('tanggal', 'desc')->get();
+        $inventarisList = Inventaris::orderBy('jenis')->get();
         
         // Handle chart data for selected livestock
         $selectedInventarisId = $request->get('inventaris_id', $inventarisList->first()->id ?? null);

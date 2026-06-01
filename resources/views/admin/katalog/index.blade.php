@@ -3,23 +3,84 @@
 @section('title', 'Product Catalog')
 
 @section('content')
-<div class="max-w-container-max mx-auto space-y-stack-xl">
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto space-y-stack-xl">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-stack-lg gap-stack-md">
         <div>
             <h1 class="font-h1 text-h1 text-on-surface">Product Catalog</h1>
             <p class="font-body-md text-body-md text-on-surface-variant mt-stack-xs">Manage inventory, monitor pricing, and control marketplace visibility.</p>
         </div>
         <div class="flex items-center gap-stack-sm">
-            <button class="px-6 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container transition-colors font-label-sm text-label-sm flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">filter_list</span> Filter
-            </button>
-            <button class="px-6 py-2.5 rounded-lg bg-primary text-on-primary hover:bg-primary-container shadow-[0_4px_12px_rgba(74,124,89,0.2)] transition-all font-label-sm text-label-sm flex items-center gap-2">
+            <a href="{{ route('admin.inventaris.index') }}" class="px-6 py-2.5 rounded-lg bg-primary text-on-primary hover:bg-primary-container shadow-[0_4px_12px_rgba(74,124,89,0.2)] transition-all font-label-sm text-label-sm flex items-center gap-2">
                 <span class="material-symbols-outlined text-[20px]">add</span> Add Product
-            </button>
+            </a>
         </div>
     </div>
-    
+
+    <!-- Search and Filter Bar -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 mb-stack-lg">
+        <form method="GET" action="{{ route('admin.katalog.index') }}" class="space-y-4">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="relative flex-1">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                    <input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-bright text-on-surface font-body-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all w-full" 
+                           placeholder="Cari nama produk atau ras..." 
+                           type="text"
+                           name="search"
+                           value="{{ request('search') }}"/>
+                </div>
+                <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    Filter
+                </button>
+                <button type="submit" class="px-4 py-2 border border-primary rounded-lg text-primary hover:bg-primary-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+            </div>
+
+            <!-- Filter Panel -->
+            <div id="filterPanel" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-surface-variant">
+                <!-- Jenis Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Jenis Ternak</label>
+                    <select name="jenis" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
+                        <option value="">Semua Jenis</option>
+                        @foreach($jenisOptions as $jenis)
+                            <option value="{{ $jenis }}" {{ request('jenis') == $jenis ? 'selected' : '' }}>{{ $jenis }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Gender Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Gender</label>
+                    <select name="gender" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
+                        <option value="">Semua Gender</option>
+                        <option value="Jantan" {{ request('gender') == 'Jantan' ? 'selected' : '' }}>Jantan</option>
+                        <option value="Betina" {{ request('gender') == 'Betina' ? 'selected' : '' }}>Betina</option>
+                    </select>
+                </div>
+
+                <!-- Price Range -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Harga Range (Rp)</label>
+                    <div class="flex gap-2 items-center">
+                        <input type="number" name="min_harga" placeholder="Min" class="flex-1 px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('min_harga') }}">
+                        <span class="text-on-surface-variant">-</span>
+                        <input type="number" name="max_harga" placeholder="Max" class="flex-1 px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('max_harga') }}">
+                    </div>
+                </div>
+
+                <!-- Filter Actions -->
+                <div class="md:col-span-3 flex gap-3 justify-end pt-4 border-t border-surface-variant">
+                    <a href="{{ route('admin.katalog.index') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Reset Filter</a>
+                    <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Terapkan Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Bento Grid Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
         <!-- Metric 1 -->
@@ -45,15 +106,15 @@
         <!-- Metric 3 -->
         <div class="bg-surface-container-lowest rounded-xl p-gutter border border-tertiary-container shadow-[0_2px_8px_rgba(74,124,89,0.03)] flex items-start justify-between">
             <div>
-                <p class="font-caption text-caption text-tertiary uppercase tracking-wider">Low Stock Alerts</p>
-                <p class="font-h2 text-h2 text-on-surface mt-stack-xs">14</p>
+                <p class="font-caption text-caption text-tertiary uppercase tracking-wider">{{ $lowStockAlerts > 20 ? 'Stock' : 'Low Stock Alerts' }}</p>
+                <p class="font-h2 text-h2 text-on-surface mt-stack-xs">{{ number_format($lowStockAlerts) }}</p>
             </div>
             <div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-error">
                 <span class="material-symbols-outlined">warning</span>
             </div>
         </div>
     </div>
-    
+
     <!-- Main Catalog Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
         @forelse ($produks as $produk)
@@ -101,7 +162,7 @@
         </div>
         @endforelse
     </div>
-    
+
     <!-- Pagination -->
     <div class="flex justify-center pt-stack-md pb-stack-xl">
         {{ $produks->links() }}
@@ -147,5 +208,7 @@
             document.getElementById('editProdukModal').classList.remove('hidden');
         }
     </script>
+    </div>
+    </div>
 </div>
 @endsection

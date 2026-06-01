@@ -9,13 +9,49 @@ use Illuminate\Http\Request;
 
 class InventarisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $inventaris = Inventaris::orderBy('created_at', 'desc')->paginate(10);
-        $totalLivestock = Inventaris::count();
-        $lowStockAlerts = Inventaris::where('status_stok', 'Dalam Perawatan')->count(); // Or any other criteria
+        $query = Inventaris::query();
         
-        return view('admin.inventaris.index', compact('inventaris', 'totalLivestock', 'lowStockAlerts'));
+        // Search by jenis or ras
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('jenis', 'like', "%{$search}%")
+                  ->orWhere('ras', 'like', "%{$search}%");
+            });
+        }
+        
+        // Filter by gender
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->input('gender'));
+        }
+        
+        // Filter by jenis
+        if ($request->filled('jenis')) {
+            $query->where('jenis', $request->input('jenis'));
+        }
+        
+        // Filter by weight range
+        $minBerat = $request->input('min_berat');
+        $maxBerat = $request->input('max_berat');
+        
+        if ($request->filled('min_berat')) {
+            $query->where('berat', '>=', $minBerat);
+        }
+        
+        if ($request->filled('max_berat')) {
+            $query->where('berat', '<=', $maxBerat);
+        }
+        
+        $inventaris = $query->orderBy('created_at', 'desc')->paginate(10);
+        $totalLivestock = Inventaris::count();
+        $lowStockAlerts = Inventaris::lowStockCount();
+        
+        // Get unique jenis for filter dropdown
+        $jenisOptions = Inventaris::distinct()->pluck('jenis')->sort();
+        
+        return view('admin.inventaris.index', compact('inventaris', 'totalLivestock', 'lowStockAlerts', 'jenisOptions'));
     }
 
     public function store(Request $request)

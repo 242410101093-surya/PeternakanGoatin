@@ -3,13 +3,15 @@
 @section('title', 'Inventory Management')
 
 @section('content')
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto space-y-stack-xl">
 <!-- Page Header -->
-<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-stack-lg gap-stack-md">
     <div>
         <h1 class="font-h1 text-h1 text-on-surface tracking-tight mb-2">Inventory Management</h1>
         <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Monitor livestock counts, track feed stock levels, and manage pricing across all agricultural assets in real-time.</p>
     </div>
-    <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-surface-tint text-on-primary px-6 py-3 rounded-lg font-label-sm text-label-sm transition-all shadow-[0_4px_14px_rgba(74,124,89,0.15)] hover:shadow-[0_6px_20px_rgba(74,124,89,0.2)]">
+    <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-surface-tint text-on-primary px-6 py-3 rounded-lg font-label-sm text-label-sm transition-all shadow-[0_4px_14px_rgba(74,124,89,0.15)] hover:shadow-[0_6px_20px_rgba(74,124,89,0.2)] whitespace-nowrap">
         <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add</span>
         Tambah Inventaris
     </button>
@@ -31,7 +33,7 @@
         <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
             <span class="material-symbols-outlined text-6xl text-tertiary">warning</span>
         </div>
-        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Low Stock Alerts</p>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">{{ $lowStockAlerts > 20 ? 'Stock' : 'Low Stock Alerts' }}</p>
         <h3 class="font-h2 text-h2 text-tertiary mb-1">{{ number_format($lowStockAlerts) }} <span class="font-body-md text-body-md text-on-surface-variant font-normal">Items</span></h3>
         <p class="font-caption text-caption text-tertiary flex items-center gap-1">
             <span class="material-symbols-outlined text-[14px]">inventory</span> Action required
@@ -44,15 +46,74 @@
     <!-- Table Header Actions -->
     <div class="p-6 border-b border-surface-variant flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-bright">
         <h2 class="font-h3 text-h3 text-on-surface">Asset Roster</h2>
-        <div class="flex items-center gap-3">
-            <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                <input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all w-full sm:w-64" placeholder="Search product name..." type="text"/>
-            </div>
-            <button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center">
-                <span class="material-symbols-outlined">filter_list</span>
-            </button>
+        <div class="flex items-center gap-3 flex-1 sm:flex-none">
+            <form method="GET" action="{{ route('admin.inventaris.index') }}" class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="relative flex-1 sm:flex-none">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                    <input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all w-full sm:w-64" 
+                           placeholder="Cari jenis atau ras..." 
+                           type="text"
+                           name="search"
+                           value="{{ request('search') }}"/>
+                </div>
+                <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center whitespace-nowrap">
+                    <span class="material-symbols-outlined">filter_list</span>
+                </button>
+                <button type="submit" class="p-2 border border-primary rounded-lg text-primary hover:bg-primary-container transition-colors flex items-center justify-center whitespace-nowrap">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+            </form>
         </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div id="filterPanel" class="hidden p-6 border-b border-surface-variant bg-surface-container-low">
+        <form method="GET" action="{{ route('admin.inventaris.index') }}" id="filterForm" class="space-y-4">
+            @if(request('search'))
+                <input type="hidden" name="search" value="{{ request('search') }}">
+            @endif
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Gender Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Gender</label>
+                    <select name="gender" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
+                        <option value="">Semua Gender</option>
+                        <option value="Jantan" {{ request('gender') == 'Jantan' ? 'selected' : '' }}>Jantan (Laki-laki)</option>
+                        <option value="Betina" {{ request('gender') == 'Betina' ? 'selected' : '' }}>Betina (Perempuan)</option>
+                    </select>
+                </div>
+
+                <!-- Jenis Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Jenis Ternak</label>
+                    <select name="jenis" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
+                        <option value="">Semua Jenis</option>
+                        @foreach($jenisOptions as $jenis)
+                            <option value="{{ $jenis }}" {{ request('jenis') == $jenis ? 'selected' : '' }}>{{ $jenis }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Min Weight Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Berat Min (KG)</label>
+                    <input type="number" step="0.1" name="min_berat" placeholder="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('min_berat') }}">
+                </div>
+
+                <!-- Max Weight Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Berat Max (KG)</label>
+                    <input type="number" step="0.1" name="max_berat" placeholder="1000" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('max_berat') }}">
+                </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="flex gap-3 justify-end pt-4 border-t border-surface-variant">
+                <a href="{{ route('admin.inventaris.index') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Reset Filter</a>
+                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Terapkan Filter</button>
+            </div>
+        </form>
     </div>
     
     <!-- Table Container -->
@@ -294,6 +355,8 @@
         document.getElementById('jualForm').action = `/admin/inventaris/${item.id}/jual`;
         document.getElementById('jualModal').classList.remove('hidden');
     }
-</script>
+    </script>
+    </div>
+    </div>
 </div>
 @endsection

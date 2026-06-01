@@ -3,14 +3,15 @@
 @section('title', 'Financial Reports')
 
 @section('content')
-<div class="max-w-container-max mx-auto space-y-stack-xl">
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto space-y-stack-xl">
     <!-- Page Header & Actions -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-stack-lg gap-stack-md">
         <div>
             <h2 class="font-h2 text-h2 text-on-surface mb-stack-xs">Laporan Keuangan</h2>
             <p class="font-body-md text-body-md text-on-surface-variant">Review revenue, expenses, and overall stewardship health.</p>
         </div>
-        <div class="flex flex-wrap items-center gap-stack-sm">
+        <div class="flex flex-wrap items-center gap-stack-sm whitespace-nowrap">
             <button onclick="document.getElementById('addKeuanganModal').classList.remove('hidden')" class="flex items-center bg-primary text-on-primary font-label-sm text-label-sm px-4 py-2 rounded-lg hover:bg-surface-tint transition-colors ambient-shadow">
                 <span class="material-symbols-outlined mr-2 text-[18px]">add</span>
                 Catat Transaksi Baru
@@ -117,6 +118,7 @@
         <div class="p-4 border-t border-surface-variant bg-surface-container/30">
             {{ $laporans->links() }}
         </div>
+    </div>
     </div>
 </div>
 

@@ -6,9 +6,10 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="max-w-container-max mx-auto space-y-stack-xl">
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto space-y-stack-xl">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md mb-stack-lg">
         <div>
             <h1 class="font-h1 text-h1 text-on-surface mb-stack-xs">Medical Records & Growth</h1>
             <p class="font-body-md text-body-md text-on-surface-variant">Overview of livestock health checks, vaccinations, and growth monitoring.</p>
@@ -40,7 +41,7 @@
                 </select>
             </form>
         </div>
-        
+
         @if($selectedInventarisId && count($chartLabels) > 0)
         <div class="w-full h-64">
             <canvas id="growthChart"></canvas>
@@ -51,7 +52,7 @@
         </div>
         @endif
     </div>
-    
+
     <!-- Main Table Section -->
     <div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient overflow-hidden flex flex-col">
         <div class="p-6 border-b border-surface-variant flex justify-between items-center bg-surface-bright">
@@ -114,6 +115,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 </div>
 
@@ -268,12 +270,12 @@
                 datasets: [{
                     label: 'Berat Badan (Kg)',
                     data: data,
-                    borderColor: '#4a7c59',
-                    backgroundColor: 'rgba(74, 124, 89, 0.2)',
+                    borderColor: '#4e7f58',
+                    backgroundColor: 'rgba(78, 127, 88, 0.2)',
                     borderWidth: 2,
                     tension: 0.3,
                     fill: true,
-                    pointBackgroundColor: '#4a7c59'
+                    pointBackgroundColor: '#4e7f58'
                 }]
             },
             options: {

@@ -3,14 +3,15 @@
 @section('title', 'Educational Articles')
 
 @section('content')
-<div class="flex-1 max-w-container-max mx-auto w-full flex flex-col gap-stack-lg">
+<div class="w-full px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-container-max mx-auto w-full flex flex-col gap-stack-lg">
     <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
         <div>
             <h2 class="font-h2 text-h2 text-on-surface">Educational Articles</h2>
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage and publish animal care stewardship content.</p>
         </div>
-        <button onclick="document.getElementById('addArtikelModal').classList.remove('hidden')" class="bg-primary text-on-primary font-label-sm text-label-sm px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary-container transition-colors ambient-shadow">
+        <button onclick="document.getElementById('addArtikelModal').classList.remove('hidden')" class="bg-primary text-on-primary font-label-sm text-label-sm px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary-container transition-colors ambient-shadow whitespace-nowrap">
             <span class="material-symbols-outlined text-sm">add</span>
             Create New Article
         </button>
@@ -25,16 +26,16 @@
                 <span class="font-h1 text-h1 text-primary-container">{{ number_format($totalArtikels) }}</span>
             </div>
         </div>
-        <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-variant ambient-shadow flex flex-col gap-4 justify-center">
-            <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
-                <span class="font-label-sm text-label-sm text-on-surface">Filter by Category</span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1 bg-surface-container text-on-surface rounded-full font-caption text-caption cursor-pointer hover:bg-surface-variant">Nutrition</span>
-                <span class="px-3 py-1 bg-surface-container text-on-surface rounded-full font-caption text-caption cursor-pointer hover:bg-surface-variant">Behavior</span>
-                <span class="px-3 py-1 bg-primary-fixed/30 text-primary-container rounded-full font-caption text-caption border border-primary-fixed cursor-pointer">Wellness</span>
-            </div>
+        <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-variant ambient-shadow flex flex-col gap-4">
+            <form method="GET" action="{{ route('admin.artikel.index') }}" class="flex gap-2">
+                <div class="relative flex-1">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                    <input type="text" name="search" placeholder="Cari artikel..." value="{{ request('search') }}" class="pl-10 pr-4 py-2 rounded-lg border border-outline-variant bg-surface-bright text-on-surface font-body-sm w-full focus:border-primary outline-none">
+                </div>
+                <button type="submit" class="px-3 py-2 rounded-lg border border-primary bg-primary-container text-on-primary hover:bg-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">search</span>
+                </button>
+            </form>
         </div>
     </div>
     
@@ -107,6 +108,7 @@
         <div class="p-4 border-t border-surface-variant flex items-center justify-between bg-surface-container/30">
             {{ $artikels->links() }}
         </div>
+    </div>
     </div>
 </div>
 

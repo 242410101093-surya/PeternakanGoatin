@@ -1,70 +1,239 @@
 @extends('layouts.customer')
 
-@section('title', 'Dashboard Artikel Perawatan')
+@section('title', 'Dashboard Artikel')
 
 @section('content')
-<main class="flex-1 mt-[80px] max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-stack-lg">
-    <!-- Header Section -->
-    <header class="mb-stack-xl text-center max-w-3xl mx-auto">
-        <h1 class="font-h1 text-h1 text-primary mb-stack-sm">Panduan Perawatan Cerdas</h1>
-        <p class="font-body-lg text-body-lg text-on-surface-variant">Temukan artikel dan tips terbaru untuk menjaga kesehatan dan produktivitas ternak kambing Anda dengan metode stewardship alami.</p>
-    </header>
+@php
+    $featured = $artikels->first();
+    $otherArticles = $artikels->skip(1);
+@endphp
+<main class="max-w-[1200px] mx-auto px-6 py-10 space-y-12">
 
-    @php
-        $featured = $artikels->first() ?? null;
-        $otherArticles = $artikels->skip(1)->take(3);
-    @endphp
+    {{-- ── Hero Banner Section ── --}}
+    <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-slate-700/30 shadow-2xl"
+             style="background: linear-gradient(135deg, #0A2230 0%, #0E3247 45%, #164D69 85%, #2A7B94 100%);">
+        
+        {{-- Futuristic background glows --}}
+        <div class="absolute right-0 top-0 w-[450px] h-[450px] rounded-full filter blur-[100px] opacity-35 pointer-events-none" style="background: radial-gradient(circle, #2A7B94 0%, transparent 70%);"></div>
+        <div class="absolute left-[-10%] bottom-[-20%] w-[350px] h-[350px] rounded-full filter blur-[80px] opacity-25 pointer-events-none" style="background: radial-gradient(circle, #2A7844 0%, transparent 70%);"></div>
+        <div class="absolute right-[20%] bottom-[-30%] w-[300px] h-[300px] rounded-full filter blur-[100px] opacity-20 pointer-events-none" style="background: radial-gradient(circle, #3b82f6 0%, transparent 70%);"></div>
+        
+        {{-- Abstract Grid Overlay --}}
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] opacity-30 pointer-events-none"></div>
 
-    <!-- Featured Article -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter mb-stack-xl">
-        @if($featured)
-            <a href="{{ route('customer.artikel.show', $featured) }}" class="col-span-1 lg:col-span-2 block relative rounded-xl overflow-hidden group shadow-[0_4px_20px_rgba(74,124,89,0.1)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(74,124,89,0.2)] bg-surface-container-lowest border border-surface-variant h-[400px]">
-                <div class="absolute inset-0 z-0">
-                    <img alt="{{ $featured->judul }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="{{ $featured->foto ? asset('storage/' . $featured->foto) : 'https://images.unsplash.com/photo-1524063220888-eb2fcbd1160a?auto=format&fit=crop&w=800&q=80' }}"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-on-secondary-fixed/90 via-on-secondary-fixed/40 to-transparent"></div>
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-8 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase animate-pulse"
+                     style="background: rgba(42, 123, 148, 0.15); border: 1px solid rgba(42, 123, 148, 0.3); backdrop-filter: blur(8px);">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+                    </span>
+                    <span class="text-teal-300">Wawasan & Riset Peternakan</span>
                 </div>
-                <div class="absolute bottom-0 left-0 p-gutter z-10 w-full">
-                    <span class="inline-block px-3 py-1 rounded-full bg-primary-container/90 text-on-primary-container font-caption text-caption mb-stack-sm backdrop-blur-sm">Artikel Unggulan</span>
-                    <h2 class="font-h2 text-h2 text-on-primary mb-stack-xs">{{ $featured->judul }}</h2>
-                    <p class="font-body-md text-body-md text-surface-container-low/90 max-w-2xl line-clamp-2">{{ \Illuminate\Support\Str::limit($featured->konten, 120) }}</p>
+                
+                <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                    Temukan Pengetahuan <br class="hidden md:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-green-200">
+                        Ternak Modern
+                    </span> Anda
+                </h1>
+                
+                <p class="text-sm md:text-base text-slate-200/90 max-w-xl leading-relaxed font-medium">
+                    Akses wawasan, riset mutakhir, dan panduan praktis yang didesain khusus untuk mengoptimalkan kesehatan, pertumbuhan, serta profitabilitas peternakan kambing & domba Anda.
+                </p>
+
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
+                        <span class="material-symbols-outlined text-teal-400" style="font-size: 20px;">science</span>
+                        <div class="text-left">
+                            <p class="text-[10px] text-slate-300 font-medium">Riset Ilmiah</p>
+                            <p class="text-xs font-bold text-white">Teruji & Praktis</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
+                        <span class="material-symbols-outlined text-emerald-400" style="font-size: 20px;">clinical_notes</span>
+                        <div class="text-left">
+                            <p class="text-[10px] text-slate-300 font-medium">Panduan Medis</p>
+                            <p class="text-xs font-bold text-white">Kambing & Domba</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex justify-center lg:justify-end">
+                <!-- Outer soft glowing box -->
+                <div class="relative w-full max-w-[280px]">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-teal-400/20 to-transparent blur-2xl rounded-3xl opacity-60"></div>
+                    
+                    <!-- Premium Glass Widget Card -->
+                    <div class="relative z-10 w-full p-6 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-4 text-left transition-all duration-500 hover:scale-[1.02] hover:border-white/25"
+                         style="background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                        
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                            <span class="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Goatin Intelligence</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Item 1 -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-teal-300 bg-teal-500/10 border border-teal-500/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">library_books</span>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-slate-300">Wawasan Tersedia</div>
+                                    <div class="text-xs font-bold text-white">Riset & Tips</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Item 2 -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">verified</span>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-slate-300">Validasi Wawasan</div>
+                                    <div class="text-xs font-bold text-white">Diulas Dokter Hewan</div>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-blue-300 bg-blue-500/10 border border-blue-500/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-slate-300">Fokus Utama</div>
+                                    <div class="text-xs font-bold text-white">Optimasi Profit</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-2 text-center border-t border-white/5">
+                            <span class="text-[9px] text-slate-400 font-medium">Diperbarui secara berkala</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Featured Article Section ── --}}
+    @if($featured)
+    <section class="space-y-6">
+        <div class="flex items-center gap-2">
+            <div class="w-1.5 h-5 rounded-full" style="background:#2A7844;"></div>
+            <h2 class="text-xs font-bold uppercase tracking-wider" style="color:#64748B;">Sorotan Utama Hari Ini</h2>
+        </div>
+
+        <a href="{{ route('customer.artikel.show', $featured) }}" 
+           class="group block relative rounded-[20px] overflow-hidden shadow-md transition-all duration-300"
+           style="height: 380px; border: 1px solid rgba(226, 232, 240, 0.8);"
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(14, 50, 71, 0.08)';"
+           onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.02)';">
+            
+            {{-- Background Featured Image --}}
+            <div class="absolute inset-0 w-full h-full">
+                <img src="{{ $featured->foto ? asset('storage/' . $featured->foto) : asset('images/default-artikel.jpg') }}" 
+                     alt="{{ $featured->judul }}" 
+                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                     onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'">
+                {{-- Gradient Overlay --}}
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent"></div>
+            </div>
+
+            {{-- Text Info (Bottom) --}}
+            <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 space-y-3 z-10">
+                <span class="px-2.5 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider"
+                      style="background:#2A7844; border: 1px solid rgba(255,255,255,0.15);">
+                    {{ $featured->kategori ?: 'Artikel Unggulan' }}
+                </span>
+                <h3 class="text-xl md:text-3xl font-bold text-white leading-snug group-hover:text-emerald-300 transition-colors">
+                    {{ $featured->judul }}
+                </h3>
+                <p class="text-xs md:text-sm line-clamp-2 max-w-3xl" style="color: rgba(255, 255, 255, 0.7);">
+                    {{ \Illuminate\Support\Str::limit($featured->konten, 180) }}
+                </p>
+                <div class="flex items-center gap-4 pt-2">
+                    <span class="flex items-center gap-1.5 text-xs font-bold text-white">
+                        Baca Artikel
+                        <span class="material-symbols-outlined transition-transform group-hover:translate-x-1" style="font-size:16px;">arrow_forward</span>
+                    </span>
+                    <span class="text-[11px]" style="color: rgba(255, 255, 255, 0.45);">
+                        {{ $featured->created_at->diffForHumans() }}
+                    </span>
+                </div>
+            </div>
+        </a>
+    </section>
+    @endif
+
+    {{-- ── Other Articles Grid ── --}}
+    @if($otherArticles->isNotEmpty())
+    <section class="space-y-6">
+        <div class="flex items-center gap-2">
+            <div class="w-1.5 h-5 rounded-full" style="background:#2A7844;"></div>
+            <h2 class="text-xs font-bold uppercase tracking-wider" style="color:#64748B;">Artikel Perawatan Lainnya</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($otherArticles as $artikel)
+            <a href="{{ route('customer.artikel.show', $artikel) }}"
+               class="group flex flex-col glass-card overflow-hidden h-full">
+
+                {{-- Image Box --}}
+                <div class="relative overflow-hidden h-48 bg-slate-100 shrink-0">
+                    <img src="{{ $artikel->foto ? asset('storage/'.$artikel->foto) : asset('images/default-artikel.jpg') }}" 
+                         alt="{{ $artikel->judul }}"
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                         onerror="this.src='https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80'">
+                    <div class="absolute top-3 left-3 z-10">
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm"
+                              style="background:rgba(255, 255, 255, 0.92); color:#2A7844; backdrop-filter:blur(4px); border:1px solid rgba(42, 120, 68, 0.15);">
+                            {{ $artikel->kategori ?: 'Kambing' }}
+                        </span>
+                    </div>
+                </div>
+
+                {{-- Info Box --}}
+                <div class="p-5 flex flex-col flex-grow space-y-2">
+                    <span class="text-[10px] font-semibold" style="color:#94A3B8;">
+                        Dipublikasikan {{ $artikel->created_at->diffForHumans() }}
+                    </span>
+                    <h3 class="font-bold text-base leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2" style="color:#0E3247;">
+                        {{ $artikel->judul }}
+                    </h3>
+                    <p class="text-xs leading-relaxed line-clamp-3" style="color:#64748B;">
+                        {{ \Illuminate\Support\Str::limit($artikel->konten, 130) }}
+                    </p>
+                    
+                    {{-- Footer Inside --}}
+                    <div class="pt-4 mt-auto flex items-center justify-between border-t border-slate-100">
+                        <span class="text-xs font-bold transition-colors inline-flex items-center gap-1" style="color:#2A7844;">
+                            Baca Selengkapnya
+                            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1" style="font-size:14px;">arrow_right_alt</span>
+                        </span>
+                    </div>
                 </div>
             </a>
-
-            <div class="col-span-1 flex flex-col gap-gutter">
-                @foreach($otherArticles as $artikel)
-                    <a href="{{ route('customer.artikel.show', $artikel) }}" class="flex-1 rounded-xl p-gutter bg-surface-container-lowest border border-surface-variant shadow-[0_4px_20px_rgba(74,124,89,0.05)] hover:shadow-[0_4px_20px_rgba(74,124,89,0.15)] transition-all duration-300 flex flex-col relative overflow-hidden group">
-                        <div class="h-48 overflow-hidden relative">
-                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : 'https://images.unsplash.com/photo-1511216113906-8f56bb201b13?auto=format&fit=crop&w=800&q=80' }}"/>
-                            <div class="absolute top-3 left-3">
-                                <span class="px-2 py-1 bg-surface/90 text-primary font-caption text-caption rounded-full backdrop-blur-sm border border-surface-variant">{{ $artikel->kategori ?: 'Umum' }}</span>
-                            </div>
-                        </div>
-                        <div class="p-4 flex flex-col flex-1">
-                            <h3 class="font-h3 text-h3 text-on-surface mb-stack-xs text-lg line-clamp-2">{{ $artikel->judul }}</h3>
-                            <p class="font-body-md text-body-md text-on-surface-variant text-sm mb-stack-md line-clamp-3 flex-1">{{ \Illuminate\Support\Str::limit($artikel->konten, 100) }}</p>
-                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-variant">
-                                <span class="font-caption text-caption text-outline">{{ $artikel->created_at->diffForHumans() }}</span>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-
-                @if($otherArticles->isEmpty())
-                    <div class="rounded-xl p-gutter bg-surface-container-lowest border border-surface-variant shadow-[0_4px_20px_rgba(74,124,89,0.05)] text-on-surface-variant">
-                        Belum ada artikel lain. Silakan kunjungi bagian artikel untuk menambahkan konten baru.
-                    </div>
-                @endif
-            </div>
-        @else
-            <div class="col-span-full rounded-xl overflow-hidden group shadow-[0_4px_20px_rgba(74,124,89,0.1)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(74,124,89,0.2)] bg-surface-container-lowest border border-surface-variant p-gutter">
-                <div class="mb-stack-md">
-                    <span class="inline-block px-3 py-1 rounded-full bg-primary-container/90 text-on-primary-container font-caption text-caption mb-stack-sm backdrop-blur-sm">Artikel Unggulan</span>
-                    <h2 class="font-h2 text-h2 text-on-primary mb-stack-xs">Belum ada artikel</h2>
-                    <p class="font-body-md text-body-md text-surface-container-low/90 max-w-2xl">Artikel akan muncul di sini setelah admin menambahkan konten di halaman manajemen artikel.</p>
-                </div>
-            </div>
-        @endif
+            @endforeach
+        </div>
     </section>
+    @endif
+
+    {{-- ── Empty State ── --}}
+    @if(!$featured && $otherArticles->isEmpty())
+    <section class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm max-w-xl mx-auto">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:#f0faf3;">
+            <span class="material-symbols-outlined text-3xl" style="color:#2A7844;">article</span>
+        </div>
+        <h3 class="font-bold text-lg mb-1" style="color:#0E3247;">Belum Ada Panduan Perawatan</h3>
+        <p class="text-xs max-w-sm mx-auto" style="color:#94A3B8;">
+            Artikel dan tips kesehatan ternak akan segera diunggah oleh admin kami. Kembali lagi nanti.
+        </p>
+    </section>
+    @endif
 
 </main>
 @endsection

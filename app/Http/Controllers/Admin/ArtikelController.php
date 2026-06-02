@@ -43,7 +43,7 @@ class ArtikelController extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'nullable|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         $data = $request->except('foto');
@@ -63,11 +63,18 @@ class ArtikelController extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'nullable|string|max:255',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         $artikel = Artikel::findOrFail($id);
-        $data = $request->except('foto');
+        $data = $request->except(['foto', 'hapus_foto']);
+
+        if ($request->input('hapus_foto') == '1') {
+            if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
+                Storage::disk('public')->delete($artikel->foto);
+            }
+            $data['foto'] = null;
+        }
 
         if ($request->hasFile('foto')) {
             if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {

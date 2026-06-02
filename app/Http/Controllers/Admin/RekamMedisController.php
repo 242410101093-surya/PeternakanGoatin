@@ -63,6 +63,15 @@ class RekamMedisController extends Controller
         return view('admin.rekam-medis.index', compact('rekamMedis', 'inventarisList', 'selectedInventarisId', 'chartLabels', 'chartData'));
     }
 
+    public function exportPdf()
+    {
+        $rekamMedis = RekamMedis::with('inventaris')->orderBy('tanggal', 'desc')->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.rekam-medis.pdf', compact('rekamMedis'));
+        
+        return $pdf->download('medical-records.pdf');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

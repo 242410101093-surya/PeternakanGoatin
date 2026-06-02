@@ -12,9 +12,10 @@ class ProdukController extends Controller
     {
         $allowedSpecies = ['Domba', 'Kambing Etawa', 'Kambing Gibas'];
 
-        $query = Produk::with('inventaris')
+        $query = Produk::with(['inventaris.rekamMedis'])
             ->whereHas('inventaris', function ($q) use ($allowedSpecies) {
-                $q->whereIn('jenis', $allowedSpecies);
+                $q->whereIn('jenis', $allowedSpecies)
+                  ->where('status_stok', 'Dijual');
             });
 
         // Filter by jenis
@@ -59,5 +60,41 @@ class ProdukController extends Controller
         $produks = $query->orderBy('created_at', 'desc')->paginate(12);
 
         return view('customer.produk', compact('produks'));
+    }
+
+    public function notifikasiBeli(Request $request, $id)
+    {
+        $produk = Produk::with('inventaris')->findOrFail($id);
+        $user = auth()->user();
+
+        // Create notification content
+        $title = "Permintaan Pembelian Baru";
+        $message = "Pelanggan **{$user->name}** (WhatsApp: **" . ($user->whatsapp ?? '-') . "**) " .
+                   "ingin membeli produk **{$produk->nama_produk}**.\n\n" .
+                   "**Detail Ternak:**\n" .
+                   "- **ID Ternak:** " . ($produk->inventaris->id ?? '-') . "\n" .
+                   "- **Jenis:** " . ($produk->inventaris->jenis ?? '-') . "\n" .
+                   "- **Ras:** " . ($produk->inventaris->ras ?? '-') . "\n" .
+                   "- **Gender:** " . ($produk->inventaris->gender ?? '-') . "\n" .
+                   "- **Umur:** " . ($produk->inventaris->umur ?? '-') . " Bulan\n" .
+                   "- **Berat:** " . ($produk->inventaris->berat ?? '-') . " Kg\n" .
+                   "- **Harga:** Rp " . number_format($produk->harga, 0, ',', '.') . "\n\n" .
+                   "Pelanggan sedang melakukan chat ke WhatsApp Admin untuk melakukan konfirmasi.";
+
+        $notif = \App\Models\Notification::create([
+            'title' => $title,
+            'message' => $message,
+            'is_read' => false,
+        ]);
+
+        \App\Models\Pesanan::create([
+            'user_id' => $user->id,
+            'produk_id' => $produk->id,
+            'notification_id' => $notif->id,
+            'harga_jual' => $produk->harga,
+            'status' => 'Pending',
+        ]);
+
+        return response()->json(['status' => 'success']);
     }
 }

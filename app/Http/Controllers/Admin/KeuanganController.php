@@ -42,12 +42,34 @@ class KeuanganController extends Controller
         }
 
         $laporans = $query->orderBy('tanggal', 'desc')->paginate(15);
-        
-        $totalRevenue = LaporanKeuangan::where('jenis_transaksi', 'Pemasukan')->sum('jumlah');
-        $totalExpenses = LaporanKeuangan::where('jenis_transaksi', 'Pengeluaran')->sum('jumlah');
+
+        // Build filtered metrics query (same filters except jenis_transaksi)
+        $metricsBaseQuery = LaporanKeuangan::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $metricsBaseQuery->where('keterangan', 'like', "%{$search}%");
+        }
+        if ($request->filled('tanggal_dari')) {
+            $metricsBaseQuery->whereDate('tanggal', '>=', $request->input('tanggal_dari'));
+        }
+        if ($request->filled('tanggal_sampai')) {
+            $metricsBaseQuery->whereDate('tanggal', '<=', $request->input('tanggal_sampai'));
+        }
+        if ($request->filled('min_jumlah')) {
+            $metricsBaseQuery->where('jumlah', '>=', $request->input('min_jumlah'));
+        }
+        if ($request->filled('max_jumlah')) {
+            $metricsBaseQuery->where('jumlah', '<=', $request->input('max_jumlah'));
+        }
+
+        $totalRevenue = (clone $metricsBaseQuery)->where('jenis_transaksi', 'Pemasukan')->sum('jumlah');
+        $totalExpenses = (clone $metricsBaseQuery)->where('jenis_transaksi', 'Pengeluaran')->sum('jumlah');
         $netProfit = $totalRevenue - $totalExpenses;
 
-        return view('admin.keuangan.index', compact('laporans', 'totalRevenue', 'totalExpenses', 'netProfit'));
+        $hasFilters = $request->hasAny(['search', 'jenis_transaksi', 'tanggal_dari', 'tanggal_sampai', 'min_jumlah', 'max_jumlah']);
+
+        return view('admin.keuangan.index', compact('laporans', 'totalRevenue', 'totalExpenses', 'netProfit', 'hasFilters'));
     }
 
     public function store(Request $request)

@@ -16,7 +16,8 @@ class KatalogController extends Controller
 
         $query = Produk::with('inventaris')
             ->whereHas('inventaris', function ($q) use ($allowedSpecies) {
-                $q->whereIn('jenis', $allowedSpecies);
+                $q->whereIn('jenis', $allowedSpecies)
+                  ->where('status_stok', '!=', 'Terjual');
             });
 
         // Search by product name, ras, or spesifikasi
@@ -57,7 +58,8 @@ class KatalogController extends Controller
         $produks = $query->orderBy('created_at', 'desc')->paginate(12);
 
         $totalProducts = Produk::whereHas('inventaris', function ($q) use ($allowedSpecies) {
-            $q->whereIn('jenis', $allowedSpecies);
+            $q->whereIn('jenis', $allowedSpecies)
+              ->where('status_stok', '!=', 'Terjual');
         })->count();
         $activeListings = Produk::whereHas('inventaris', function($q) use ($allowedSpecies) {
             $q->whereIn('jenis', $allowedSpecies)
@@ -76,7 +78,7 @@ class KatalogController extends Controller
         $request->validate([
             'harga' => 'required|numeric|min:0',
             'spesifikasi' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|file|mimes:jpeg,png,jpg,gif,img|max:10240',
         ]);
 
         $produk = Produk::findOrFail($id);

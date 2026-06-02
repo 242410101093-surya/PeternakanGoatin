@@ -3,33 +3,106 @@
 @section('title', $artikel->judul)
 
 @section('content')
-<main class="flex-1 mt-[80px] max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop py-stack-lg">
-    <div class="max-w-4xl mx-auto bg-surface-container-lowest border border-surface-variant rounded-3xl overflow-hidden shadow-[0_4px_20px_rgba(74,124,89,0.08)]">
-        <div class="relative h-80 overflow-hidden">
-            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : 'https://images.unsplash.com/photo-1524063220888-eb2fcbd1160a?auto=format&fit=crop&w=1200&q=80' }}"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/30 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 p-6 text-on-surface">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/90 text-on-primary-container font-caption text-caption">{{ $artikel->kategori ?: 'Umum' }}</span>
-                <h1 class="mt-4 font-h1 text-h1 text-on-primary leading-tight">{{ $artikel->judul }}</h1>
-                <div class="mt-3 flex flex-wrap items-center gap-3 text-sm text-on-surface-variant font-caption">
-                    <span>{{ $artikel->created_at->format('d M Y') }}</span>
-                    <span class="inline-block px-2 py-1 rounded-full bg-surface/90">{{ $artikel->created_at->diffForHumans() }}</span>
-                </div>
-            </div>
-        </div>
+<main class="max-w-[860px] mx-auto px-6 py-12 space-y-8 mt-4">
+    
+    {{-- Breadcrumb & Back button --}}
+    <div class="flex items-center justify-between">
+        <a href="{{ route('customer.dashboard') }}" 
+           class="group inline-flex items-center gap-2 text-xs font-bold transition-all"
+           style="color: #2A7B94;"
+           onmouseover="this.style.color='#0E3247';" onmouseout="this.style.color='#2A7B94';">
+            <span class="material-symbols-outlined transition-transform group-hover:-translate-x-1" style="font-size: 16px;">arrow_back</span>
+            Kembali ke Dashboard
+        </a>
+        
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest text-teal-700 bg-teal-50 border border-teal-100/60">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+            Edukasi Ternak
+        </span>
+    </div>
 
-        <div class="p-gutter md:p-10">
-            <div class="prose prose-slate max-w-none text-on-surface leading-relaxed">
-                {!! nl2br(e($artikel->konten)) !!}
+    {{-- Article Header Info --}}
+    <div class="space-y-4 text-left">
+        <span class="inline-block px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800"
+              style="background: #f0faf3; border: 1px solid rgba(42, 120, 68, 0.15);">
+            {{ $artikel->kategori ?: 'Artikel Umum' }}
+        </span>
+        
+        <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight" style="color: #0E3247;">
+            {{ $artikel->judul }}
+        </h1>
+        
+        <div class="flex flex-wrap items-center gap-4 text-xs font-semibold pt-2" style="color: #64748B;">
+            <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-teal-500" style="font-size: 16px;">calendar_today</span>
+                <span>{{ $artikel->created_at->format('d M Y') }}</span>
             </div>
-
-            <div class="mt-10">
-                <a href="{{ route('customer.dashboard') }}" class="inline-flex items-center gap-2 font-label-sm text-label-sm text-primary hover:text-primary-container transition-colors">
-                    <span class="material-symbols-outlined">arrow_back</span>
-                    Kembali ke Dashboard
-                </a>
+            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+            <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-teal-500" style="font-size: 16px;">schedule</span>
+                <span>{{ $artikel->created_at->diffForHumans() }}</span>
+            </div>
+            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+            <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-teal-500" style="font-size: 16px;">menu_book</span>
+                <span>3 Menit Baca</span>
             </div>
         </div>
     </div>
+
+    {{-- Article Hero Image --}}
+    <div class="relative overflow-hidden rounded-[28px] shadow-lg border border-slate-200/60 bg-slate-100" style="height: 420px;">
+        <img alt="{{ $artikel->judul }}" 
+             class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
+             src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}"
+             onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'"/>
+    </div>
+
+    {{-- Article Content Card --}}
+    <div class="glass-card p-6 md:p-10 text-left space-y-6" style="background: rgba(255, 255, 255, 0.95); border-radius: 28px;">
+        <div class="prose prose-slate max-w-none text-sm md:text-base leading-relaxed text-slate-800" style="font-family: inherit;">
+            <p class="first-letter:text-5xl first-letter:font-black first-letter:text-teal-700 first-letter:mr-2 first-letter:float-left">
+                {!! nl2br(e($artikel->konten)) !!}
+            </p>
+        </div>
+
+        {{-- Divider --}}
+        <div class="h-px bg-slate-100 pt-6"></div>
+
+        {{-- Bottom Author Card/Disclaimer --}}
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-800 text-sm font-bold uppercase">
+                    GT
+                </div>
+                <div class="text-left">
+                    <p class="text-xs font-bold text-slate-900">Ditulis oleh Tim Ahli Goatin</p>
+                    <p class="text-[10px] text-slate-400 font-medium">Spesialis Medis & Nutrisi Ternak</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Bagikan:</span>
+                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link artikel disalin!');" 
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors flex items-center gap-1">
+                    <span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span>
+                    Salin Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Related/Back Bottom --}}
+    <div class="flex justify-center pt-4">
+        <a href="{{ route('customer.dashboard') }}" 
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition-all border border-slate-200/80"
+           style="background: #ffffff; color: #0E3247;"
+           onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'; this.style.transform='translateY(-1px)';"
+           onmouseout="this.style.background='#ffffff'; this.style.borderColor='rgba(226,232,240,0.8)'; this.style.transform='none';">
+            <span class="material-symbols-outlined" style="font-size: 18px;">grid_view</span>
+            Jelajahi Artikel Lainnya
+        </a>
+    </div>
+
 </main>
 @endsection

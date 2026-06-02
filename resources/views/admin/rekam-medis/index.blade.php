@@ -15,6 +15,10 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Overview of livestock health checks, vaccinations, and growth monitoring.</p>
         </div>
         <div class="flex gap-3">
+            <a href="{{ route('admin.rekam-medis.export-pdf') }}" class="bg-primary text-on-primary flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity shadow-ambient">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                Export Report
+            </a>
             <button onclick="document.getElementById('addBeratModal').classList.remove('hidden')" class="bg-surface-container-lowest border border-outline-variant text-on-surface flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">scale</span>
                 Catat Berat

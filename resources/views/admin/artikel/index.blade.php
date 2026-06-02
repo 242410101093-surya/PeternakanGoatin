@@ -171,6 +171,17 @@
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Konten Artikel</label>
                 <textarea name="konten" id="edit_konten" required rows="6" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
             </div>
+            <div id="edit_foto_preview_container" class="hidden flex items-center gap-4 p-3 bg-surface-container/50 rounded-lg border border-surface-variant">
+                <img id="edit_foto_preview" src="" class="w-16 h-16 object-cover rounded">
+                <div class="flex-1">
+                    <span class="text-sm font-semibold text-on-surface block">Foto Saat Ini</span>
+                    <button type="button" onclick="hapusFotoArtikel()" class="mt-1 text-xs text-error font-semibold flex items-center gap-1 hover:underline">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                        Hapus Foto Ini
+                    </button>
+                </div>
+                <input type="hidden" name="hapus_foto" id="edit_hapus_foto" value="0">
+            </div>
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Foto Artikel (Biarkan kosong jika tidak ingin mengubah)</label>
                 <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
@@ -189,7 +200,30 @@
         document.getElementById('edit_judul').value = artikel.judul;
         document.getElementById('edit_kategori').value = artikel.kategori || '';
         document.getElementById('edit_konten').value = artikel.konten;
+        
+        // Reset hapus_foto input value
+        document.getElementById('edit_hapus_foto').value = "0";
+
+        // Show/hide preview container based on whether the article has a photo
+        const previewContainer = document.getElementById('edit_foto_preview_container');
+        const previewImg = document.getElementById('edit_foto_preview');
+        
+        if (artikel.foto) {
+            previewImg.src = `/storage/${artikel.foto}`;
+            previewContainer.classList.remove('hidden');
+        } else {
+            previewImg.src = '';
+            previewContainer.classList.add('hidden');
+        }
+
         document.getElementById('editArtikelModal').classList.remove('hidden');
+    }
+
+    function hapusFotoArtikel() {
+        if (confirm('Yakin ingin menghapus foto artikel ini?')) {
+            document.getElementById('edit_hapus_foto').value = "1";
+            document.getElementById('edit_foto_preview_container').classList.add('hidden');
+        }
     }
 </script>
 

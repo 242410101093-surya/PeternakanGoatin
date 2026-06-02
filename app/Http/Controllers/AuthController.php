@@ -29,6 +29,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'whatsapp' => ['required', 'string', 'max:255'],
         ]);
 
         $user = User::create([
@@ -36,11 +37,13 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user', // Default role
+            'last_active_at' => now(),
+            'whatsapp' => $request->whatsapp,
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('customer.dashboard');
+        return redirect()->route('customer.produk');
     }
 
     public function login(Request $request)
@@ -53,24 +56,26 @@ class AuthController extends Controller
         // Attempt login using email
         if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
+            Auth::user()->update(['last_active_at' => now()]);
 
             // Redirect based on role
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('customer.dashboard');
+            return redirect()->route('customer.produk');
         }
 
         // If email attempt fails, try attempting using name (username)
         if (Auth::attempt(['name' => $credentials['email'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
+            Auth::user()->update(['last_active_at' => now()]);
 
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('customer.dashboard');
+            return redirect()->route('customer.produk');
         }
 
         return back()->withErrors([
@@ -93,68 +98,67 @@ class AuthController extends Controller
         return view('customer.auth.forgot-password');
     }
 
-    public function sendResetLink(Request $request)
+    public function sendResetCode(Request $request)
     {
         $request->validate([
-            'username' => ['required', 'string'],
+            'email' => ['required', 'string', 'email', 'exists:users,email'],
         ]);
 
-        // Find user by username
-        $user = User::where('name', $request->username)->first();
+        $email = $request->email;
+        $code = sprintf("%06d", mt_rand(1, 999999));
 
-        if (!$user) {
-            return back()->withErrors(['username' => 'Username tidak ditemukan.']);
-        }
-
-        // Send reset link to user's email
-        $status = Password::sendResetLink(['email' => $user->email]);
-
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', 'Tautan reset password telah dikirim ke email Anda.')
-            : back()->withErrors(['username' => 'Gagal mengirim tautan reset. Silakan coba lagi.']);
-    }
-
-    public function showResetPasswordForm($token)
-    {
-        return view('customer.auth.reset-password', ['token' => $token]);
-    }
-
-    public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'token' => ['required'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
-
-        // Get email from password reset token
-        $tokenRecord = DB::table('password_reset_tokens')
-            ->where('token', hash('sha256', $request->token))
-            ->first();
-
-        if (!$tokenRecord) {
-            return back()->withErrors(['token' => 'Token tidak valid atau telah kadaluarsa.']);
-        }
-
-        $status = Password::reset(
-            [
-                'email' => $tokenRecord->email,
-                'password' => $request->password,
-                'password_confirmation' => $request->password,
-                'token' => $request->token,
-            ],
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
-
-                event(new PasswordReset($user));
-            }
+        // Save code to database
+        DB::table('password_reset_codes')->updateOrInsert(
+            ['email' => $email],
+            ['code' => $code, 'created_at' => now()]
         );
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', 'Password Anda berhasil diubah. Silakan login dengan password baru.')
-            : back()->withErrors(['password' => ['Gagal mereset password. Silakan coba lagi.']]);
+        // Send Email
+        \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($email, $code) {
+            $message->to($email)
+                    ->subject('Kode Verifikasi Reset Password Goatin')
+                    ->html("<h3>Goatin Stewardship Portal</h3><p>Halo,</p><p>Berikut adalah kode verifikasi reset password Anda:</p><h1 style='font-size:32px;letter-spacing:5px;color:#1e4e2f;font-weight:bold;'>$code</h1><p>Kode ini berlaku selama 15 menit. Jika Anda tidak meminta reset password ini, silakan abaikan email ini.</p>");
+        });
+
+        return redirect()->route('password.reset', ['email' => $email])->with('status', 'Kode verifikasi telah dikirim ke email Anda.');
+    }
+
+    public function showResetPasswordForm(Request $request)
+    {
+        return view('customer.auth.reset-password', ['email' => $request->query('email')]);
+    }
+
+    public function resetPasswordWithCode(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'string', 'email', 'exists:users,email'],
+            'code' => ['required', 'string', 'size:6'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $resetRecord = DB::table('password_reset_codes')
+            ->where('email', $request->email)
+            ->where('code', $request->code)
+            ->first();
+
+        if (!$resetRecord) {
+            return back()->withErrors(['code' => 'Kode verifikasi tidak valid.']);
+        }
+
+        // Check if expired (15 minutes)
+        if (\Carbon\Carbon::parse($resetRecord->created_at)->addMinutes(15)->isPast()) {
+            return back()->withErrors(['code' => 'Kode verifikasi telah kedaluwarsa. Silakan minta kode baru.']);
+        }
+
+        // Update password
+        $user = User::where('email', $request->email)->firstOrFail();
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // Delete used code
+        DB::table('password_reset_codes')->where('email', $request->email)->delete();
+
+        return redirect()->route('login')->with('status', 'Password Anda berhasil direset. Silakan login dengan password baru.');
     }
 }

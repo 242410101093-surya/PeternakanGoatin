@@ -22,6 +22,10 @@
     <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 mb-stack-lg">
         <form method="GET" action="{{ route('admin.katalog.index') }}" class="space-y-4">
             <div class="flex flex-col sm:flex-row gap-4">
+                <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    Filter
+                </button>
                 <div class="relative flex-1">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
                     <input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-bright text-on-surface font-body-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all w-full" 
@@ -30,10 +34,6 @@
                            name="search"
                            value="{{ request('search') }}"/>
                 </div>
-                <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
-                    <span class="material-symbols-outlined">filter_list</span>
-                    Filter
-                </button>
                 <button type="submit" class="px-4 py-2 border border-primary rounded-lg text-primary hover:bg-primary-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
                     <span class="material-symbols-outlined">search</span>
                 </button>
@@ -66,9 +66,9 @@
                 <div>
                     <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Harga Range (Rp)</label>
                     <div class="flex gap-2 items-center">
-                        <input type="number" name="min_harga" placeholder="Min" class="flex-1 px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('min_harga') }}">
+                        <input type="number" name="min_harga" placeholder="Min" class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('min_harga') }}">
                         <span class="text-on-surface-variant">-</span>
-                        <input type="number" name="max_harga" placeholder="Max" class="flex-1 px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('max_harga') }}">
+                        <input type="number" name="max_harga" placeholder="Max" class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm" value="{{ request('max_harga') }}">
                     </div>
                 </div>
 
@@ -191,6 +191,7 @@
                 <div>
                     <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Foto Ternak (Biarkan kosong jika tidak ingin mengubah)</label>
                     <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
+                    <p class="text-xs text-on-surface-variant mt-1">Format: JPG, PNG, JPEG, IMG (Maks 10MB)</p>
                 </div>
                 <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
                     <button type="button" onclick="document.getElementById('editProdukModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
@@ -204,11 +205,16 @@
         function openEditProdukModal(produk) {
             document.getElementById('editProdukForm').action = `/admin/katalog/${produk.id}`;
             document.getElementById('edit_produk_harga').value = Number(produk.harga);
-            document.getElementById('edit_produk_spesifikasi').value = produk.spesifikasi || '';
+            
+            let spec = produk.spesifikasi;
+            if (!spec && produk.inventaris) {
+                const inv = produk.inventaris;
+                spec = `Jenis: ${inv.jenis || ''} | Gender: ${inv.gender || ''} | Berat: ${inv.berat || ''} kg | Umur: ${inv.umur || ''} bulan`;
+            }
+            document.getElementById('edit_produk_spesifikasi').value = spec || '';
             document.getElementById('editProdukModal').classList.remove('hidden');
         }
     </script>
-    </div>
     </div>
 </div>
 @endsection

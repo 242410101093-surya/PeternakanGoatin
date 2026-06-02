@@ -48,6 +48,9 @@
         <h2 class="font-h3 text-h3 text-on-surface">Asset Roster</h2>
         <div class="flex items-center gap-3 flex-1 sm:flex-none">
             <form method="GET" action="{{ route('admin.inventaris.index') }}" class="flex items-center gap-3 w-full sm:w-auto">
+                <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center whitespace-nowrap">
+                    <span class="material-symbols-outlined">filter_list</span>
+                </button>
                 <div class="relative flex-1 sm:flex-none">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
                     <input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all w-full sm:w-64" 
@@ -56,9 +59,6 @@
                            name="search"
                            value="{{ request('search') }}"/>
                 </div>
-                <button type="button" onclick="document.getElementById('filterPanel').classList.toggle('hidden')" class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center whitespace-nowrap">
-                    <span class="material-symbols-outlined">filter_list</span>
-                </button>
                 <button type="submit" class="p-2 border border-primary rounded-lg text-primary hover:bg-primary-container transition-colors flex items-center justify-center whitespace-nowrap">
                     <span class="material-symbols-outlined">search</span>
                 </button>
@@ -73,7 +73,7 @@
                 <input type="hidden" name="search" value="{{ request('search') }}">
             @endif
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <!-- Gender Filter -->
                 <div>
                     <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Gender</label>
@@ -92,6 +92,18 @@
                         @foreach($jenisOptions as $jenis)
                             <option value="{{ $jenis }}" {{ request('jenis') == $jenis ? 'selected' : '' }}>{{ $jenis }}</option>
                         @endforeach
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Status</label>
+                    <select name="status_stok" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
+                        <option value="">Semua Status</option>
+                        <option value="Tersedia" {{ request('status_stok') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                        <option value="Dijual" {{ request('status_stok') == 'Dijual' ? 'selected' : '' }}>Dijual</option>
+                        <option value="Dalam Perawatan" {{ request('status_stok') == 'Dalam Perawatan' ? 'selected' : '' }}>Dalam Perawatan</option>
+                        <option value="Terjual" {{ request('status_stok') == 'Terjual' ? 'selected' : '' }}>Terjual</option>
                     </select>
                 </div>
 
@@ -323,12 +335,12 @@
             </div>
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Spesifikasi Ternak</label>
-                <textarea name="spesifikasi" rows="3" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface" placeholder="Keterangan tambahan untuk pembeli..."></textarea>
+                <textarea name="spesifikasi" id="jual_spesifikasi" rows="3" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface" placeholder="Keterangan tambahan untuk pembeli..."></textarea>
             </div>
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Foto Ternak</label>
                 <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                <p class="text-xs text-on-surface-variant mt-1">Format: JPG, PNG (Maks 2MB)</p>
+                <p class="text-xs text-on-surface-variant mt-1">Format: JPG, PNG, JPEG, IMG (Maks 10MB)</p>
             </div>
             <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
                 <button type="button" onclick="document.getElementById('jualModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
@@ -353,10 +365,10 @@
 
     function openJualModal(item) {
         document.getElementById('jualForm').action = `/admin/inventaris/${item.id}/jual`;
+        document.getElementById('jual_spesifikasi').value = `Jenis: ${item.jenis} | Gender: ${item.gender} | Berat: ${item.berat} kg | Umur: ${item.umur} bulan`;
         document.getElementById('jualModal').classList.remove('hidden');
     }
     </script>
-    </div>
     </div>
 </div>
 @endsection

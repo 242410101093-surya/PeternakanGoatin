@@ -32,6 +32,11 @@ class InventarisController extends Controller
             $query->where('jenis', $request->input('jenis'));
         }
         
+        // Filter by status
+        if ($request->filled('status_stok')) {
+            $query->where('status_stok', $request->input('status_stok'));
+        }
+        
         // Filter by weight range
         $minBerat = $request->input('min_berat');
         $maxBerat = $request->input('max_berat');
@@ -45,7 +50,7 @@ class InventarisController extends Controller
         }
         
         $inventaris = $query->orderBy('created_at', 'desc')->paginate(10);
-        $totalLivestock = Inventaris::count();
+        $totalLivestock = Inventaris::where('status_stok', '!=', 'Terjual')->count();
         $lowStockAlerts = Inventaris::lowStockCount();
         
         // Get unique jenis for filter dropdown
@@ -101,7 +106,7 @@ class InventarisController extends Controller
         $request->validate([
             'harga' => 'required|numeric|min:0',
             'spesifikasi' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|file|mimes:jpeg,png,jpg,gif,img|max:10240',
         ]);
 
         $inventaris = Inventaris::findOrFail($id);

@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'last_active_at',
+        'whatsapp',
+        'foto_profil',
     ];
 
     /**
@@ -42,5 +45,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_active_at' => 'datetime',
     ];
+
+    /**
+     * Get the user's status dynamically based on last activity.
+     */
+    public function getStatusAttribute(): string
+    {
+        if (!$this->last_active_at) {
+            return 'inactive';
+        }
+        
+        return $this->last_active_at->diffInMonths(now()) >= 1 ? 'inactive' : 'active';
+    }
 }

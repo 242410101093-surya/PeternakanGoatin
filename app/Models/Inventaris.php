@@ -38,6 +38,6 @@ class Inventaris extends Model
 
     public static function lowStockCount()
     {
-        return self::where('status_stok', 'Dijual')->count();
+        return self::where('status_stok', 'Terbooking')->count();
     }
 }

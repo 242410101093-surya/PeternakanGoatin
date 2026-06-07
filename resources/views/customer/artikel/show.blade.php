@@ -9,8 +9,8 @@
     <div class="flex items-center justify-between">
         <a href="{{ route('customer.dashboard') }}" 
            class="group inline-flex items-center gap-2 text-xs font-bold transition-all"
-           style="color: #2A7B94;"
-           onmouseover="this.style.color='#0E3247';" onmouseout="this.style.color='#2A7B94';">
+            style="color: #235347;"
+            onmouseover="this.style.color='#051F20';" onmouseout="this.style.color='#235347';">
             <span class="material-symbols-outlined transition-transform group-hover:-translate-x-1" style="font-size: 16px;">arrow_back</span>
             Kembali ke Dashboard
         </a>
@@ -28,7 +28,7 @@
             {{ $artikel->kategori ?: 'Artikel Umum' }}
         </span>
         
-        <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight" style="color: #0E3247;">
+        <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight" style="color: #051F20;">
             {{ $artikel->judul }}
         </h1>
         
@@ -65,38 +65,13 @@
                 {!! nl2br(e($artikel->konten)) !!}
             </p>
         </div>
-
-        {{-- Divider --}}
-        <div class="h-px bg-slate-100 pt-6"></div>
-
-        {{-- Bottom Author Card/Disclaimer --}}
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-800 text-sm font-bold uppercase">
-                    GT
-                </div>
-                <div class="text-left">
-                    <p class="text-xs font-bold text-slate-900">Ditulis oleh Tim Ahli Goatin</p>
-                    <p class="text-[10px] text-slate-400 font-medium">Spesialis Medis & Nutrisi Ternak</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Bagikan:</span>
-                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link artikel disalin!');" 
-                        class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors flex items-center gap-1">
-                    <span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span>
-                    Salin Link
-                </button>
-            </div>
-        </div>
     </div>
 
     {{-- Related/Back Bottom --}}
     <div class="flex justify-center pt-4">
         <a href="{{ route('customer.dashboard') }}" 
            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition-all border border-slate-200/80"
-           style="background: #ffffff; color: #0E3247;"
+           style="background: #ffffff; color: #051F20;"
            onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'; this.style.transform='translateY(-1px)';"
            onmouseout="this.style.background='#ffffff'; this.style.borderColor='rgba(226,232,240,0.8)'; this.style.transform='none';">
             <span class="material-symbols-outlined" style="font-size: 18px;">grid_view</span>

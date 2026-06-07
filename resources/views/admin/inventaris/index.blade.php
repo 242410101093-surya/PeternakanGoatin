@@ -185,7 +185,7 @@
                             <button onclick="openEditModal({{ $item }})" class="p-1.5 text-on-surface-variant hover:text-primary rounded" title="Edit">
                                 <span class="material-symbols-outlined text-sm">edit</span>
                             </button>
-                            <form action="{{ route('admin.inventaris.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                            <form action="{{ route('admin.inventaris.destroy', $item->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus {{ $item->jenis }} ({{ $item->ras ?? 'tanpa ras' }}) dari inventaris? Tindakan ini tidak bisa dibatalkan.">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error rounded" title="Hapus">

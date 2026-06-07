@@ -1,15 +1,15 @@
 <!-- ===== CUSTOMER NAV FLOATING CAPSULE — Goatin 2026 Premium ===== -->
 <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1200px] z-50 transition-all duration-300" id="floating-navbar">
     <div class="px-6 py-3.5 rounded-2xl border flex items-center justify-between shadow-lg"
-         style="background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: rgba(226, 232, 240, 0.85); box-shadow: 0 8px 32px rgba(14, 50, 71, 0.05);">
+         style="background: rgba(5, 31, 32, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: rgba(35, 83, 71, 0.3); box-shadow: 0 8px 32px rgba(5, 31, 32, 0.25);">
 
         <!-- Brand Logo -->
         <a href="{{ route('customer.dashboard') }}" class="flex items-center shrink-0 hover:opacity-90 transition-opacity">
-            <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-10 w-auto">
+            <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-10 w-auto" style="filter: brightness(0) invert(1);">
         </a>
 
         <!-- Desktop Navigation Capsule Link -->
-        <div class="hidden md:flex items-center gap-1.5 p-1 rounded-xl" style="background: rgba(241, 245, 249, 0.75);">
+        <div class="hidden md:flex items-center gap-1.5 p-1 rounded-xl" style="background: rgba(255, 255, 255, 0.08);">
             @php
                 $navLinks = [
                     ['route' => 'customer.produk',      'label' => 'Katalog Produk', 'icon' => 'storefront'],
@@ -37,9 +37,9 @@
                 @else
                     <a href="{{ route($link['route']) }}"
                        class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
-                       style="color: #64748B;"
-                       onmouseover="this.style.color='#0E3247'; this.style.background='rgba(255, 255, 255, 0.8)'; this.style.boxShadow='0 2px 8px rgba(14, 50, 71, 0.03)';"
-                       onmouseout="this.style.color='#64748B'; this.style.background='transparent'; this.style.boxShadow='none';">
+                       style="color: #DAF1DE;"
+                       onmouseover="this.style.color='#051F20'; this.style.background='#DAF1DE'; this.style.boxShadow='0 2px 8px rgba(5, 31, 32, 0.1)';"
+                       onmouseout="this.style.color='#DAF1DE'; this.style.background='transparent'; this.style.boxShadow='none';">
                         <span class="material-symbols-outlined" style="font-size: 16px;">{{ $link['icon'] }}</span>
                         {{ $link['label'] }}
                     </a>
@@ -54,9 +54,9 @@
                 @csrf
                 <button type="submit"
                         class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all border"
-                        style="color: #64748B; border-color: rgba(226, 232, 240, 0.9);"
-                        onmouseover="this.style.color='#DC2626'; this.style.borderColor='rgba(239, 68, 68, 0.2)'; this.style.background='rgba(254, 242, 242, 0.7)';"
-                        onmouseout="this.style.color='#64748B'; this.style.borderColor='rgba(226, 232, 240, 0.9)'; this.style.background='transparent';">
+                        style="color: #DAF1DE; border-color: rgba(218, 241, 222, 0.25);"
+                        onmouseover="this.style.color='#DC2626'; this.style.borderColor='rgba(239, 68, 68, 0.4)'; this.style.background='rgba(254, 242, 242, 0.15)';"
+                        onmouseout="this.style.color='#DAF1DE'; this.style.borderColor='rgba(218, 241, 222, 0.25)'; this.style.background='transparent';">
                     <span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
                     Keluar
                 </button>
@@ -75,7 +75,7 @@
 
             <!-- Mobile Hamburger Menu Button -->
             <button class="md:hidden p-2 rounded-xl border flex items-center justify-center transition-colors"
-                    style="color: #64748B; border-color: rgba(226, 232, 240, 0.9);"
+                    style="color: #DAF1DE; border-color: rgba(218, 241, 222, 0.25);"
                     onclick="document.getElementById('mobile-capsule-menu').classList.toggle('hidden')">
                 <span class="material-symbols-outlined" style="font-size: 20px;">menu</span>
             </button>
@@ -84,7 +84,7 @@
 
     <!-- Mobile Dropdown Menu Inside Floating Box -->
     <div id="mobile-capsule-menu" class="hidden md:hidden mt-2 p-3 rounded-2xl border space-y-1 shadow-xl animate-fade-in"
-         style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: rgba(226, 232, 240, 0.95);">
+         style="background: rgba(5, 31, 32, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: rgba(35, 83, 71, 0.3);">
         @foreach($navLinks as $link)
             @php 
                 $isActive = false;
@@ -95,7 +95,7 @@
                 }
             @endphp
             <a href="{{ route($link['route']) }}" 
-               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold {{ $isActive ? 'text-white' : 'text-slate-600' }}"
+               class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold {{ $isActive ? 'text-white' : 'text-slate-300' }}"
                style="{{ $isActive ? 'background: linear-gradient(135deg, #2A7844 0%, #1e5c33 100%);' : '' }}">
                 <span class="material-symbols-outlined" style="font-size: 18px;">{{ $link['icon'] }}</span>
                 {{ $link['label'] }}
@@ -106,7 +106,7 @@
         
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">
+            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors">
                 <span class="material-symbols-outlined" style="font-size: 18px;">logout</span>
                 Keluar Aplikasi
             </button>

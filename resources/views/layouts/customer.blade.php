@@ -6,15 +6,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Goatin - @yield('title', 'Dashboard')</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16.png') }}">
-    <link rel="shortcut icon" href="{{ asset('images/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('images/favicon-64.png?v=3') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png?v=3') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16.png?v=3') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png?v=3') }}">
     <!-- Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
@@ -24,15 +27,15 @@
                 extend: {
                     colors: {
                         /* ── Brand Palette 2026 ── */
-                        "primary-dark":    "#0E3247",
-                        "primary-dark-80": "#1a4a63",
+                        "primary-dark":    "#051F20",
+                        "primary-dark-80": "#0B2B26",
                         "primary-green":   "#2A7844",
                         "primary-green-10":"#f0faf3",
-                        "off-white":       "#F8FAFC",
+                        "off-white":       "#ffffff",
                         "border-subtle":   "#E2E8F0",
                         "text-muted":      "#64748B",
                         "text-body":       "#1E293B",
-                        "text-heading":    "#0E3247",
+                        "text-heading":    "#051F20",
                     },
                     borderRadius: {
                         "DEFAULT": "0.75rem",
@@ -54,14 +57,10 @@
         *, *::before, *::after { box-sizing: border-box; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F8FAFC;
+            background-color: #ffffff;
             color: #1E293B;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(42, 120, 68, 0.03) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(14, 50, 71, 0.03) 0%, transparent 55%);
-            background-attachment: fixed;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -77,12 +76,12 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(14, 50, 71, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 30px rgba(5, 31, 32, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .glass-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(14, 50, 71, 0.07), 0 1px 3px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 10px 40px rgba(5, 31, 32, 0.07), 0 1px 3px rgba(0, 0, 0, 0.02);
             border-color: rgba(42, 120, 68, 0.2);
         }
 
@@ -115,7 +114,7 @@
         .btn-premium-secondary {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(8px);
-            color: #0E3247;
+            color: #051F20;
             border: 1px solid #E2E8F0;
             border-radius: 12px;
             padding: 10px 22px;
@@ -131,7 +130,7 @@
         .btn-premium-secondary:hover {
             background: #ffffff;
             border-color: #CBD5E1;
-            box-shadow: 0 4px 12px rgba(14, 50, 71, 0.05);
+            box-shadow: 0 4px 12px rgba(5, 31, 32, 0.05);
             transform: translateY(-1px);
         }
 
@@ -207,6 +206,31 @@
             background: #ffffff;
         }
 
+        /* ── Premium Table for Customer ── */
+        .premium-table-cust th {
+            background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);
+            color: #E2E8F0;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(5, 31, 32, 0.3);
+        }
+        .premium-table-cust td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 13px;
+            color: #334155;
+            vertical-align: middle;
+        }
+        .premium-table-cust tr:hover td {
+            background: rgba(204, 235, 206, 0.5);
+        }
+        .premium-table-cust tr:last-child td {
+            border-bottom: none;
+        }
+
         /* ── Animated Scrollbar ── */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -221,9 +245,40 @@
         .fade-in {
             animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* ── Modern Modal Animations ── */
+        @keyframes modalFadeIn {
+            from { opacity: 0; background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); }
+            to { opacity: 1; background-color: rgba(0, 0, 0, 0.45); backdrop-filter: blur(4px); }
+        }
+        @keyframes modalFadeOut {
+            from { opacity: 1; background-color: rgba(0, 0, 0, 0.45); backdrop-filter: blur(4px); }
+            to { opacity: 0; background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); }
+        }
+        @keyframes modalScaleIn {
+            from { transform: scale(0.95) translateY(12px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        @keyframes modalScaleOut {
+            from { transform: scale(1) translateY(0); opacity: 1; }
+            to { transform: scale(0.95) translateY(12px); opacity: 0; }
+        }
+
+        .animate-modal-backdrop-in {
+            animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-modal-backdrop-out {
+            animation: modalFadeOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-modal-content-in {
+            animation: modalScaleIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .animate-modal-content-out {
+            animation: modalScaleOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
-<body class="bg-off-white text-text-body min-h-screen flex flex-col pt-[100px]">
+<body class="bg-white text-text-body min-h-screen flex flex-col pt-[100px] w-full overflow-x-hidden">
 
     <!-- Floating Capsule Navbar -->
     @include('partials.customer.navbar')
@@ -235,6 +290,113 @@
 
     <!-- Premium Footer -->
     @include('partials.customer.footer')
+
+    <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
+    <div id="global-page-loader"
+         style="display:none; position:fixed; inset:0; z-index:9999;
+                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
+                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+        <div style="position:relative; width:72px; height:72px;">
+            <div style="position:absolute; inset:-6px; border-radius:50%;
+                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
+            <div style="position:absolute; inset:0; border-radius:50%;
+                        border:4px solid transparent;
+                        border-top-color:#235347; border-right-color:#235347;
+                        animation:gpl-spin 0.8s linear infinite;"></div>
+            <div style="position:absolute; inset:10px; border-radius:50%;
+                        border:1.5px dashed rgba(35,83,71,0.35);
+                        animation:gpl-spin 4s linear infinite reverse;"></div>
+            <div style="position:absolute; inset:18px; border-radius:50%;
+                        background:rgba(35,83,71,0.1); display:flex;
+                        align-items:center; justify-content:center;">
+                <img src="{{ asset('images/favicon-32.png') }}" alt="" style="width:20px;height:20px;object-fit:cover;border-radius:50%;opacity:0.85;">
+            </div>
+        </div>
+        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
+                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+    </div>
+    <style>
+        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
+        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
+    </style>
+    <script>
+        (function() {
+            const loader = document.getElementById('global-page-loader');
+            function showLoader() { loader.style.display = 'flex'; }
+            function hideLoader() { loader.style.display = 'none'; }
+
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href]');
+                if (!link) return;
+                const href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript') ||
+                    href.startsWith('mailto') || href.startsWith('tel') ||
+                    link.target === '_blank' || link.hasAttribute('download')) return;
+                showLoader();
+            });
+
+            document.addEventListener('submit', function(e) {
+                if (e.defaultPrevented) return;
+                showLoader();
+            });
+
+            window.addEventListener('pageshow', hideLoader);
+            window.addEventListener('load', hideLoader);
+        })();
+
+        // Modern Centered Modal JS Engine (Customer)
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Add entrance animation classes
+            modal.classList.remove('animate-modal-backdrop-out');
+            modal.classList.add('animate-modal-backdrop-in');
+            const content = modal.querySelector('.bg-surface-container-lowest') || modal.querySelector('.modal-content') || modal.querySelector('.bg-white') || modal.firstElementChild;
+            if (content) {
+                content.classList.remove('animate-modal-content-out');
+                content.classList.add('animate-modal-content-in');
+            }
+        };
+
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            
+            modal.classList.remove('animate-modal-backdrop-in');
+            modal.classList.add('animate-modal-backdrop-out');
+            
+            const content = modal.querySelector('.bg-surface-container-lowest') || modal.querySelector('.modal-content') || modal.querySelector('.bg-white') || modal.firstElementChild;
+            if (content) {
+                content.classList.remove('animate-modal-content-in');
+                content.classList.add('animate-modal-content-out');
+            }
+            
+            function onAnimationEnd(e) {
+                if (e.animationName === 'modalFadeOut') {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modal.classList.remove('animate-modal-backdrop-out');
+                    if (content) content.classList.remove('animate-modal-content-out');
+                    modal.removeEventListener('animationend', onAnimationEnd);
+                }
+            }
+            modal.addEventListener('animationend', onAnimationEnd);
+        };
+    </script>
+    
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50
+        });
+    </script>
 
 </body>
 </html>

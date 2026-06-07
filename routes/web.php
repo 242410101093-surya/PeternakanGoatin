@@ -44,7 +44,7 @@ Route::prefix('customer')->name('customer.')->middleware('auth')->group(function
 
     // Main Features
     Route::get('/dashboard', function () {
-        $artikels = Artikel::orderBy('created_at', 'desc')->take(4)->get();
+        $artikels = Artikel::orderBy('created_at', 'desc')->get();
         return view('customer.dashboard', compact('artikels'));
     })->name('dashboard');
 

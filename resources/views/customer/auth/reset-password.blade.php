@@ -5,9 +5,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Goatin - Reset Password</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
-    <link rel="shortcut icon" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('images/favicon-64.png?v=3') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png?v=3') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16.png?v=3') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png?v=3') }}">
     <!-- Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,9 +23,9 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary-dark": "#0E3247",
-                        "accent-teal": "#2A7B94",
-                        "accent-teal-dark": "#1F5E72",
+                        "primary-dark": "#051F20",
+                        "accent-teal": "#235347",
+                        "accent-teal-dark": "#163832",
                     },
                     fontFamily: {
                         "sans": ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -36,27 +37,39 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #020617;
+            background-color: #051F20;
             overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* ── Soft Teal Capsule Inputs ── */
+        /* ── Soft Blue Capsule Inputs ── */
         .capsule-input-container {
-            background-color: rgba(224, 247, 250, 0.45) !important;
+            background-color: #F0F6FA !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
         .capsule-input-container:focus-within {
-            background-color: rgba(178, 235, 242, 0.6) !important;
-            box-shadow: 0 0 0 2px rgba(42, 123, 148, 0.15) !important;
+            background-color: #E6F0F6 !important;
+            border-color: #235347 !important;
+            box-shadow: 0 0 0 3px rgba(35, 83, 71, 0.08) !important;
         }
 
         /* ── Keyframe Animations ── */
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(1.01); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes containerEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-        .animate-fade-scale {
-            animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .animate-container {
+            animation: containerEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -66,32 +79,46 @@
     <div class="absolute inset-0 bg-cover bg-center select-none z-0"
          style="background-image: url('{{ asset('images/background_goats.png') }}'); filter: blur(24px) brightness(0.45); transform: scale(1.05);"></div>
 
-    {{-- ── PORTAL LOADER (Cinematic Teal Entrance overlay) ── --}}
-    <div id="portal-loader" class="fixed inset-0 z-55 hidden flex-col items-center justify-center bg-slate-950/95 backdrop-blur-lg">
-        <div class="relative w-28 h-28 mb-8">
-            <div class="absolute inset-0 rounded-full border-4 border-teal-500/10 scale-110"></div>
-            <div class="absolute inset-0 rounded-full border-4 border-t-teal-500 border-r-teal-500 border-transparent animate-spin"></div>
-            <div class="absolute inset-3 rounded-full border border-dashed border-teal-500/30 animate-pulse"></div>
-            <div class="absolute inset-6 rounded-full bg-teal-500/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-teal-400 text-2xl animate-pulse">lock_open</span>
+    <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
+    <div id="global-page-loader"
+         style="display:none; position:fixed; inset:0; z-index:9999;
+                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
+                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+        <div style="position:relative; width:72px; height:72px;">
+            <div style="position:absolute; inset:-6px; border-radius:50%;
+                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
+            <div style="position:absolute; inset:0; border-radius:50%;
+                        border:4px solid transparent;
+                        border-top-color:#235347; border-right-color:#235347;
+                        animation:gpl-spin 0.8s linear infinite;"></div>
+            <div style="position:absolute; inset:10px; border-radius:50%;
+                        border:1.5px dashed rgba(35,83,71,0.35);
+                        animation:gpl-spin 4s linear infinite reverse;"></div>
+            <div style="position:absolute; inset:18px; border-radius:50%;
+                        background:rgba(35,83,71,0.1); display:flex;
+                        align-items:center; justify-content:center;">
+                <img src="{{ asset('images/favicon-32.png?v=3') }}" alt="" style="width:20px;height:20px;object-fit:contain;opacity:0.85;">
             </div>
         </div>
-        <p id="loader-message" class="text-xs font-bold tracking-[0.25em] text-teal-400 uppercase animate-pulse">
-            Memverifikasi Kode...
-        </p>
+        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
+                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
     </div>
+    <style>
+        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
+        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
+    </style>
 
     {{-- ── Centered Card: Premium White Floating Capsule ── --}}
-    <div class="relative z-10 w-full max-w-md bg-white p-8 sm:p-10 rounded-[32px] shadow-2xl border border-white/10 flex flex-col justify-between animate-fade-scale">
+    <div class="relative z-10 w-full max-w-md bg-white p-8 sm:p-10 rounded-[32px] shadow-2xl border border-white/10 flex flex-col justify-between animate-container">
         
         {{-- Logo Header --}}
         <div class="flex items-center justify-center mb-5">
-            <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-16 w-auto">
+            <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-12 w-auto">
         </div>
 
         {{-- Form Title & Info Text --}}
         <div class="text-center mb-5 space-y-1.5">
-            <h1 class="text-2xl font-black tracking-tight" style="color:#0E3247; letter-spacing:-0.03em;">RESET PASSWORD</h1>
+            <h1 class="text-2xl font-black tracking-tight text-[#051F20]" style="letter-spacing:-0.03em;">RESET PASSWORD</h1>
             <p class="text-xs text-slate-500 font-medium leading-relaxed">Masukkan kode verifikasi dan password baru untuk akun Anda.</p>
         </div>
 
@@ -115,8 +142,8 @@
             @csrf
             
             {{-- Email (Read-only Capsule) --}}
-            <div class="space-y-1">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" for="email">
+            <div class="space-y-1.5">
+                <label class="block text-[9.5px] font-extrabold text-slate-400 uppercase tracking-widest pl-1" for="email">
                     Alamat Email
                 </label>
                 <div class="flex items-center rounded-full px-5 py-2.5 gap-3 border border-slate-100 bg-slate-50 cursor-not-allowed">
@@ -130,15 +157,15 @@
             </div>
 
             {{-- Verification Code --}}
-            <div class="space-y-1">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" for="code">
+            <div class="space-y-1.5">
+                <label class="block text-[9.5px] font-extrabold text-slate-400 uppercase tracking-widest pl-1" for="code">
                     Kode Verifikasi (6 Digit)
                 </label>
                 <div class="flex items-center capsule-input-container rounded-full px-5 py-2.5 gap-3 border border-transparent">
-                    <span class="material-symbols-outlined text-[20px] text-accent-teal">pin</span>
-                    <input type="text" name="code" id="code" required maxlength="6" autocomplete="off"
-                           class="bg-transparent border-none p-0 text-sm w-full text-primary-dark placeholder-slate-300 focus:ring-0 focus:outline-none" 
-                           placeholder="Masukkan 6 digit kode">
+                    <span class="material-symbols-outlined text-[20px] text-[#235347]">key</span>
+                    <input type="text" name="code" id="code" required maxlength="6" pattern="\d{6}"
+                           class="bg-transparent border-none p-0 text-sm w-full text-slate-800 placeholder-slate-300 focus:ring-0 focus:outline-none tracking-[0.2em] font-bold" 
+                           placeholder="123456">
                 </div>
                 @error('code')
                     <p class="mt-1 text-[11px] text-red-500 font-semibold pl-1">{{ $message }}</p>
@@ -146,14 +173,14 @@
             </div>
 
             {{-- New Password --}}
-            <div class="space-y-1">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" for="password">
+            <div class="space-y-1.5">
+                <label class="block text-[9.5px] font-extrabold text-slate-400 uppercase tracking-widest pl-1" for="password">
                     Password Baru
                 </label>
                 <div class="flex items-center capsule-input-container rounded-full px-5 py-2.5 gap-3 border border-transparent">
-                    <span class="material-symbols-outlined text-[20px] text-accent-teal">lock</span>
+                    <span class="material-symbols-outlined text-[20px] text-[#235347]">lock</span>
                     <input type="password" name="password" id="password" required autocomplete="new-password"
-                           class="bg-transparent border-none p-0 text-sm w-full text-primary-dark placeholder-slate-300 focus:ring-0 focus:outline-none" 
+                           class="bg-transparent border-none p-0 text-sm w-full text-slate-800 placeholder-slate-300 focus:ring-0 focus:outline-none" 
                            placeholder="Minimal 8 karakter">
                 </div>
                 @error('password')
@@ -162,63 +189,61 @@
             </div>
 
             {{-- Confirm Password --}}
-            <div class="space-y-1">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" for="password_confirmation">
+            <div class="space-y-1.5">
+                <label class="block text-[9.5px] font-extrabold text-slate-400 uppercase tracking-widest pl-1" for="password_confirmation">
                     Konfirmasi Password Baru
                 </label>
                 <div class="flex items-center capsule-input-container rounded-full px-5 py-2.5 gap-3 border border-transparent">
-                    <span class="material-symbols-outlined text-[20px] text-accent-teal">lock_reset</span>
+                    <span class="material-symbols-outlined text-[20px] text-[#235347]">lock_reset</span>
                     <input type="password" name="password_confirmation" id="password_confirmation" required autocomplete="new-password"
-                           class="bg-transparent border-none p-0 text-sm w-full text-primary-dark placeholder-slate-300 focus:ring-0 focus:outline-none" 
+                           class="bg-transparent border-none p-0 text-sm w-full text-slate-800 placeholder-slate-300 focus:ring-0 focus:outline-none" 
                            placeholder="Ulangi kata sandi baru">
                 </div>
             </div>
 
             {{-- Submit Button --}}
             <div class="pt-2">
-                <button type="submit" class="w-full flex justify-center items-center gap-2 py-3 px-6 rounded-full text-xs font-extrabold text-white uppercase tracking-wider transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer"
-                        style="background: linear-gradient(135deg, #2A7B94 0%, #1F5E72 100%);">
-                    Reset Password
-                    <span class="material-symbols-outlined text-sm">check</span>
+                <button type="submit" class="w-full flex justify-center items-center gap-2 py-3.5 px-6 rounded-full text-xs font-extrabold text-white uppercase tracking-widest transition-all duration-300 bg-[#235347] hover:bg-[#163832] shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer group">
+                    <span>Reset Password</span>
+                    <span class="material-symbols-outlined text-sm transition-transform duration-200 group-hover:translate-x-1">check</span>
                 </button>
             </div>
         </form>
 
         {{-- Back Navigation Link --}}
         <div class="mt-6 pt-4 border-t border-slate-100 text-center">
-            <a href="{{ route('login') }}" class="text-xs text-accent-teal hover:text-accent-teal-dark font-extrabold transition-colors inline-flex items-center gap-1">
+            <a href="{{ route('login') }}" class="text-xs text-[#235347] hover:text-[#163832] font-extrabold transition-colors inline-flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
-                Kembali ke Halaman Login
+                <span>Kembali ke Halaman Login</span>
             </a>
         </div>
 
     </div>
 
     <script>
-        document.getElementById('reset-password-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const loader = document.getElementById('portal-loader');
-            const message = document.getElementById('loader-message');
+        (function() {
+            const loader = document.getElementById('global-page-loader');
+            function showLoader() { loader.style.display = 'flex'; }
+            function hideLoader() { loader.style.display = 'none'; }
 
-            // Display loading overlay
-            loader.classList.remove('hidden');
-            loader.classList.add('flex');
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href]');
+                if (!link) return;
+                const href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript') ||
+                    href.startsWith('mailto') || href.startsWith('tel') ||
+                    link.target === '_blank' || link.hasAttribute('download')) return;
+                showLoader();
+            });
 
-            // Dynamic stages of auth loading
-            setTimeout(() => {
-                message.textContent = "Mengajukan Reset Sandi...";
-            }, 600);
+            document.getElementById('reset-password-form').addEventListener('submit', function(e) {
+                showLoader();
+            });
 
-            setTimeout(() => {
-                message.textContent = "Menerapkan Sandi Baru Anda...";
-            }, 1300);
-
-            // Complete simulation before actual submit
-            setTimeout(() => {
-                e.target.submit();
-            }, 2100);
-        });
+            window.addEventListener('pageshow', function() {
+                hideLoader();
+            });
+        })();
     </script>
 </body>
 </html>

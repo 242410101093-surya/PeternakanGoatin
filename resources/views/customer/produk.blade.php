@@ -6,13 +6,13 @@
 <main class="max-w-[1200px] mx-auto px-6 py-8 space-y-10">
 
     {{-- ── Page Header ── --}}
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-slate-100">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-slate-100" data-aos="fade-down">
         <div>
             <div class="flex items-center gap-2 mb-1.5">
                 <span class="w-2.5 h-2.5 rounded-full" style="background:#2A7844;"></span>
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Etalase Ternak Pilihan</span>
             </div>
-            <h1 class="text-3xl font-extrabold tracking-tight" style="color:#0E3247; letter-spacing:-0.02em;">Katalog Ternak Unggulan</h1>
+            <h1 class="text-3xl font-extrabold tracking-tight" style="color:#051F20; letter-spacing:-0.02em;">Katalog Ternak Unggulan</h1>
             <p class="text-sm mt-1" style="color:#64748B;">Temukan bibit kambing & domba unggul dengan kualitas genetik prima dan rekam medis terjamin.</p>
         </div>
 
@@ -26,9 +26,9 @@
 
     {{-- ── Elegant Sliding Filter Drawer ── --}}
     <div id="filterPanel" class="hidden transition-all duration-300 ease-in-out p-6 rounded-2xl border"
-         style="background:rgba(255, 255, 255, 0.9); border-color: rgba(226, 232, 240, 0.8); shadow: 0 10px 30px rgba(14, 50, 71, 0.04);">
+         style="background:rgba(255, 255, 255, 0.9); border-color: rgba(226, 232, 240, 0.8); shadow: 0 10px 30px rgba(5, 31, 32, 0.04);">
         <div class="flex items-center justify-between mb-5">
-            <h2 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2" style="color:#0E3247;">
+            <h2 class="text-sm font-bold uppercase tracking-wider flex items-center gap-2" style="color:#051F20;">
                 <span class="material-symbols-outlined text-emerald-600" style="font-size:18px;">manage_search</span>
                 Sesuaikan Kriteria Ternak
             </h2>
@@ -86,11 +86,11 @@
     {{-- ── Products Card Grid ── --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @forelse($produks as $produk)
-        <div class="group flex flex-col glass-card overflow-hidden">
+        <div class="group flex flex-col glass-card overflow-hidden" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
             
             {{-- Header Image / Stylized Vector illustration if null --}}
             <div class="h-52 relative overflow-hidden shrink-0 flex items-center justify-center bg-gradient-to-br"
-                 style="background: linear-gradient(135deg, #0e3247 0%, #071f2d 100%);">
+                 style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
                 
                 @if($produk->foto)
                     <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
@@ -120,7 +120,7 @@
 
             {{-- Body Info --}}
             <div class="p-5 flex flex-col flex-grow space-y-3">
-                <h3 class="font-bold text-base leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2" style="color:#0E3247;">
+                <h3 class="font-bold text-base leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2" style="color:#051F20;">
                     {{ $produk->nama_produk }}
                 </h3>
                 <p class="text-xs leading-relaxed line-clamp-2" style="color:#64748B;">
@@ -168,9 +168,21 @@
 
         </div>
         @empty
-        <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-100 shadow-sm max-w-md mx-auto">
-            <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">storefront</span>
-            <p class="text-sm font-semibold" style="color:#0E3247;">Belum ada bibit ternak yang tersedia.</p>
+        <div class="col-span-full py-16 px-8 text-center bg-white/30 backdrop-blur-md rounded-3xl border border-emerald-800/10 shadow-[0_8px_32px_rgba(5,31,32,0.02)] max-w-md mx-auto relative overflow-hidden group transition-all duration-300 hover:border-emerald-600/20 hover:shadow-[0_12px_40px_rgba(5,31,32,0.05)]" data-aos="zoom-in">
+            <!-- Glowing background effects -->
+            <div class="absolute -top-10 -left-10 w-24 h-24 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -right-10 w-24 h-24 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
+
+            <!-- Floating Icon Container -->
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-emerald-600/10 border border-emerald-600/20 shadow-[0_8px_16px_rgba(42,120,68,0.04)] relative transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600/15">
+                <span class="material-symbols-outlined text-3xl text-emerald-800">storefront</span>
+            </div>
+            
+            <!-- Content -->
+            <h3 class="font-bold text-base mb-1.5" style="color:#051F20;">Belum Ada Bibit Ternak</h3>
+            <p class="text-xs max-w-xs mx-auto leading-relaxed" style="color:#64748B;">
+                Bibit ternak berkualitas tinggi akan segera tersedia untuk dibeli. Silakan periksa kembali nanti.
+            </p>
         </div>
         @endforelse
     </div>
@@ -181,17 +193,21 @@
     </div>
 
     {{-- ── PREMIUM MODAL: Detail Ternak & Rekam Medis ── --}}
-    <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 p-4 backdrop-blur-md">
-        <div class="w-full max-w-3xl rounded-[24px] bg-white shadow-2xl overflow-hidden border border-slate-100 max-h-[85vh] flex flex-col">
+    <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+         style="background-color: rgba(0,0,0,0.45); backdrop-filter: blur(8px);">
+        <div class="w-full max-w-3xl rounded-[28px] bg-white shadow-2xl overflow-hidden border border-slate-100 max-h-[88vh] flex flex-col relative">
             
+            {{-- Top accent bar --}}
+            <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #2A7844 0%, #8EB69B 50%, #2A7844 100%);"></div>
+
             {{-- Modal Header --}}
-            <div class="p-6 border-b border-slate-100 flex items-start justify-between gap-4 sticky top-0 bg-white z-10">
+            <div class="p-6 pt-7 border-b border-slate-100 flex items-start justify-between gap-4 sticky top-0 bg-white z-10">
                 <div>
                     <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Detail Spesifikasi Ternak</span>
                     <h2 id="modalProductName" class="text-xl font-extrabold text-slate-800 leading-tight"></h2>
                 </div>
-                <button type="button" id="closeProductModal" class="p-1 rounded-lg hover:bg-slate-100 transition-colors">
-                    <span class="material-symbols-outlined" style="color:#64748B;">close</span>
+                <button type="button" id="closeProductModal" class="p-1.5 rounded-xl hover:bg-slate-100 transition-colors shrink-0">
+                    <span class="material-symbols-outlined" style="color:#94A3B8; font-size:20px;">close</span>
                 </button>
             </div>
 
@@ -306,22 +322,22 @@
 
             const sorted = [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
-            let html = `<div class="overflow-x-auto"><table class="w-full text-left text-xs">
-                <thead><tr class="border-b border-slate-100">
-                    <th class="pb-2 pr-4 font-bold text-slate-400 uppercase text-[10px]">Tanggal</th>
-                    <th class="pb-2 pr-4 font-bold text-slate-400 uppercase text-[10px]">Dokter</th>
-                    <th class="pb-2 pr-4 font-bold text-slate-400 uppercase text-[10px]">Diagnosa</th>
-                    <th class="pb-2 pr-4 font-bold text-slate-400 uppercase text-[10px]">Tindakan</th>
-                    <th class="pb-2 font-bold text-slate-400 uppercase text-[10px]">Status</th>
+            let html = `<div class="overflow-x-auto rounded-lg border border-slate-100"><table class="w-full text-left text-xs border-collapse">
+                <thead><tr style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
+                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Tanggal</th>
+                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Dokter</th>
+                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Diagnosa</th>
+                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Tindakan</th>
+                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Status</th>
                 </tr></thead><tbody>`;
 
             sorted.forEach(rm => {
                 html += `<tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
-                    <td class="py-2.5 pr-4 text-slate-800 whitespace-nowrap font-semibold">${formatDate(rm.tanggal)}</td>
-                    <td class="py-2.5 pr-4 text-slate-600 font-medium">${rm.dokter_hewan || '-'}</td>
-                    <td class="py-2.5 pr-4 text-slate-600 font-medium">${rm.diagnosa || '-'}</td>
-                    <td class="py-2.5 pr-4 text-slate-600 font-medium">${rm.tindakan || '-'}</td>
-                    <td class="py-2.5">${getStatusBadge(rm.status)}</td>
+                    <td class="px-4 py-2.5 text-slate-800 whitespace-nowrap font-semibold">${formatDate(rm.tanggal)}</td>
+                    <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.dokter_hewan || '-'}</td>
+                    <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.diagnosa || '-'}</td>
+                    <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.tindakan || '-'}</td>
+                    <td class="px-4 py-2.5">${getStatusBadge(rm.status)}</td>
                 </tr>`;
             });
 
@@ -355,13 +371,11 @@
             );
             buyButton.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            window.openModal('productModal');
         }
 
         function closeModal() {
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
+            window.closeModal('productModal');
             activeProductId = null;
         }
 

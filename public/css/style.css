@@ -1,11 +1,11 @@
 :root {
-    --primary-green: #1E4E2F;
-    --secondary-green: #5F984D;
+    --primary-green: #0B2B26;
+    --secondary-green: #235347;
     --brown: #D89E2A;
     --light-brown: #F6E0A7;
-    --off-white: #F8F7ED;
+    --off-white: #DAF1DE;
     --white: #FFFFFF;
-    --shadow: rgba(30, 78, 47, 0.12);
+    --shadow: rgba(11, 43, 38, 0.12);
     --text-dark: #1A1C1A;
     --text-light: #5F6C60;
 }
@@ -304,7 +304,7 @@ tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+    background: linear-gradient(135deg, #051F20 0%, #163832 100%);
     padding: 1rem;
 }
 

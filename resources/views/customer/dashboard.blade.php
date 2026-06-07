@@ -11,12 +11,13 @@
 
     {{-- ── Hero Banner Section ── --}}
     <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-slate-700/30 shadow-2xl"
-             style="background: linear-gradient(135deg, #0A2230 0%, #0E3247 45%, #164D69 85%, #2A7B94 100%);">
+             style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 45%, #163832 85%, #235347 100%);"
+             data-aos="fade-down">
         
         {{-- Futuristic background glows --}}
-        <div class="absolute right-0 top-0 w-[450px] h-[450px] rounded-full filter blur-[100px] opacity-35 pointer-events-none" style="background: radial-gradient(circle, #2A7B94 0%, transparent 70%);"></div>
+        <div class="absolute right-0 top-0 w-[450px] h-[450px] rounded-full filter blur-[100px] opacity-35 pointer-events-none" style="background: radial-gradient(circle, #235347 0%, transparent 70%);"></div>
         <div class="absolute left-[-10%] bottom-[-20%] w-[350px] h-[350px] rounded-full filter blur-[80px] opacity-25 pointer-events-none" style="background: radial-gradient(circle, #2A7844 0%, transparent 70%);"></div>
-        <div class="absolute right-[20%] bottom-[-30%] w-[300px] h-[300px] rounded-full filter blur-[100px] opacity-20 pointer-events-none" style="background: radial-gradient(circle, #3b82f6 0%, transparent 70%);"></div>
+        <div class="absolute right-[20%] bottom-[-30%] w-[300px] h-[300px] rounded-full filter blur-[100px] opacity-20 pointer-events-none" style="background: radial-gradient(circle, #8EB69B 0%, transparent 70%);"></div>
         
         {{-- Abstract Grid Overlay --}}
         <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] opacity-30 pointer-events-none"></div>
@@ -24,12 +25,12 @@
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div class="lg:col-span-8 space-y-4">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase animate-pulse"
-                     style="background: rgba(42, 123, 148, 0.15); border: 1px solid rgba(42, 123, 148, 0.3); backdrop-filter: blur(8px);">
+                     style="background: rgba(35, 83, 71, 0.15); border: 1px solid rgba(35, 83, 71, 0.3); backdrop-filter: blur(8px);">
                     <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8EB69B] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#8EB69B]"></span>
                     </span>
-                    <span class="text-teal-300">Wawasan & Riset Peternakan</span>
+                    <span class="text-[#8EB69B]">Wawasan & Riset Peternakan</span>
                 </div>
                 
                 <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
@@ -45,7 +46,7 @@
 
                 <div class="flex flex-wrap gap-4 pt-2">
                     <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
-                        <span class="material-symbols-outlined text-teal-400" style="font-size: 20px;">science</span>
+                        <span class="material-symbols-outlined text-[#8EB69B]" style="font-size: 20px;">science</span>
                         <div class="text-left">
                             <p class="text-[10px] text-slate-300 font-medium">Riset Ilmiah</p>
                             <p class="text-xs font-bold text-white">Teruji & Praktis</p>
@@ -71,14 +72,14 @@
                          style="background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         
                         <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                            <span class="text-[10px] font-bold text-teal-300 uppercase tracking-widest">Goatin Intelligence</span>
+                            <span class="text-[10px] font-bold text-[#8EB69B] uppercase tracking-widest">Goatin Intelligence</span>
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         </div>
 
                         <div class="space-y-4">
                             <!-- Item 1 -->
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-teal-300 bg-teal-500/10 border border-teal-500/20">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
                                     <span class="material-symbols-outlined" style="font-size: 16px;">library_books</span>
                                 </div>
                                 <div>
@@ -100,7 +101,7 @@
 
                             <!-- Item 3 -->
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-blue-300 bg-blue-500/10 border border-blue-500/20">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
                                     <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
                                 </div>
                                 <div>
@@ -121,7 +122,7 @@
 
     {{-- ── Featured Article Section ── --}}
     @if($featured)
-    <section class="space-y-6">
+    <section class="space-y-6" data-aos="fade-up">
         <div class="flex items-center gap-2">
             <div class="w-1.5 h-5 rounded-full" style="background:#2A7844;"></div>
             <h2 class="text-xs font-bold uppercase tracking-wider" style="color:#64748B;">Sorotan Utama Hari Ini</h2>
@@ -130,7 +131,7 @@
         <a href="{{ route('customer.artikel.show', $featured) }}" 
            class="group block relative rounded-[20px] overflow-hidden shadow-md transition-all duration-300"
            style="height: 380px; border: 1px solid rgba(226, 232, 240, 0.8);"
-           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(14, 50, 71, 0.08)';"
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(5, 31, 32, 0.08)';"
            onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.02)';">
             
             {{-- Background Featured Image --}}
@@ -171,7 +172,7 @@
 
     {{-- ── Other Articles Grid ── --}}
     @if($otherArticles->isNotEmpty())
-    <section class="space-y-6">
+    <section class="space-y-6" data-aos="fade-up" data-aos-delay="100">
         <div class="flex items-center gap-2">
             <div class="w-1.5 h-5 rounded-full" style="background:#2A7844;"></div>
             <h2 class="text-xs font-bold uppercase tracking-wider" style="color:#64748B;">Artikel Perawatan Lainnya</h2>
@@ -201,7 +202,7 @@
                     <span class="text-[10px] font-semibold" style="color:#94A3B8;">
                         Dipublikasikan {{ $artikel->created_at->diffForHumans() }}
                     </span>
-                    <h3 class="font-bold text-base leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2" style="color:#0E3247;">
+                    <h3 class="font-bold text-base leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2" style="color:#051F20;">
                         {{ $artikel->judul }}
                     </h3>
                     <p class="text-xs leading-relaxed line-clamp-3" style="color:#64748B;">
@@ -224,13 +225,20 @@
 
     {{-- ── Empty State ── --}}
     @if(!$featured && $otherArticles->isEmpty())
-    <section class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm max-w-xl mx-auto">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:#f0faf3;">
-            <span class="material-symbols-outlined text-3xl" style="color:#2A7844;">article</span>
+    <section class="text-center py-16 px-8 bg-white/30 backdrop-blur-md rounded-3xl border border-emerald-800/10 shadow-[0_8px_32px_rgba(5,31,32,0.02)] max-w-xl mx-auto relative overflow-hidden group transition-all duration-300 hover:border-emerald-600/20 hover:shadow-[0_12px_40px_rgba(5,31,32,0.05)]" data-aos="zoom-in">
+        <!-- Glowing background effects -->
+        <div class="absolute -top-10 -left-10 w-32 h-32 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- Floating Icon Container -->
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-emerald-600/10 border border-emerald-600/20 shadow-[0_8px_16px_rgba(42,120,68,0.04)] relative transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600/15">
+            <span class="material-symbols-outlined text-3xl text-emerald-800">article</span>
         </div>
-        <h3 class="font-bold text-lg mb-1" style="color:#0E3247;">Belum Ada Panduan Perawatan</h3>
-        <p class="text-xs max-w-sm mx-auto" style="color:#94A3B8;">
-            Artikel dan tips kesehatan ternak akan segera diunggah oleh admin kami. Kembali lagi nanti.
+        
+        <!-- Typography -->
+        <h3 class="font-bold text-base mb-1.5" style="color:#051F20;">Belum Ada Panduan Perawatan</h3>
+        <p class="text-xs max-w-sm mx-auto leading-relaxed" style="color:#64748B;">
+            Artikel dan tips kesehatan ternak akan segera diunggah oleh admin kami. Kembali lagi nanti untuk informasi terbaru.
         </p>
     </section>
     @endif

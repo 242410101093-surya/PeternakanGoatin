@@ -6,13 +6,13 @@
 <main class="max-w-[1200px] mx-auto px-6 py-10 space-y-12">
 
     {{-- ── Header Section ── --}}
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-slate-100">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-slate-100" data-aos="fade-down">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-2.5 h-2.5 rounded-full" style="background:#2A7844;"></span>
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Pelacakan Ternak Anda</span>
             </div>
-            <h1 class="text-3xl font-extrabold tracking-tight" style="color:#0E3247; letter-spacing:-0.02em;">Monitoring & Pengiriman</h1>
+            <h1 class="text-3xl font-extrabold tracking-tight" style="color:#051F20; letter-spacing:-0.02em;">Monitoring & Pengiriman</h1>
             <p class="text-sm mt-1" style="color:#64748B;">Pantau status kesehatan, persiapan kandang, dan tahapan pengiriman pesanan ternak aktif Anda.</p>
         </div>
     </header>
@@ -20,7 +20,7 @@
     {{-- ── Active Monitoring Tracker ── --}}
     <div class="space-y-8">
         @forelse($pesanans as $pesanan)
-        <div class="glass-card p-6 md:p-8 space-y-6">
+        <div class="glass-card p-6 md:p-8 space-y-6" data-aos="fade-right" data-aos-delay="{{ $loop->index * 100 }}">
             
             {{-- Top Info Row --}}
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
@@ -118,7 +118,7 @@
             {{-- Animal Detail Drawer --}}
             @if($pesanan->produk && $pesanan->produk->inventaris)
             <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-medium text-slate-600">
-                <span class="flex items-center gap-1.5 font-bold" style="color:#0E3247;">
+                <span class="flex items-center gap-1.5 font-bold" style="color:#051F20;">
                     <span class="material-symbols-outlined text-emerald-600" style="font-size:16px;">health_and_safety</span>
                     Spesifikasi Genetika Ternak:
                 </span>
@@ -133,12 +133,19 @@
 
         </div>
         @empty
-        <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm max-w-xl mx-auto">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:#f0faf3;">
-                <span class="material-symbols-outlined text-3xl" style="color:#2A7844;">local_shipping</span>
+        <div class="text-center py-16 px-8 bg-white/30 backdrop-blur-md rounded-3xl border border-emerald-800/10 shadow-[0_8px_32px_rgba(5,31,32,0.02)] max-w-xl mx-auto relative overflow-hidden group transition-all duration-300 hover:border-emerald-600/20 hover:shadow-[0_12px_40px_rgba(5,31,32,0.05)]" data-aos="zoom-in">
+            <!-- Glowing background effects -->
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
+
+            <!-- Floating Icon Container -->
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-emerald-600/10 border border-emerald-600/20 shadow-[0_8px_16px_rgba(42,120,68,0.04)] relative transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600/15">
+                <span class="material-symbols-outlined text-3xl text-emerald-800">local_shipping</span>
             </div>
-            <h3 class="font-bold text-lg mb-1" style="color:#0E3247;">Tidak Ada Pesanan Aktif</h3>
-            <p class="text-xs max-w-sm mx-auto" style="color:#94A3B8;">
+            
+            <!-- Content -->
+            <h3 class="font-bold text-base mb-1.5" style="color:#051F20;">Tidak Ada Pesanan Aktif</h3>
+            <p class="text-xs max-w-sm mx-auto leading-relaxed" style="color:#64748B;">
                 Pesanan ternak yang disetujui oleh admin akan otomatis tertera di sini untuk dipantau proses kesehatannya.
             </p>
         </div>
@@ -146,7 +153,7 @@
     </div>
 
     {{-- ── Order Transaction History ── --}}
-    <section class="space-y-6 pt-4">
+    <section class="space-y-6 pt-4" data-aos="fade-up">
         <div class="flex items-center gap-2">
             <div class="w-1.5 h-5 rounded-full" style="background:#2A7844;"></div>
             <h2 class="text-xs font-bold uppercase tracking-wider" style="color:#64748B;">Arsip Riwayat Pembelian</h2>
@@ -154,14 +161,14 @@
 
         <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left border-collapse premium-table-cust">
                     <thead>
-                        <tr class="bg-slate-50 border-b border-slate-100">
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Order ID</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Nama Ternak</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Tanggal Transaksi</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Total Harga</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Status Pembelian</th>
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-200">Order ID</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-200">Nama Ternak</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-200">Tanggal Transaksi</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-200">Total Harga</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-200">Status Pembelian</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">

@@ -15,7 +15,7 @@ class ProdukController extends Controller
         $query = Produk::with(['inventaris.rekamMedis'])
             ->whereHas('inventaris', function ($q) use ($allowedSpecies) {
                 $q->whereIn('jenis', $allowedSpecies)
-                  ->where('status_stok', 'Dijual');
+                  ->where('status_stok', 'Tersedia');
             });
 
         // Filter by jenis
@@ -94,6 +94,12 @@ class ProdukController extends Controller
             'harga_jual' => $produk->harga,
             'status' => 'Pending',
         ]);
+
+        // Update status_stok to Terbooking
+        if ($produk->inventaris) {
+            $produk->inventaris->status_stok = 'Terbooking';
+            $produk->inventaris->save();
+        }
 
         return response()->json(['status' => 'success']);
     }

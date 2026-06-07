@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('umur'); // in months
             $table->decimal('berat', 8, 2); // in kg
             $table->text('rekam_medis_general')->nullable();
-            $table->enum('status_stok', ['Tersedia', 'Dijual', 'Terjual', 'Dalam Perawatan'])->default('Tersedia');
+            $table->enum('status_stok', ['Tersedia', 'Terbooking', 'Terjual', 'Dalam Perawatan'])->default('Tersedia');
             $table->timestamps();
         });
     }

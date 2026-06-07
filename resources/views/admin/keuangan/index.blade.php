@@ -191,7 +191,7 @@
                                 <button onclick="openEditKeuanganModal({{ $laporan }})" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
                                     <span class="material-symbols-outlined text-sm">edit</span>
                                 </button>
-                                <form action="{{ route('admin.keuangan.destroy', $laporan->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus transaksi ini?');">
+                                <form action="{{ route('admin.keuangan.destroy', $laporan->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus transaksi '{{ $laporan->keterangan }}'? Tindakan ini tidak bisa dibatalkan.">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error rounded">

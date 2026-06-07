@@ -83,7 +83,8 @@ class RekamMedisController extends Controller
             'status' => 'required|string|max:255',
         ]);
 
-        RekamMedis::create($request->all());
+        $rekam = RekamMedis::create($request->all());
+        $this->syncInventarisStatus($rekam->inventaris_id);
 
         return redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam Medis berhasil ditambahkan.');
     }
@@ -118,13 +119,43 @@ class RekamMedisController extends Controller
 
         $rekam = RekamMedis::findOrFail($id);
         $rekam->update($request->except(['inventaris_id']));
+        $this->syncInventarisStatus($rekam->inventaris_id);
 
         return redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam Medis berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        RekamMedis::findOrFail($id)->delete();
+        $rekam = RekamMedis::findOrFail($id);
+        $inventarisId = $rekam->inventaris_id;
+        $rekam->delete();
+        $this->syncInventarisStatus($inventarisId);
+
         return redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam Medis berhasil dihapus.');
+    }
+
+    private function syncInventarisStatus($inventarisId)
+    {
+        $inventaris = Inventaris::find($inventarisId);
+        if (!$inventaris) return;
+
+        // Get the latest rekam medis by date/time
+        $latestRekam = RekamMedis::where('inventaris_id', $inventarisId)
+                                 ->orderBy('tanggal', 'desc')
+                                 ->orderBy('id', 'desc')
+                                 ->first();
+
+        if ($latestRekam) {
+            $statusLower = strtolower($latestRekam->status);
+            if (str_contains($statusLower, 'pemulihan') || str_contains($statusLower, 'perawatan') || str_contains($statusLower, 'sakit') || str_contains($statusLower, 'flu')) {
+                $inventaris->status_stok = 'Dalam Perawatan';
+                $inventaris->save();
+            } else if ($statusLower === 'sehat') {
+                if ($inventaris->status_stok === 'Dalam Perawatan') {
+                    $inventaris->status_stok = 'Tersedia';
+                    $inventaris->save();
+                }
+            }
+        }
     }
 }

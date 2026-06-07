@@ -15,7 +15,7 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Overview of livestock health checks, vaccinations, and growth monitoring.</p>
         </div>
         <div class="flex gap-3">
-            <a href="{{ route('admin.rekam-medis.export-pdf') }}" class="bg-primary text-on-primary flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity shadow-ambient">
+            <a href="{{ route('admin.rekam-medis.export-pdf') }}" download class="bg-primary text-on-primary flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">download</span>
                 Export Report
             </a>
@@ -101,7 +101,7 @@
                                 <button onclick="openEditRekamModal({{ $rekam }})" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
                                     <span class="material-symbols-outlined text-sm">edit</span>
                                 </button>
-                                <form action="{{ route('admin.rekam-medis.destroy', $rekam->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                <form action="{{ route('admin.rekam-medis.destroy', $rekam->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus data rekam medis ini? Tindakan ini tidak bisa dibatalkan.">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error rounded">

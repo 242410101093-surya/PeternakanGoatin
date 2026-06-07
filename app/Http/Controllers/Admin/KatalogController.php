@@ -63,7 +63,7 @@ class KatalogController extends Controller
         })->count();
         $activeListings = Produk::whereHas('inventaris', function($q) use ($allowedSpecies) {
             $q->whereIn('jenis', $allowedSpecies)
-              ->where('status_stok', 'Dijual');
+              ->where('status_stok', 'Terbooking');
         })->count();
         $lowStockAlerts = Inventaris::lowStockCount();
 

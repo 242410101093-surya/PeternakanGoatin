@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'name' => 'Admin Goat-In',
-                'email' => 'admin@goatin.com',
-                'password' => Hash::make('123'),
+                'email' => 'admingoatin@gmail.com',
+                'password' => Hash::make('admingoatin22'),
                 'role' => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -180,7 +180,7 @@ class DatabaseSeeder extends Seeder
                 'gender' => $randomGender,
                 'umur' => $randomUmur,
                 'berat' => $randomBerat,
-                'status_stok' => 'Dijual',
+                'status_stok' => 'Terbooking',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

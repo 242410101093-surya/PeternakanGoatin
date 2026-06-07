@@ -139,7 +139,7 @@
                         <button onclick="openEditProdukModal({{ $produk }})" class="p-1 text-on-surface-variant hover:text-primary transition-colors">
                             <span class="material-symbols-outlined text-sm">edit</span>
                         </button>
-                        <form action="{{ route('admin.katalog.destroy', $produk->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus produk dari katalog?');">
+                        <form action="{{ route('admin.katalog.destroy', $produk->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus '{{ $produk->nama_produk }}' dari katalog? Tindakan ini tidak bisa dibatalkan.">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="p-1 text-on-surface-variant hover:text-error transition-colors">

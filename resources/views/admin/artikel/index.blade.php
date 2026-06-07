@@ -85,7 +85,7 @@
                                 <button onclick="openEditArtikelModal({{ $artikel }})" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
-                                <form action="{{ route('admin.artikel.destroy', $artikel->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus artikel ini?');">
+                                <form action="{{ route('admin.artikel.destroy', $artikel->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus artikel '{{ $artikel->judul }}'? Tindakan ini tidak bisa dibatalkan.">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-on-surface-variant hover:text-error p-1 rounded transition-colors">
@@ -220,10 +220,11 @@
     }
 
     function hapusFotoArtikel() {
-        if (confirm('Yakin ingin menghapus foto artikel ini?')) {
+        const container = document.getElementById('edit_foto_preview_container');
+        openDeleteModal('Yakin ingin menghapus foto artikel ini?', () => {
             document.getElementById('edit_hapus_foto').value = "1";
-            document.getElementById('edit_foto_preview_container').classList.add('hidden');
-        }
+            container.classList.add('hidden');
+        });
     }
 </script>
 

@@ -5,9 +5,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Goatin Admin - @yield('title', 'Dashboard')</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16.png') }}">
-    <link rel="shortcut icon" href="{{ asset('images/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('images/favicon-64.png?v=3') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png?v=3') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16.png?v=3') }}">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png?v=3') }}">
     <!-- Plus Jakarta Sans Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,18 +25,18 @@
         theme: {
           extend: {
             colors: {
-              /* ── Brand Palette 2026 ── */
-              "primary-dark":    "#0E3247",
-              "primary-dark-80": "#1a4a63",
-              "primary-dark-60": "#2a6382",
-              "primary-green":   "#2A7844",
-              "primary-green-80":"#338f52",
-              "primary-green-10":"#f0faf3",
-              "off-white":       "#F8FAFC",
+              /* ── Brand Palette 2026 – Forest Green ── */
+              "primary-dark":    "#051F20",
+              "primary-dark-80": "#0B2B26",
+              "primary-dark-60": "#163832",
+              "primary-green":   "#235347",
+              "primary-green-80":"#2d6b5a",
+              "primary-green-10":"#ffffff",
+              "off-white":       "#ffffff",
               "border-subtle":   "#E2E8F0",
               "text-muted":      "#64748B",
               "text-body":       "#1E293B",
-              "text-heading":    "#0E3247",
+              "text-heading":    "#051F20",
               /* ── Status Colors ── */
               "status-green":    "#2A7844",
               "status-green-bg": "#DCFCE7",
@@ -55,7 +56,7 @@
               "tertiary-fixed":              "#fde8c1",
               "on-secondary":                "#ffffff",
               "on-secondary-fixed":          "#0d2c17",
-              "background":                  "#F8FAFC",
+              "background":                  "#ffffff",
               "secondary-fixed":             "#dff2dd",
               "surface-container-highest":   "#e8efe6",
               "on-tertiary-fixed":           "#4d2d0a",
@@ -135,9 +136,9 @@
               "caption":  ["12px", { lineHeight: "1.4", letterSpacing: "0",       fontWeight: "500" }],
             },
             boxShadow: {
-              "card":  "0 1px 3px 0 rgba(0,0,0,.06), 0 4px 16px 0 rgba(14,50,71,.07)",
-              "card-hover": "0 4px 8px 0 rgba(0,0,0,.06), 0 12px 32px 0 rgba(14,50,71,.12)",
-              "sidebar":"4px 0 32px 0 rgba(14,50,71,.18)",
+              "card":  "0 1px 3px 0 rgba(0,0,0,.06), 0 4px 16px 0 rgba(5,31,32,.07)",
+              "card-hover": "0 4px 8px 0 rgba(0,0,0,.06), 0 12px 32px 0 rgba(5,31,32,.12)",
+              "sidebar":"4px 0 32px 0 rgba(5,31,32,.18)",
               "topbar": "0 1px 0 0 #E2E8F0",
             }
           }
@@ -149,7 +150,7 @@
       *, *::before, *::after { box-sizing: border-box; }
       body {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        background-color: #F8FAFC;
+        background-color: #ffffff;
         color: #1E293B;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -168,18 +169,18 @@
         background: #ffffff;
         border: 1px solid #E2E8F0;
         border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(14,50,71,.07);
+        box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(5,31,32,.07);
         transition: box-shadow .2s ease, transform .2s ease;
       }
       .card:hover {
-        box-shadow: 0 4px 8px rgba(0,0,0,.06), 0 12px 32px rgba(14,50,71,.12);
+        box-shadow: 0 4px 8px rgba(0,0,0,.06), 0 12px 32px rgba(5,31,32,.12);
         transform: translateY(-1px);
       }
 
       /* ── Glassmorphism Sidebar ── */
       .sidebar-glass {
-        background: linear-gradient(180deg, #0E3247 0%, #0a2539 100%);
-        box-shadow: 4px 0 32px rgba(14,50,71,.25);
+        background: linear-gradient(180deg, #051F20 0%, #0B2B26 100%);
+        box-shadow: 4px 0 32px rgba(5,31,32,.25);
       }
 
       /* ── Green CTA Button ── */
@@ -206,7 +207,7 @@
 
       .btn-secondary {
         background-color: #F8FAFC;
-        color: #0E3247;
+        color: #051F20;
         border: 1px solid #E2E8F0;
         border-radius: 10px;
         padding: 8px 18px;
@@ -239,14 +240,14 @@
 
       /* ── Table ── */
       .premium-table th {
-        background: #F8FAFC;
-        color: #64748B;
+        background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);
+        color: #DAF1DE;
         font-weight: 600;
         font-size: 12px;
         letter-spacing: .05em;
         text-transform: uppercase;
         padding: 12px 16px;
-        border-bottom: 1px solid #E2E8F0;
+        border-bottom: 1px solid rgba(5, 31, 32, 0.3);
       }
       .premium-table td {
         padding: 14px 16px;
@@ -256,7 +257,7 @@
         vertical-align: middle;
       }
       .premium-table tr:hover td {
-        background: #F8FAFC;
+        background: #ccebce;
       }
       .premium-table tr:last-child td {
         border-bottom: none;
@@ -274,24 +275,251 @@
         to   { opacity:1; transform:translateY(0); }
       }
       .fade-in { animation: fadeInUp .35s ease forwards; }
+
+      /* ── Modern Modal Animations ── */
+      @keyframes modalFadeIn {
+        from { opacity: 0; background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); }
+        to { opacity: 1; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
+      }
+      @keyframes modalFadeOut {
+        from { opacity: 1; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
+        to { opacity: 0; background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); }
+      }
+      @keyframes modalScaleIn {
+        from { transform: scale(0.95) translateY(12px); opacity: 0; }
+        to { transform: scale(1) translateY(0); opacity: 1; }
+      }
+      @keyframes modalScaleOut {
+        from { transform: scale(1) translateY(0); opacity: 1; }
+        to { transform: scale(0.95) translateY(12px); opacity: 0; }
+      }
+
+      .animate-modal-backdrop-in {
+        animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .animate-modal-backdrop-out {
+        animation: modalFadeOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .animate-modal-content-in {
+        animation: modalScaleIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+      .animate-modal-content-out {
+        animation: modalScaleOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
     </style>
 </head>
-<body class="bg-off-white text-text-body min-h-screen flex">
+<body class="bg-white text-text-body min-h-screen flex relative">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden transition-all duration-300"></div>
 
     <!-- Sidebar -->
     @include('partials.admin.sidebar')
 
     <!-- Main Content Wrapper -->
-    <div class="flex-1 md:ml-64 flex flex-col min-h-screen">
+    <div class="flex-1 md:ml-64 flex flex-col min-h-screen w-full overflow-hidden">
 
         <!-- Top Navbar -->
         @include('partials.admin.navbar')
 
         <!-- Canvas / Page Content -->
-        <main class="flex-1">
+        <main class="flex-1 w-full">
             @yield('content')
         </main>
 
+    </div>
+
+    <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
+    <div id="global-page-loader"
+         style="display:none; position:fixed; inset:0; z-index:9999;
+                background:rgba(5,31,32,0.52); backdrop-filter:blur(5px);
+                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+        <div style="position:relative; width:72px; height:72px;">
+            <!-- Outer ring pulse -->
+            <div style="position:absolute; inset:-6px; border-radius:50%;
+                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
+            <!-- Spinning arc -->
+            <div style="position:absolute; inset:0; border-radius:50%;
+                        border:4px solid transparent;
+                        border-top-color:#235347; border-right-color:#235347;
+                        animation:gpl-spin 0.8s linear infinite;"></div>
+            <!-- Dashed inner ring -->
+            <div style="position:absolute; inset:10px; border-radius:50%;
+                        border:1.5px dashed rgba(35,83,71,0.35);
+                        animation:gpl-spin 4s linear infinite reverse;"></div>
+            <!-- Center goat logo -->
+            <div style="position:absolute; inset:18px; border-radius:50%;
+                        background:rgba(35,83,71,0.1); display:flex;
+                        align-items:center; justify-content:center;">
+                <img src="{{ asset('images/favicon-32.png') }}" alt="" style="width:20px;height:20px;object-fit:cover;border-radius:50%;opacity:0.85;">
+            </div>
+        </div>
+        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
+                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+    </div>
+    <style>
+        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
+        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
+    </style>
+
+    <!-- Mobile Sidebar Toggle Script -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        (function() {
+            const loader = document.getElementById('global-page-loader');
+
+            function showLoader() {
+                loader.style.display = 'flex';
+            }
+            function hideLoader() {
+                loader.style.display = 'none';
+            }
+
+            // Intercept all <a> clicks that navigate away
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href]');
+                if (!link) return;
+                const href = link.getAttribute('href');
+                // Skip anchors, javascript:, external, new-tab, and download links
+                if (!href || href.startsWith('#') || href.startsWith('javascript') ||
+                    href.startsWith('mailto') || href.startsWith('tel') ||
+                    link.target === '_blank' || link.hasAttribute('download') ||
+                    href.includes('/export-pdf') || href.includes('.pdf')) return;
+                showLoader();
+            });
+
+            // Intercept all form submissions
+            document.addEventListener('submit', function(e) {
+                const form = e.target;
+                
+                // If it is a delete form requiring confirmation
+                if (form.classList.contains('delete-form') && !form.dataset.confirmed) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const message = form.getAttribute('data-message') || 'Apakah Anda yakin ingin menghapus data ini?';
+                    window.openConfirmModal(message, function() {
+                        form.dataset.confirmed = 'true';
+                        showLoader();
+                        form.submit();
+                    });
+                    return;
+                }
+
+                if (e.defaultPrevented) return;
+                showLoader();
+            });
+
+            // Hide when page is re-shown (back/forward navigation)
+            window.addEventListener('pageshow', hideLoader);
+            window.addEventListener('load', hideLoader);
+        })();
+
+
+        // Modern Centered Modal JS Engine
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Add entrance animation classes
+            modal.classList.remove('animate-modal-backdrop-out');
+            modal.classList.add('animate-modal-backdrop-in');
+            const content = modal.querySelector('.bg-surface-container-lowest') || modal.querySelector('.modal-content') || modal.querySelector('.bg-white') || modal.firstElementChild;
+            if (content) {
+                content.classList.remove('animate-modal-content-out');
+                content.classList.add('animate-modal-content-in');
+            }
+        };
+
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            
+            modal.classList.remove('animate-modal-backdrop-in');
+            modal.classList.add('animate-modal-backdrop-out');
+            
+            const content = modal.querySelector('.bg-surface-container-lowest') || modal.querySelector('.modal-content') || modal.querySelector('.bg-white') || modal.firstElementChild;
+            if (content) {
+                content.classList.remove('animate-modal-content-in');
+                content.classList.add('animate-modal-content-out');
+            }
+            
+            function onAnimationEnd(e) {
+                if (e.animationName === 'modalFadeOut') {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modal.classList.remove('animate-modal-backdrop-out');
+                    if (content) content.classList.remove('animate-modal-content-out');
+                    modal.removeEventListener('animationend', onAnimationEnd);
+                }
+            }
+            modal.addEventListener('animationend', onAnimationEnd);
+        };
+
+        // Modern Confirmation Modal Handler
+        let currentConfirmCallback = null;
+        window.openConfirmModal = function(message, confirmCallback) {
+            document.getElementById('globalConfirmMessage').textContent = message;
+            currentConfirmCallback = confirmCallback;
+            window.openModal('globalConfirmModal');
+        };
+        window.openDeleteModal = window.openConfirmModal;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const cancelBtn = document.getElementById('globalConfirmCancelBtn');
+            const confirmBtn = document.getElementById('globalConfirmBtn');
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    window.closeModal('globalConfirmModal');
+                    currentConfirmCallback = null;
+                });
+            }
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', () => {
+                    if (currentConfirmCallback) {
+                        currentConfirmCallback();
+                    }
+                    window.closeModal('globalConfirmModal');
+                });
+            }
+        });
+    </script>
+
+    <!-- Global Modern Centered Confirmation Modal -->
+    <div id="globalConfirmModal" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-surface-container-lowest rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-surface-variant transform">
+            <div class="p-6 text-center space-y-4">
+                <!-- Icon container -->
+                <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto shadow-inner">
+                    <span class="material-symbols-outlined text-3xl font-semibold">warning</span>
+                </div>
+                <h3 class="text-xl font-bold text-on-surface">Konfirmasi Tindakan</h3>
+                <p id="globalConfirmMessage" class="text-sm text-on-surface-variant font-medium leading-relaxed">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 flex justify-end gap-3 border-t border-surface-variant">
+                <button id="globalConfirmCancelBtn" type="button" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-semibold">Batal</button>
+                <button id="globalConfirmBtn" type="button" class="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 rounded-lg transition-all shadow-sm font-semibold">Ya, Hapus</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>

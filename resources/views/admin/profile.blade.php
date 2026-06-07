@@ -11,12 +11,12 @@
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(226, 232, 240, 0.8);
         border-radius: 16px;
-        box-shadow: 0 4px 30px rgba(14, 50, 71, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+        box-shadow: 0 4px 30px rgba(5, 31, 32, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .glass-card-profile:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 40px rgba(14, 50, 71, 0.07), 0 1px 3px rgba(0, 0, 0, 0.02);
+        box-shadow: 0 10px 40px rgba(5, 31, 32, 0.07), 0 1px 3px rgba(0, 0, 0, 0.02);
         border-color: rgba(42, 120, 68, 0.2);
     }
 
@@ -115,11 +115,11 @@
                 <div class="glass-card-profile p-6 flex flex-col items-center text-center relative overflow-hidden">
                     
                     {{-- Decorative background accent --}}
-                    <div class="absolute -right-12 -top-12 w-28 h-28 rounded-full filter blur-2xl opacity-20 pointer-events-none" style="background:#0E3247;"></div>
+                    <div class="absolute -right-12 -top-12 w-28 h-28 rounded-full filter blur-2xl opacity-20 pointer-events-none" style="background:#0B2B26;"></div>
 
                     {{-- Profile Picture Frame with glowing ring --}}
                     <div class="relative w-28 h-28 rounded-full p-1 mb-4 flex items-center justify-center shadow-lg"
-                         style="background: linear-gradient(135deg, #2A7B94 0%, #0E3247 100%);">
+                         style="background: linear-gradient(135deg, #235347 0%, #051F20 100%);">
                         <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center">
                             @if(auth()->user()->foto_profil)
                                 <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
@@ -132,7 +132,7 @@
                     </div>
 
                     {{-- Basic Names --}}
-                    <h2 class="text-base font-extrabold" style="color:#0E3247;">{{ auth()->user()->name }}</h2>
+                    <h2 class="text-base font-extrabold" style="color:#051F20;">{{ auth()->user()->name }}</h2>
                     <span class="badge-premium-blue-profile py-0.5 px-3 text-[10px] mt-1.5 font-bold uppercase tracking-wider">
                         <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>
                         Administrator
@@ -169,7 +169,7 @@
                 <div class="glass-card-profile p-6 md:p-8 space-y-6">
                     
                     <div>
-                        <h3 class="text-base font-extrabold" style="color:#0E3247;">Pengaturan Profil & Akun</h3>
+                        <h3 class="text-base font-extrabold" style="color:#051F20;">Pengaturan Profil & Akun</h3>
                         <p class="text-xs text-slate-400 mt-0.5">Perbarui rincian data diri dan kata sandi akun administrator Anda.</p>
                     </div>
 

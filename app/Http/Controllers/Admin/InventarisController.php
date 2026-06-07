@@ -84,7 +84,7 @@ class InventarisController extends Controller
             'umur' => 'required|integer|min:0',
             'berat' => 'required|numeric|min:0',
             'rekam_medis_general' => 'nullable|string',
-            'status_stok' => 'required|in:Tersedia,Dijual,Terjual,Dalam Perawatan',
+            'status_stok' => 'required|in:Tersedia,Terbooking,Terjual,Dalam Perawatan',
         ]);
 
         $inventaris = Inventaris::findOrFail($id);
@@ -124,7 +124,7 @@ class InventarisController extends Controller
             'foto' => $fotoPath,
         ]);
 
-        $inventaris->update(['status_stok' => 'Dijual']);
+        $inventaris->update(['status_stok' => 'Terbooking']);
 
         return redirect()->route('admin.katalog.index')->with('success', 'Hewan berhasil dimasukkan ke katalog.');
     }

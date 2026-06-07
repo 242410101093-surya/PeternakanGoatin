@@ -33,7 +33,7 @@
     <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8">
 
         {{-- Left Column: High-End Profile Snapshot --}}
-        <div class="md:col-span-4 space-y-6">
+        <div class="md:col-span-4 space-y-6" data-aos="fade-right">
             <div class="glass-card p-6 flex flex-col items-center text-center relative overflow-hidden">
                 
                 {{-- Decorative background accent --}}
@@ -41,7 +41,7 @@
 
                 {{-- Profile Picture Frame with glowing ring --}}
                 <div class="relative w-28 h-28 rounded-full p-1 mb-4 flex items-center justify-center shadow-lg"
-                     style="background: linear-gradient(135deg, #2A7844 0%, #0E3247 100%);">
+                     style="background: linear-gradient(135deg, #2A7844 0%, #051F20 100%);">
                     <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center">
                         @if(auth()->user()->foto_profil)
                             <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
@@ -54,7 +54,7 @@
                 </div>
 
                 {{-- Basic Names --}}
-                <h2 class="text-base font-extrabold" style="color:#0E3247;">{{ auth()->user()->name }}</h2>
+                <h2 class="text-base font-extrabold" style="color:#051F20;">{{ auth()->user()->name }}</h2>
                 <span class="badge-premium-green py-0.5 px-3 text-[10px] mt-1.5 font-bold uppercase tracking-wider">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
                     Pelanggan Aktif
@@ -108,11 +108,11 @@
         </div>
 
         {{-- Right Column: Edit Profile Settings Form --}}
-        <div class="md:col-span-8">
+        <div class="md:col-span-8" data-aos="fade-left" data-aos-delay="100">
             <div class="glass-card p-6 md:p-8 space-y-6">
                 
                 <div>
-                    <h3 class="text-base font-extrabold" style="color:#0E3247;">Pengaturan Profil & Akun</h3>
+                    <h3 class="text-base font-extrabold" style="color:#051F20;">Pengaturan Profil & Akun</h3>
                     <p class="text-xs text-slate-400 mt-0.5">Perbarui rincian data diri dan kata sandi akun pelanggan Anda.</p>
                 </div>
 
@@ -192,47 +192,57 @@
 
     {{-- ── PREMIUM EMAIL VERIFICATION MODAL ── --}}
     @if(session('open_verify_modal'))
-    <div id="emailVerifyModal" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white rounded-[24px] max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-slate-100 flex flex-col space-y-6">
+    <div id="emailVerifyModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+         style="background-color: rgba(0,0,0,0.45); backdrop-filter: blur(8px);">
+        <div class="bg-white rounded-[28px] max-w-md w-full p-6 md:p-8 shadow-2xl relative overflow-hidden border border-slate-100 flex flex-col space-y-6">
             
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-emerald-600 text-2xl">verified_user</span>
-                    <h3 class="text-base font-extrabold text-slate-800">Konfirmasi Email</h3>
+            {{-- Decorative Gradient Header --}}
+            <div class="absolute top-0 left-0 right-0 h-1 rounded-t-[28px]" style="background: linear-gradient(90deg, #2A7844 0%, #8EB69B 50%, #2A7844 100%);"></div>
+
+            <div class="flex items-center justify-between pt-1">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, #2A7844, #1e5c33);">
+                        <span class="material-symbols-outlined text-white" style="font-size:18px;">verified_user</span>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-800">Konfirmasi Email</h3>
+                        <p class="text-[10px] text-slate-400 font-medium">Masukkan kode OTP Anda</p>
+                    </div>
                 </div>
-                <button onclick="document.getElementById('emailVerifyModal').classList.add('hidden')" class="p-1 rounded-lg hover:bg-slate-100 transition-colors">
-                    <span class="material-symbols-outlined" style="color:#64748B;">close</span>
+                <button onclick="closeModal('emailVerifyModal')" class="p-1.5 rounded-xl hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined" style="color:#94A3B8; font-size:20px;">close</span>
                 </button>
             </div>
 
-            <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                Kode OTP unik (6 digit) telah dikirimkan ke alamat email <strong>{{ auth()->user()->email }}</strong>. Silakan masukkan kode tersebut di bawah untuk memverifikasi akun Anda.
+            <p class="text-xs text-slate-500 leading-relaxed font-medium bg-slate-50 rounded-xl p-3 border border-slate-100">
+                <span class="material-symbols-outlined text-emerald-600 align-middle mr-1" style="font-size:14px;">mail</span>
+                Kode OTP unik (6 digit) telah dikirimkan ke <strong class="text-slate-700">{{ auth()->user()->email }}</strong>. Silakan masukkan kode untuk memverifikasi akun Anda.
             </p>
 
             <form action="{{ route('customer.profile.verify-email') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
                     <label for="verification_code" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Kode Otentikasi (6 Digit)</label>
-                    <input type="text" name="code" id="verification_code" required maxlength="6" placeholder="******" 
-                           class="w-full py-3 rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 outline-none text-center text-lg font-black tracking-[0.4em] text-slate-800 transition-all bg-slate-50">
+                    <input type="text" name="code" id="verification_code" required maxlength="6" placeholder="• • • • • •" 
+                           class="w-full py-3.5 rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 outline-none text-center text-2xl font-black tracking-[0.5em] text-slate-800 transition-all bg-slate-50">
                     @error('code')
                         <p class="text-xs text-red-600 mt-1 font-semibold">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="flex flex-col gap-2 pt-2">
+                <div class="flex flex-col gap-2 pt-1">
                     <button type="submit" class="w-full btn-premium py-3 text-xs justify-center font-bold">
                         <span class="material-symbols-outlined" style="font-size:16px;">verified</span>
                         Verifikasi Akun Saya
                     </button>
-                    <button type="button" onclick="document.getElementById('emailVerifyModal').classList.add('hidden')" 
+                    <button type="button" onclick="closeModal('emailVerifyModal')" 
                             class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all">
                         Tutup
                     </button>
                 </div>
             </form>
             
-            <div class="text-center pt-2">
+            <div class="text-center">
                 <form action="{{ route('customer.profile.send-verification') }}" method="POST">
                     @csrf
                     <p class="text-[11px] text-slate-400 font-medium">
@@ -246,6 +256,17 @@
 
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-open with animation on page load
+            setTimeout(function() { openModal('emailVerifyModal'); }, 150);
+
+            // Close on backdrop click
+            document.getElementById('emailVerifyModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal('emailVerifyModal');
+            });
+        });
+    </script>
     @endif
 
 </main>

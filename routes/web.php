@@ -65,13 +65,7 @@ Route::prefix('customer')->name('customer.')->middleware('auth')->group(function
     Route::post('/profile/verify-email', [ProfileController::class, 'verifyEmail'])->name('profile.verify-email');
     Route::post('/profile/send-password-otp', [ProfileController::class, 'sendPasswordOtp'])->name('profile.send-password-otp');
 
-    Route::get('/rekam-medis', function () {
-        $rekamMedis = [
-            ['id_ternak' => '1001', 'jenis' => 'Kambing Etawa', 'tanggal' => '2023-10-01', 'diagnosa' => 'Sehat', 'tindakan' => 'Vaksin PMK', 'status' => 'Sehat'],
-            ['id_ternak' => '1005', 'jenis' => 'Kambing Boer', 'tanggal' => '2023-10-05', 'diagnosa' => 'Flu Ringan', 'tindakan' => 'Vitamin', 'status' => 'Masa Pemulihan'],
-        ];
-        return view('customer.rekam-medis', compact('rekamMedis'));
-    })->name('rekam-medis');
+
 
     Route::get('/monitoring', function () {
         $pesanans = \App\Models\Pesanan::with('produk.inventaris.rekamMedis')

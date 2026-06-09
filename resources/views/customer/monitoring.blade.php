@@ -265,42 +265,49 @@
                         </div>
                     </div>
 
-                    {{-- Riwayat Kesehatan Section (Compact Timeline) --}}
+                    {{-- Riwayat Kesehatan Section (Compact Timeline with Expandable Accordion) --}}
                     <div class="bg-slate-50/30 p-4 rounded-xl border border-slate-100/80 space-y-3">
-                        <div class="flex items-center gap-1.5 font-bold text-xs" style="color:#051F20;">
-                            <span class="material-symbols-outlined text-emerald-600 animate-pulse" style="font-size:18px;">medical_services</span>
-                            Riwayat Medis & Kesehatan Ternak:
-                        </div>
+                        <button onclick="toggleMonitoringMedical({{ $pesanan->id }})" class="w-full flex items-center justify-between font-bold text-xs hover:text-emerald-700 transition-colors focus:outline-none" style="color:#051F20;">
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-emerald-600 animate-pulse" style="font-size:18px;">medical_services</span>
+                                Riwayat Medis & Kesehatan Ternak:
+                            </span>
+                            <span class="material-symbols-outlined text-slate-400 transition-transform duration-300" id="mon-chevron-{{ $pesanan->id }}">expand_more</span>
+                        </button>
                         
                         @php
                             $medicalRecords = $pesanan->produk->inventaris->rekamMedis()->orderBy('tanggal', 'desc')->get();
                         @endphp
 
-                        @if($medicalRecords->count() > 0)
-                            <div class="border-l-2 border-slate-200 pl-4 space-y-4 py-1 ml-2">
-                                @foreach($medicalRecords as $record)
-                                    <div class="relative">
-                                        <div class="absolute -left-[22px] top-1.5 w-2 h-2 rounded-full bg-emerald-500 border border-white"></div>
-                                        <div class="flex justify-between items-center text-[9px] text-slate-400 font-bold uppercase leading-none">
-                                            <span>{{ \Carbon\Carbon::parse($record->tanggal)->translatedFormat('d M Y') }}</span>
-                                            <span class="badge-premium-green py-0.5 px-1.5 text-[8px] uppercase tracking-wider font-extrabold">{{ $record->status }}</span>
-                                        </div>
-                                        <h5 class="text-xs font-bold text-slate-800 mt-1">{{ $record->diagnosa }}</h5>
-                                        <p class="text-[11px] text-slate-500 leading-normal mt-0.5">
-                                            <span class="font-semibold text-slate-600">Tindakan:</span> {{ $record->tindakan }} 
-                                            @if($record->dokter_hewan)
-                                                <span class="text-slate-300 mx-1">•</span> <span class="font-semibold text-slate-600">Vet:</span> {{ $record->dokter_hewan }}
-                                            @endif
-                                        </p>
+                        <div id="mon-timeline-{{ $pesanan->id }}" class="overflow-hidden transition-all duration-300 max-h-0 opacity-0 px-2">
+                            <div class="pt-4 space-y-4">
+                                @if($medicalRecords->count() > 0)
+                                    <div class="border-l-2 border-slate-200 pl-4 space-y-4 py-1 ml-2 relative">
+                                        @foreach($medicalRecords as $record)
+                                            <div class="relative">
+                                                <div class="absolute -left-[22px] top-1.5 w-2 h-2 rounded-full bg-emerald-500 border border-white"></div>
+                                                <div class="flex justify-between items-center text-[9px] text-slate-400 font-bold uppercase leading-none mb-1.5">
+                                                    <span>{{ \Carbon\Carbon::parse($record->tanggal)->translatedFormat('d M Y') }}</span>
+                                                    <span class="badge-premium-green py-0.5 px-1.5 text-[8px] uppercase tracking-wider font-extrabold">{{ $record->status }}</span>
+                                                </div>
+                                                <h5 class="text-xs font-bold text-slate-800 mt-1">{{ $record->diagnosa }}</h5>
+                                                <p class="text-[11px] text-slate-500 leading-normal mt-0.5">
+                                                    <span class="font-semibold text-slate-600">Tindakan:</span> {{ $record->tindakan }} 
+                                                    @if($record->dokter_hewan)
+                                                        <span class="text-slate-300 mx-1">•</span> <span class="font-semibold text-slate-600">Vet:</span> {{ $record->dokter_hewan }}
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                @endforeach
+                                @else
+                                    <div class="flex items-center gap-2 text-[11px] text-slate-400 italic bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                                        <span class="material-symbols-outlined text-emerald-600" style="font-size: 16px;">check_circle</span>
+                                        <span>Belum ada riwayat rekam medis tercatat. Kondisi dinyatakan sehat & bugar.</span>
+                                    </div>
+                                @endif
                             </div>
-                        @else
-                            <div class="flex items-center gap-2 text-[11px] text-slate-400 italic bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                                <span class="material-symbols-outlined text-emerald-600" style="font-size: 16px;">check_circle</span>
-                                <span>Belum ada riwayat rekam medis tercatat. Kondisi dinyatakan sehat & bugar.</span>
-                            </div>
-                        @endif
+                        </div>
                     </div>
                     @endif
                 </div>
@@ -416,4 +423,22 @@
 
 
 </main>
+
+<script>
+    function toggleMonitoringMedical(id) {
+        const el = document.getElementById('mon-timeline-' + id);
+        const chevron = document.getElementById('mon-chevron-' + id);
+        const isHidden = el.style.maxHeight === '0px' || el.style.maxHeight === '';
+        
+        if (isHidden) {
+            el.style.maxHeight = el.scrollHeight + 'px';
+            el.style.opacity = '1';
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            el.style.maxHeight = '0px';
+            el.style.opacity = '0';
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
 @endsection

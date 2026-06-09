@@ -323,6 +323,23 @@
     function closeConfirmOrderModal() { const m=document.getElementById('confirmOrderModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Sync harga_jual dengan teks di dalam textarea confirm_message
+        const confirmHargaInput = document.getElementById('confirm_harga_jual');
+        const confirmMessageInput = document.getElementById('confirm_message');
+        if (confirmHargaInput && confirmMessageInput) {
+            confirmHargaInput.addEventListener('input', function() {
+                const newPrice = Number(this.value);
+                const formattedPrice = new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(newPrice);
+                
+                let text = confirmMessageInput.value;
+                const regex = /(\*\*Harga:\*\*\s*(?:Rp\s*)?)([\d\.,]+)/i;
+                if (regex.test(text)) {
+                    text = text.replace(regex, `$1${formattedPrice}`);
+                    confirmMessageInput.value = text;
+                }
+            });
+        }
+
         // AJAX-ify Tandai Semua Dibaca in Notifications Modal
         const readAllForm = document.getElementById('readAllNotificationsForm');
         if (readAllForm) {

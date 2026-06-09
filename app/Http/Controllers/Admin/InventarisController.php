@@ -125,7 +125,7 @@ class InventarisController extends Controller
             'foto' => $fotoPath,
         ]);
 
-        $inventaris->update(['status_stok' => 'Terbooking']);
+        $inventaris->update(['status_stok' => 'Tersedia']);
 
         return redirect()->route('admin.katalog.index')->with('success', 'Hewan berhasil dimasukkan ke katalog.');
     }

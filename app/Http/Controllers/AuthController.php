@@ -161,4 +161,37 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('status', 'Password Anda berhasil direset. Silakan login dengan password baru.');
     }
+
+    public function redirectToGoogle()
+    {
+        return view('customer.auth.google-mock');
+    }
+
+    public function handleGoogleCallback(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'name' => ['required', 'string'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make(Str::random(16)),
+                'role' => 'user',
+                'last_active_at' => now(),
+                'whatsapp' => '6281234567890', // Default mock whatsapp
+            ]);
+        }
+
+        Auth::login($user);
+        
+        $user->update(['last_active_at' => now()]);
+        $request->session()->regenerate();
+
+        return redirect()->route('customer.produk');
+    }
 }

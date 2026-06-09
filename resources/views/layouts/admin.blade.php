@@ -146,6 +146,27 @@
       }
     </script>
     <style>
+      /* ── Premium Glassmorphic Toast ── */
+      .premium-toast {
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(226, 232, 240, 0.8);
+          border-radius: 16px;
+          padding: 14px 20px;
+          box-shadow: 0 10px 30px rgba(5, 31, 32, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          transform: translateX(120%);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+          pointer-events: auto;
+          opacity: 0;
+      }
+      .premium-toast.show {
+          transform: translateX(0);
+          opacity: 1;
+      }
       /* ── Global Reset ── */
       *, *::before, *::after { box-sizing: border-box; }
       body {
@@ -501,6 +522,110 @@
                     window.closeModal('globalConfirmModal');
                 });
             }
+
+            // Intercept individual mark-read forms in navbar
+            document.addEventListener('submit', function(e) {
+                const form = e.target.closest('.navbar-mark-read-form');
+                if (form) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const notifId = form.dataset.notifId;
+                    const url = form.getAttribute('action');
+                    
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.showToast(data.message, 'success');
+                            
+                            const item = document.getElementById(`navbar-notif-item-${notifId}`);
+                            if (item) {
+                                item.classList.remove('bg-emerald-50/20');
+                                form.remove();
+                            }
+                            
+                            updateGlobalPendingCounts(data.pendingOrders);
+                        }
+                    })
+                    .catch(err => console.error(err));
+                }
+            });
+
+            // Intercept read-all form in navbar
+            document.addEventListener('submit', function(e) {
+                const form = e.target.closest('#navbar-read-all-form');
+                if (form) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const url = form.getAttribute('action');
+                    
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.showToast(data.message, 'success');
+                            
+                            document.querySelectorAll('[id^="navbar-notif-item-"]').forEach(item => {
+                                item.classList.remove('bg-emerald-50/20');
+                            });
+                            document.querySelectorAll('.navbar-mark-read-form').forEach(f => f.remove());
+                            
+                            form.remove();
+                            
+                            updateGlobalPendingCounts(0);
+                        }
+                    })
+                    .catch(err => console.error(err));
+                }
+            });
+
+            // Helper to update global pending counts across the page
+            window.updateGlobalPendingCounts = function(count) {
+                const dot = document.getElementById('navbar-notif-dot');
+                if (dot) {
+                    if (count > 0) dot.classList.remove('hidden');
+                    else dot.classList.add('hidden');
+                }
+                
+                const badge = document.getElementById('navbar-notif-count-badge');
+                if (badge) {
+                    if (count > 0) {
+                        badge.textContent = `${count} Baru`;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+                
+                const dbCount = document.getElementById('dashboard-pending-orders-count');
+                if (dbCount) dbCount.textContent = count;
+                
+                const dbBadge = document.getElementById('dashboard-pending-orders-badge');
+                if (dbBadge) {
+                    if (count > 0) dbBadge.classList.remove('hidden');
+                    else dbBadge.classList.add('hidden');
+                }
+                
+                const dbAction = document.getElementById('dashboard-pending-orders-action');
+                if (dbAction) {
+                    const span = dbAction.querySelector('span');
+                    if (span) {
+                        span.textContent = count > 0 ? 'Konfirmasi Sekarang' : 'Semua dibaca';
+                    }
+                }
+            };
         });
     </script>
 
@@ -521,5 +646,64 @@
             </div>
         </div>
     </div>
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-24 right-4 z-[9999] flex flex-col gap-3 pointer-events-none max-w-sm w-full"></div>
+    <script>
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'premium-toast';
+
+            let icon = 'check_circle';
+            let iconColor = '#2A7844';
+            let borderColor = 'rgba(34, 197, 94, 0.2)';
+            let bgColor = 'rgba(220, 252, 231, 0.9)';
+
+            if (type === 'error') {
+                icon = 'error';
+                iconColor = '#DC2626';
+                borderColor = 'rgba(239, 68, 68, 0.2)';
+                bgColor = 'rgba(254, 226, 226, 0.9)';
+            } else if (type === 'info') {
+                icon = 'info';
+                iconColor = '#2563EB';
+                borderColor = 'rgba(59, 130, 246, 0.2)';
+                bgColor = 'rgba(219, 234, 254, 0.9)';
+            } else if (type === 'warning') {
+                icon = 'warning';
+                iconColor = '#D97706';
+                borderColor = 'rgba(245, 158, 11, 0.2)';
+                bgColor = 'rgba(254, 243, 199, 0.9)';
+            }
+
+            toast.style.background = bgColor;
+            toast.style.borderColor = borderColor;
+
+            toast.innerHTML = `
+                <span class="material-symbols-outlined shrink-0" style="color: ${iconColor}; font-size: 20px;">${icon}</span>
+                <span class="text-xs font-bold text-slate-800 leading-normal">${message}</span>
+                <button class="ml-auto p-0.5 rounded-lg hover:bg-black/5 shrink-0 transition-colors" onclick="this.parentElement.classList.remove('show'); setTimeout(() => this.parentElement.remove(), 400)">
+                    <span class="material-symbols-outlined text-slate-400" style="font-size: 16px;">close</span>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }, 4000);
+        };
+    </script>
+
+    @stack('modals')
 </body>
 </html>

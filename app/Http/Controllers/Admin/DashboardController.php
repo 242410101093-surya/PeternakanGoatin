@@ -43,12 +43,30 @@ class DashboardController extends Controller
     {
         $notification = \App\Models\Notification::findOrFail($id);
         $notification->update(['is_read' => true]);
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Notifikasi berhasil ditandai sebagai dibaca.',
+                'pendingOrders' => \App\Models\Notification::where('is_read', false)->count()
+            ]);
+        }
+
         return back()->with('success', 'Notifikasi berhasil ditandai sebagai dibaca.');
     }
 
     public function markAllNotificationsRead()
     {
         \App\Models\Notification::where('is_read', false)->update(['is_read' => true]);
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Semua notifikasi berhasil ditandai sebagai dibaca.',
+                'pendingOrders' => 0
+            ]);
+        }
+
         return back()->with('success', 'Semua notifikasi berhasil ditandai sebagai dibaca.');
     }
 
@@ -91,7 +109,32 @@ class DashboardController extends Controller
             'jenis_transaksi' => 'Pemasukan',
             'jumlah' => $request->harga_jual,
             'keterangan' => $keterangan,
+            'pesanan_id' => $pesanan->id,
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            // Recalculate profit this month
+            $startOfMonth = Carbon::now()->startOfMonth();
+            $endOfMonth = Carbon::now()->endOfMonth();
+
+            $pemasukanBulanIni = DB::table('laporan_keuangans')
+                            ->where('jenis_transaksi', 'Pemasukan')
+                            ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+                            ->sum('jumlah');
+            $pengeluaranBulanIni = DB::table('laporan_keuangans')
+                            ->where('jenis_transaksi', 'Pengeluaran')
+                            ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
+                            ->sum('jumlah');
+
+            $labaBersih = $pemasukanBulanIni - $pengeluaranBulanIni;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan berhasil dikonfirmasi dan dicatat di keuangan.',
+                'pendingOrders' => \App\Models\Notification::where('is_read', false)->count(),
+                'labaBersih' => number_format($labaBersih, 0, ',', '.')
+            ]);
+        }
 
         return redirect()->route('admin.dashboard')->with('success', 'Pesanan berhasil dikonfirmasi dan dicatat di keuangan.');
     }

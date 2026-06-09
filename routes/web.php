@@ -37,6 +37,10 @@ Route::post('/forgot-password', [AuthController::class, 'sendResetCode'])->name(
 Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset')->middleware('guest');
 Route::post('/reset-password', [AuthController::class, 'resetPasswordWithCode'])->name('password.update')->middleware('guest');
 
+// Google Auth Mock Routes
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google')->middleware('guest');
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback')->middleware('guest');
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // CUSTOMER
@@ -59,6 +63,7 @@ Route::prefix('customer')->name('customer.')->middleware('auth')->group(function
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/send-verification', [ProfileController::class, 'sendVerificationCode'])->name('profile.send-verification');
     Route::post('/profile/verify-email', [ProfileController::class, 'verifyEmail'])->name('profile.verify-email');
+    Route::post('/profile/send-password-otp', [ProfileController::class, 'sendPasswordOtp'])->name('profile.send-password-otp');
 
     Route::get('/rekam-medis', function () {
         $rekamMedis = [
@@ -69,9 +74,9 @@ Route::prefix('customer')->name('customer.')->middleware('auth')->group(function
     })->name('rekam-medis');
 
     Route::get('/monitoring', function () {
-        $pesanans = \App\Models\Pesanan::with('produk.inventaris')
+        $pesanans = \App\Models\Pesanan::with('produk.inventaris.rekamMedis')
             ->where('user_id', auth()->id())
-            ->where('status', 'Disetujui')
+            ->whereIn('status', ['Disetujui', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
             ->orderBy('updated_at', 'desc')
             ->get();
         return view('customer.monitoring', compact('pesanans'));
@@ -98,6 +103,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/send-password-otp', [ProfileController::class, 'sendPasswordOtp'])->name('profile.send-password-otp');
 
     // Accounts
     Route::resource('accounts', AccountController::class)->except(['create', 'show', 'edit']);
@@ -107,6 +113,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Keuangan
     Route::resource('keuangan', KeuanganController::class)->except(['create', 'show', 'edit']);
+    Route::post('/keuangan/{id}/update-jenis', [KeuanganController::class, 'updateJenis'])->name('keuangan.update-jenis');
 
     Route::resource('inventaris', InventarisController::class)->except(['create', 'show', 'edit']);
     Route::post('/inventaris/{id}/jual', [InventarisController::class, 'jual'])->name('inventaris.jual');

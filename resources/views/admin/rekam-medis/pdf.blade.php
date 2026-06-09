@@ -259,7 +259,7 @@
                     <td>{{ \Carbon\Carbon::parse($rekam->tanggal)->format('d M Y') }}</td>
                     <td>
                         <div class="animal-name">{{ $rekam->inventaris->jenis }}</div>
-                        <div class="animal-id">ID: {{ $rekam->inventaris->id }}</div>
+                        <div class="animal-id">ID: #{{ str_pad($rekam->inventaris->id, 4, '0', STR_PAD_LEFT) }}</div>
                     </td>
                     <td>{{ $rekam->dokter_hewan ?? 'Dokter Mandiri' }}</td>
                     <td>{{ $rekam->diagnosa }}</td>

@@ -73,7 +73,7 @@
 
             <div class="flex justify-end items-center gap-3 pt-4 border-t border-slate-100">
                 <a href="{{ route('customer.produk') }}" class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
-                    Reset Filter
+                    Atur Ulang Filter
                 </a>
                 <button type="submit" class="btn-premium text-xs py-2.5 px-6">
                     <span class="material-symbols-outlined" style="font-size:16px;">search</span>
@@ -159,6 +159,7 @@
                                 data-product-gender="{{ $produk->inventaris?->jenis ?? '-' }}"
                                 data-product-age="{{ $produk->inventaris?->umur ? $produk->inventaris->umur . ' Bulan' : '-' }}"
                                 data-product-berat="{{ $produk->inventaris?->berat ? $produk->inventaris->berat . ' Kg' : '-' }}"
+                                data-product-image="{{ $produk->foto ? asset('storage/' . $produk->foto) : '' }}"
                                 data-product-rekam-medis="{{ json_encode($produk->inventaris?->rekamMedis ?? []) }}">
                             <span class="material-symbols-outlined" style="font-size:18px;">shopping_basket</span>
                         </button>
@@ -213,6 +214,20 @@
 
             {{-- Modal Content (Scrollable) --}}
             <div class="p-6 overflow-y-auto space-y-6 flex-1">
+                {{-- Product Image Container --}}
+                <div id="modalProductImageContainer" class="w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/60 relative shrink-0 shadow-sm flex items-center justify-center">
+                    <!-- Main image containing the full product image -->
+                    <img id="modalProductImage" src="" alt="Foto Kambing" class="w-full h-auto max-h-[450px] object-cover">
+                    
+                    {{-- Gender Badge overlay --}}
+                    <div id="modalProductImageBadge" class="absolute top-4 left-4 z-20">
+                        <span class="px-3 py-1.5 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5 bg-white text-emerald-800">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span id="modalProductImageBadgeText">Jantan</span>
+                        </span>
+                    </div>
+                </div>
+
                 <div>
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Penjelasan Produk</h3>
                     <p id="modalProductSpecs" class="text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl"></p>
@@ -281,6 +296,9 @@
         const closeButton = document.getElementById('closeProductModal');
         const cancelButton = document.getElementById('modalCancelButton');
         const productName = document.getElementById('modalProductName');
+        const productImage = document.getElementById('modalProductImage');
+        const productImageBadge = document.getElementById('modalProductImageBadge');
+        const productImageBadgeText = document.getElementById('modalProductImageBadgeText');
         const productSpecs = document.getElementById('modalProductSpecs');
         const productGender = document.getElementById('modalProductGender');
         const productAge = document.getElementById('modalProductAge');
@@ -348,6 +366,20 @@
         function openModal(button) {
             activeProductId = button.dataset.productId;
             productName.textContent = button.dataset.productName || 'Produk';
+            
+            // Set goat/product image with unsplash fallback
+            const imgUrl = button.dataset.productImage || 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80';
+            productImage.src = imgUrl;
+
+            // Set dynamic gender badge
+            const gender = button.dataset.productGender || '';
+            if (gender && gender !== '-') {
+                productImageBadgeText.textContent = gender;
+                productImageBadge.classList.remove('hidden');
+            } else {
+                productImageBadge.classList.add('hidden');
+            }
+
             productSpecs.textContent = button.dataset.productSpecs || 'Tidak ada spesifikasi tambahan.';
             productGender.textContent = button.dataset.productGender || '-';
             productAge.textContent = button.dataset.productAge || '-';

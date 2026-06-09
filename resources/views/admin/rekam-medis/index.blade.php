@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Medical Records')
+@section('title', 'Rekam Medis')
 
 @section('content')
 <!-- Chart.js -->
@@ -11,13 +11,13 @@
     <!-- Header Section -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md mb-stack-lg">
         <div>
-            <h1 class="font-h1 text-h1 text-on-surface mb-stack-xs">Medical Records & Growth</h1>
-            <p class="font-body-md text-body-md text-on-surface-variant">Overview of livestock health checks, vaccinations, and growth monitoring.</p>
+            <h1 class="font-h1 text-h1 text-on-surface mb-stack-xs">Rekam Medis & Pertumbuhan</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">Ringkasan pemeriksaan kesehatan, vaksinasi, dan pemantauan pertumbuhan ternak.</p>
         </div>
         <div class="flex gap-3">
             <a href="{{ route('admin.rekam-medis.export-pdf') }}" download class="bg-primary text-on-primary flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">download</span>
-                Export Report
+                Ekspor Laporan
             </a>
             <button onclick="document.getElementById('addBeratModal').classList.remove('hidden')" class="bg-surface-container-lowest border border-outline-variant text-on-surface flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">scale</span>
@@ -39,7 +39,7 @@
                     <option value="">Pilih Ternak...</option>
                     @foreach($inventarisList as $inv)
                         <option value="{{ $inv->id }}" {{ $selectedInventarisId == $inv->id ? 'selected' : '' }}>
-                            {{ $inv->jenis }} {{ $inv->ras ? '- '.$inv->ras : '' }} (ID: {{ $inv->id }})
+                            {{ $inv->jenis }} {{ $inv->ras ? '- '.$inv->ras : '' }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})
                         </option>
                     @endforeach
                 </select>
@@ -80,7 +80,13 @@
                     <tr class="hover:bg-surface-container-lowest/50 transition-colors group">
                         <td class="py-4 px-6 text-on-surface-variant">{{ \Carbon\Carbon::parse($rekam->tanggal)->format('d M Y') }}</td>
                         <td class="py-4 px-6">
-                            <div class="font-bold text-on-background">{{ $rekam->inventaris->jenis }} ({{ $rekam->inventaris->id }})</div>
+                            <div class="flex flex-col gap-1">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-primary font-mono font-bold text-sm tracking-wider w-fit">
+                                    <span class="material-symbols-outlined text-[14px]">tag</span>
+                                    #{{ str_pad($rekam->inventaris->id, 4, '0', STR_PAD_LEFT) }}
+                                </span>
+                                <div class="font-semibold text-on-background text-sm">{{ $rekam->inventaris->jenis }}</div>
+                            </div>
                         </td>
                         <td class="py-4 px-6 text-on-surface-variant">{{ $rekam->dokter_hewan ?? '-' }}</td>
                         <td class="py-4 px-6 text-on-surface-variant">{{ $rekam->diagnosa }}</td>
@@ -139,7 +145,7 @@
                     <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Ternak</label>
                     <select name="inventaris_id" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
                         @foreach($inventarisList as $inv)
-                            <option value="{{ $inv->id }}">{{ $inv->jenis }} (ID: {{ $inv->id }})</option>
+                            <option value="{{ $inv->id }}">{{ $inv->jenis }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -229,7 +235,7 @@
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Ternak</label>
                 <select name="inventaris_id" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
                     @foreach($inventarisList as $inv)
-                        <option value="{{ $inv->id }}">{{ $inv->jenis }} (ID: {{ $inv->id }})</option>
+                        <option value="{{ $inv->id }}">{{ $inv->jenis }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})</option>
                     @endforeach
                 </select>
             </div>

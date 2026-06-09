@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Inventory Management')
+@section('title', 'Manajemen Inventaris')
 
 @section('content')
 <div class="w-full px-margin-mobile md:px-margin-desktop">
@@ -8,8 +8,8 @@
 <!-- Page Header -->
 <div class="flex flex-col md:flex-row md:items-end justify-between mb-stack-lg gap-stack-md">
     <div>
-        <h1 class="font-h1 text-h1 text-on-surface tracking-tight mb-2">Inventory Management</h1>
-        <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Monitor livestock counts, track feed stock levels, and manage pricing across all agricultural assets in real-time.</p>
+        <h1 class="font-h1 text-h1 text-on-surface tracking-tight mb-2">Manajemen Inventaris</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Pantau jumlah ternak, lacak stok, dan kelola harga seluruh aset peternakan secara real-time.</p>
     </div>
     <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-surface-tint text-on-primary px-6 py-3 rounded-lg font-label-sm text-label-sm transition-all shadow-[0_4px_14px_rgba(74,124,89,0.15)] hover:shadow-[0_6px_20px_rgba(74,124,89,0.2)] whitespace-nowrap">
         <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add</span>
@@ -23,20 +23,20 @@
         <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
             <span class="material-symbols-outlined text-6xl text-primary">pets</span>
         </div>
-        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Total Livestock</p>
-        <h3 class="font-h2 text-h2 text-on-surface mb-1">{{ number_format($totalLivestock) }} <span class="font-body-md text-body-md text-on-surface-variant font-normal">Head</span></h3>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Total Ternak</p>
+        <h3 class="font-h2 text-h2 text-on-surface mb-1">{{ number_format($totalLivestock) }} <span class="font-body-md text-body-md text-on-surface-variant font-normal">Ekor</span></h3>
         <p class="font-caption text-caption text-primary flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">trending_up</span> +12 this month
+            <span class="material-symbols-outlined text-[14px]">trending_up</span> +12 bulan ini
         </p>
     </div>
     <div class="bg-surface-container-lowest border border-tertiary rounded-xl p-6 relative overflow-hidden group hover:shadow-[0_8px_24px_rgba(170,93,42,0.08)] transition-all duration-300">
         <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <span class="material-symbols-outlined text-6xl text-tertiary">warning</span>
+            <span class="material-symbols-outlined text-6xl text-tertiary">bookmark_added</span>
         </div>
-        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">{{ $lowStockAlerts > 20 ? 'Stock' : 'Low Stock Alerts' }}</p>
-        <h3 class="font-h2 text-h2 text-tertiary mb-1">{{ number_format($lowStockAlerts) }} <span class="font-body-md text-body-md text-on-surface-variant font-normal">Items</span></h3>
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Terbooking Customer</p>
+        <h3 class="font-h2 text-h2 text-tertiary mb-1">{{ number_format($lowStockAlerts) }} <span class="font-body-md text-body-md text-on-surface-variant font-normal">Ekor</span></h3>
         <p class="font-caption text-caption text-tertiary flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">inventory</span> Action required
+            <span class="material-symbols-outlined text-[14px]">schedule</span> Menunggu konfirmasi
         </p>
     </div>
 </div>
@@ -76,9 +76,9 @@
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <!-- Gender Filter -->
                 <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Gender</label>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Jenis Kelamin</label>
                     <select name="gender" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
-                        <option value="">Semua Gender</option>
+                        <option value="">Semua Kelamin</option>
                         <option value="Jantan" {{ request('gender') == 'Jantan' ? 'selected' : '' }}>Jantan (Laki-laki)</option>
                         <option value="Betina" {{ request('gender') == 'Betina' ? 'selected' : '' }}>Betina (Perempuan)</option>
                     </select>
@@ -101,7 +101,7 @@
                     <select name="status_stok" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface font-body-sm">
                         <option value="">Semua Status</option>
                         <option value="Tersedia" {{ request('status_stok') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
-                        <option value="Dijual" {{ request('status_stok') == 'Dijual' ? 'selected' : '' }}>Dijual</option>
+                        <option value="Terbooking" {{ request('status_stok') == 'Terbooking' ? 'selected' : '' }}>Terbooking</option>
                         <option value="Dalam Perawatan" {{ request('status_stok') == 'Dalam Perawatan' ? 'selected' : '' }}>Dalam Perawatan</option>
                         <option value="Terjual" {{ request('status_stok') == 'Terjual' ? 'selected' : '' }}>Terjual</option>
                     </select>
@@ -122,7 +122,7 @@
 
             <!-- Filter Actions -->
             <div class="flex gap-3 justify-end pt-4 border-t border-surface-variant">
-                <a href="{{ route('admin.inventaris.index') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Reset Filter</a>
+                <a href="{{ route('admin.inventaris.index') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Atur Ulang Filter</a>
                 <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Terapkan Filter</button>
             </div>
         </form>
@@ -133,8 +133,9 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-surface-container-low border-b border-surface-variant">
+                    <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">ID Kambing</th>
                     <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">Jenis & Ras</th>
-                    <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">Gender</th>
+                    <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">Kelamin</th>
                     <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">Umur (Bulan)</th>
                     <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">Bobot (Kg)</th>
                     <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant font-semibold">Status</th>
@@ -144,6 +145,15 @@
             <tbody class="divide-y divide-surface-variant">
                 @forelse ($inventaris as $item)
                 <tr class="hover:bg-surface-container/50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col items-start gap-1">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-primary font-mono font-bold text-sm tracking-wider">
+                                <span class="material-symbols-outlined text-[14px]">tag</span>
+                                #{{ str_pad($item->id, 4, '0', STR_PAD_LEFT) }}
+                            </span>
+                            <span class="font-caption text-caption text-on-surface-variant">ID Ternak</span>
+                        </div>
+                    </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-4">
                             <div class="h-10 w-10 rounded-full bg-primary-container/20 flex items-center justify-center flex-shrink-0 text-primary">
@@ -168,7 +178,7 @@
                         @php
                             $statusColor = 'bg-secondary-container/50 text-on-secondary-container border-secondary/20';
                             if ($item->status_stok == 'Terjual') $statusColor = 'bg-surface-variant text-on-surface-variant border-outline-variant';
-                            if ($item->status_stok == 'Dijual') $statusColor = 'bg-primary-container/30 text-primary-container border-primary/20';
+                            if ($item->status_stok == 'Terbooking') $statusColor = 'bg-primary-container/30 text-primary-container border-primary/20';
                             if ($item->status_stok == 'Dalam Perawatan') $statusColor = 'bg-tertiary-container/30 text-tertiary-container border-tertiary/20';
                         @endphp
                         <div class="inline-flex items-center px-2.5 py-1 rounded-full {{ $statusColor }} border">
@@ -197,7 +207,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-8 text-center text-on-surface-variant">
+                    <td colspan="7" class="px-6 py-8 text-center text-on-surface-variant">
                         Belum ada data inventaris.
                     </td>
                 </tr>
@@ -233,7 +243,7 @@
                     <input type="text" name="ras" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface" placeholder="mis. Etawa">
                 </div>
                 <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Gender</label>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jenis Kelamin</label>
                     <select name="gender" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
                         <option value="Jantan">Jantan</option>
                         <option value="Betina">Betina</option>
@@ -282,7 +292,7 @@
                     <input type="text" name="ras" id="edit_ras" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
                 </div>
                 <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Gender</label>
+                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jenis Kelamin</label>
                     <select name="gender" id="edit_gender" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
                         <option value="Jantan">Jantan</option>
                         <option value="Betina">Betina</option>
@@ -300,7 +310,7 @@
                     <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Status Stok</label>
                     <select name="status_stok" id="edit_status" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
                         <option value="Tersedia">Tersedia</option>
-                        <option value="Dijual">Dijual</option>
+                        <option value="Terbooking">Terbooking</option>
                         <option value="Terjual">Terjual</option>
                         <option value="Dalam Perawatan">Dalam Perawatan</option>
                     </select>
@@ -365,7 +375,7 @@
 
     function openJualModal(item) {
         document.getElementById('jualForm').action = `/admin/inventaris/${item.id}/jual`;
-        document.getElementById('jual_spesifikasi').value = `Jenis: ${item.jenis} | Gender: ${item.gender} | Berat: ${item.berat} kg | Umur: ${item.umur} bulan`;
+        document.getElementById('jual_spesifikasi').value = `Jenis: ${item.jenis} | Kelamin: ${item.gender} | Berat: ${item.berat} kg | Umur: ${item.umur} bulan`;
         document.getElementById('jualModal').classList.remove('hidden');
     }
     </script>

@@ -69,6 +69,11 @@ class ProdukController extends Controller
 
         // Create notification content
         $title = "Permintaan Pembelian Baru";
+        $alamatInfo = $user->alamat ? "{$user->alamat} (" . ($user->tipe_alamat ?? 'Lainnya') . ")" : "Belum diisi";
+        if ($user->latitude && $user->longitude) {
+            $alamatInfo .= "\n- **Titik Koordinat:** [Buka Peta](https://www.google.com/maps/search/?api=1&query={$user->latitude},{$user->longitude}) ({$user->latitude}, {$user->longitude})";
+        }
+
         $message = "Pelanggan **{$user->name}** (WhatsApp: **" . ($user->whatsapp ?? '-') . "**) " .
                    "ingin membeli produk **{$produk->nama_produk}**.\n\n" .
                    "**Detail Ternak:**\n" .
@@ -79,6 +84,8 @@ class ProdukController extends Controller
                    "- **Umur:** " . ($produk->inventaris->umur ?? '-') . " Bulan\n" .
                    "- **Berat:** " . ($produk->inventaris->berat ?? '-') . " Kg\n" .
                    "- **Harga:** Rp " . number_format($produk->harga, 0, ',', '.') . "\n\n" .
+                   "**Detail Pengiriman:**\n" .
+                   "- **Alamat:** " . $alamatInfo . "\n\n" .
                    "Pelanggan sedang melakukan chat ke WhatsApp Admin untuk melakukan konfirmasi.";
 
         $notif = \App\Models\Notification::create([
@@ -93,6 +100,10 @@ class ProdukController extends Controller
             'notification_id' => $notif->id,
             'harga_jual' => $produk->harga,
             'status' => 'Pending',
+            'alamat' => $user->alamat,
+            'tipe_alamat' => $user->tipe_alamat,
+            'latitude' => $user->latitude,
+            'longitude' => $user->longitude,
         ]);
 
         // Update status_stok to Terbooking

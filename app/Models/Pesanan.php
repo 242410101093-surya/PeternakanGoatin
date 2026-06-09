@@ -17,6 +17,10 @@ class Pesanan extends Model
         'notification_id',
         'harga_jual',
         'status',
+        'alamat',
+        'tipe_alamat',
+        'latitude',
+        'longitude',
     ];
 
     public function user()

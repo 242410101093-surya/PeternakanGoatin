@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Financial Reports')
+@section('title', 'Laporan Keuangan')
 
 @section('content')
 <div class="w-full px-margin-mobile md:px-margin-desktop">
@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-stack-lg gap-stack-md">
         <div>
             <h2 class="font-h2 text-h2 text-on-surface mb-stack-xs">Laporan Keuangan</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant">Review revenue, expenses, and overall stewardship health.</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">Tinjau pemasukan, pengeluaran, dan kesehatan keuangan secara keseluruhan.</p>
         </div>
         <div class="flex flex-wrap items-center gap-stack-sm whitespace-nowrap">
             <button onclick="document.getElementById('addKeuanganModal').classList.remove('hidden')" class="flex items-center bg-primary text-on-primary font-label-sm text-label-sm px-4 py-2 rounded-lg hover:bg-surface-tint transition-colors ambient-shadow">
@@ -79,7 +79,7 @@
 
                 <!-- Filter Actions -->
                 <div class="lg:col-span-4 flex gap-3 justify-end pt-4 border-t border-surface-variant">
-                    <a href="{{ route('admin.keuangan.index') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Reset Filter</a>
+                    <a href="{{ route('admin.keuangan.index') }}" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant">Atur Ulang Filter</a>
                     <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Terapkan Filter</button>
                 </div>
             </div>
@@ -170,10 +170,20 @@
                     <tr class="hover:bg-surface-container-lowest/50 transition-colors group">
                         <td class="py-4 px-6 text-on-surface-variant">{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}</td>
                         <td class="py-4 px-6">
-                            @if($laporan->jenis_transaksi == 'Pemasukan')
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border font-caption text-caption font-semibold bg-secondary-container/30 text-secondary border-secondary-container">
-                                    Pemasukan
-                                </span>
+                            @if($laporan->pesanan_id !== null || in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']))
+                                @php
+                                    $selectBgClass = 'bg-secondary-container/30 text-secondary border-secondary-container';
+                                    if ($laporan->jenis_transaksi == 'Pengiriman Kurir') {
+                                        $selectBgClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                                    } elseif ($laporan->jenis_transaksi == 'Pesanan Sudah Sampai') {
+                                        $selectBgClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                    }
+                                @endphp
+                                <select onchange="changeLaporanJenis(this, {{ $laporan->id }})" class="px-3 py-1 rounded-full border font-caption text-caption font-semibold focus:outline-none transition-colors cursor-pointer {{ $selectBgClass }}">
+                                    <option value="Pemasukan" class="bg-white text-slate-800" {{ $laporan->jenis_transaksi == 'Pemasukan' ? 'selected' : '' }}>Pemasukan (Otomatis)</option>
+                                    <option value="Pengiriman Kurir" class="bg-white text-slate-800" {{ $laporan->jenis_transaksi == 'Pengiriman Kurir' ? 'selected' : '' }}>Pengiriman Kurir</option>
+                                    <option value="Pesanan Sudah Sampai" class="bg-white text-slate-800" {{ $laporan->jenis_transaksi == 'Pesanan Sudah Sampai' ? 'selected' : '' }}>Pesanan Sudah Sampai</option>
+                                </select>
                             @else
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border font-caption text-caption font-semibold bg-tertiary-fixed/30 text-tertiary border-tertiary-fixed">
                                     Pengeluaran
@@ -182,15 +192,16 @@
                         </td>
                         <td class="py-4 px-6 text-on-surface-variant">{{ $laporan->keterangan }}</td>
                         <td class="py-4 px-6">
-                            <span class="font-bold {{ $laporan->jenis_transaksi == 'Pemasukan' ? 'text-primary' : 'text-on-surface' }}">
-                                {{ $laporan->jenis_transaksi == 'Pemasukan' ? '+' : '-' }} Rp {{ number_format($laporan->jumlah, 0, ',', '.') }}
+                            <span class="font-bold {{ in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']) ? 'text-primary' : 'text-on-surface' }}">
+                                {{ in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']) ? '+' : '-' }} Rp {{ number_format($laporan->jumlah, 0, ',', '.') }}
                             </span>
                         </td>
                         <td class="py-4 px-6 text-right">
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openEditKeuanganModal({{ $laporan }})" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
+                                <button onclick="openEditKeuanganModal(this)" data-laporan="{{ json_encode($laporan) }}" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
                                     <span class="material-symbols-outlined text-sm">edit</span>
                                 </button>
+                                @if($laporan->pesanan_id === null && !in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']))
                                 <form action="{{ route('admin.keuangan.destroy', $laporan->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus transaksi '{{ $laporan->keterangan }}'? Tindakan ini tidak bisa dibatalkan.">
                                     @csrf
                                     @method('DELETE')
@@ -198,6 +209,7 @@
                                         <span class="material-symbols-outlined text-sm">delete</span>
                                     </button>
                                 </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -234,7 +246,6 @@
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jenis Transaksi</label>
                 <select name="jenis_transaksi" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                    <option value="Pemasukan">Pemasukan</option>
                     <option value="Pengeluaran">Pengeluaran</option>
                 </select>
             </div>
@@ -294,13 +305,113 @@
 </div>
 
 <script>
-    function openEditKeuanganModal(laporan) {
+    function openEditKeuanganModal(button) {
+        const laporan = JSON.parse(button.getAttribute('data-laporan'));
+        
         document.getElementById('editKeuanganForm').action = `/admin/keuangan/${laporan.id}`;
         document.getElementById('edit_tanggal').value = laporan.tanggal;
-        document.getElementById('edit_jenis').value = laporan.jenis_transaksi;
         document.getElementById('edit_keterangan').value = laporan.keterangan;
         document.getElementById('edit_jumlah').value = laporan.jumlah;
+        
+        const jenisSelect = document.getElementById('edit_jenis');
+        jenisSelect.innerHTML = ''; // Clear options
+        
+        const tanggalInput = document.getElementById('edit_tanggal');
+        const keteranganInput = document.getElementById('edit_keterangan');
+        const jumlahInput = document.getElementById('edit_jumlah');
+        
+        if (laporan.pesanan_id !== null || ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'].includes(laporan.jenis_transaksi)) {
+            // It is an automatic order-linked transaction
+            // Options: Pemasukan, Pengiriman Kurir, Pesanan Sudah Sampai
+            const optPemasukan = document.createElement('option');
+            optPemasukan.value = 'Pemasukan';
+            optPemasukan.textContent = 'Pemasukan (Otomatis)';
+            jenisSelect.appendChild(optPemasukan);
+
+            const optKurir = document.createElement('option');
+            optKurir.value = 'Pengiriman Kurir';
+            optKurir.textContent = 'Pengiriman Kurir';
+            jenisSelect.appendChild(optKurir);
+
+            const optSampai = document.createElement('option');
+            optSampai.value = 'Pesanan Sudah Sampai';
+            optSampai.textContent = 'Pesanan Sudah Sampai';
+            jenisSelect.appendChild(optSampai);
+            
+            jenisSelect.value = laporan.jenis_transaksi;
+            
+            // Set readonly for automatic fields
+            tanggalInput.readOnly = true;
+            keteranganInput.readOnly = true;
+            jumlahInput.readOnly = true;
+            
+            // Add visual cue for readonly fields
+            tanggalInput.classList.add('bg-slate-100', 'cursor-not-allowed');
+            keteranganInput.classList.add('bg-slate-100', 'cursor-not-allowed');
+            jumlahInput.classList.add('bg-slate-100', 'cursor-not-allowed');
+        } else {
+            // It is a manual transaction
+            // Options: Pengeluaran only
+            const optPengeluaran = document.createElement('option');
+            optPengeluaran.value = 'Pengeluaran';
+            optPengeluaran.textContent = 'Pengeluaran';
+            jenisSelect.appendChild(optPengeluaran);
+            
+            jenisSelect.value = 'Pengeluaran';
+            
+            // Remove readonly for manual fields
+            tanggalInput.readOnly = false;
+            keteranganInput.readOnly = false;
+            jumlahInput.readOnly = false;
+            
+            // Remove visual cue
+            tanggalInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
+            keteranganInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
+            jumlahInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
+        }
+        
         document.getElementById('editKeuanganModal').classList.remove('hidden');
+    }
+
+    function changeLaporanJenis(selectElement, laporanId) {
+        const jenis = selectElement.value;
+        
+        // Show page loader
+        document.getElementById('global-page-loader').style.display = 'flex';
+        
+        fetch(`/admin/keuangan/${laporanId}/update-jenis`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                jenis_transaksi: jenis
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('global-page-loader').style.display = 'none';
+            if (data.success) {
+                window.showToast(data.message, 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                window.showToast(data.message || 'Gagal mengubah jenis transaksi.', 'error');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        })
+        .catch(err => {
+            document.getElementById('global-page-loader').style.display = 'none';
+            window.showToast('Terjadi kesalahan jaringan.', 'error');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        });
     }
 </script>
 

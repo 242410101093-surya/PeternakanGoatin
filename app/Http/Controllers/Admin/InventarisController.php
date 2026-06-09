@@ -51,7 +51,8 @@ class InventarisController extends Controller
         
         $inventaris = $query->orderBy('created_at', 'desc')->paginate(10);
         $totalLivestock = Inventaris::where('status_stok', '!=', 'Terjual')->count();
-        $lowStockAlerts = Inventaris::lowStockCount();
+        // Terbooking = ternak yang sudah dipilih/dibooking oleh customer
+        $lowStockAlerts = Inventaris::where('status_stok', 'Terbooking')->count();
         
         // Get unique jenis for filter dropdown
         $jenisOptions = Inventaris::distinct()->pluck('jenis')->sort();

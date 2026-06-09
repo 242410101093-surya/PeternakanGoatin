@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Account Management')
+@section('title', 'Manajemen Akun')
 
 @section('content')
 <div class="w-full px-margin-mobile md:px-margin-desktop py-stack-md">
@@ -20,13 +20,13 @@
         <!-- Page Header -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-                <h2 class="font-h2 text-h2 text-on-surface mb-1">Account Management</h2>
-                <p class="font-body-md text-body-md text-on-surface-variant">Manage users, roles, and platform access.</p>
+                <h2 class="font-h2 text-h2 text-on-surface mb-1">Manajemen Akun</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant">Kelola pengguna, peran, dan hak akses platform.</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="document.getElementById('addAccountModal').classList.remove('hidden')" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition-colors shadow-sm">
                     <span class="material-symbols-outlined text-sm">add</span>
-                    Add New User
+                    Tambah Pengguna Baru
                 </button>
             </div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <div class="relative w-full sm:w-64">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
-                        <input id="search_input" onkeypress="handleSearchKeyPress(event)" value="{{ request('search') }}" class="w-full pl-9 pr-3 py-1.5 rounded-md bg-surface-container border border-outline-variant focus:border-primary text-body-md font-body-md outline-none text-sm transition-all" placeholder="Search by name or email..." type="text"/>
+                        <input id="search_input" onkeypress="handleSearchKeyPress(event)" value="{{ request('search') }}" class="w-full pl-9 pr-3 py-1.5 rounded-md bg-surface-container border border-outline-variant focus:border-primary text-body-md font-body-md outline-none text-sm transition-all" placeholder="Cari nama atau email..." type="text"/>
                     </div>
                     <button onclick="filterUsers()" class="px-3 py-1.5 bg-primary text-on-primary rounded-md font-label-sm text-sm hover:bg-primary-container transition-colors">
                         Cari
@@ -47,16 +47,16 @@
                 <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
                     <span class="font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">Role:</span>
                     <select id="filter_role" onchange="filterUsers()" class="pl-3 pr-8 py-1.5 rounded-md bg-surface-container border border-outline-variant text-body-md font-body-md text-sm outline-none focus:border-primary">
-                        <option value="">All Roles</option>
+                        <option value="">Semua Peran</option>
                         <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Pelanggan</option>
                     </select>
 
                     <span class="font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap ml-2">Status:</span>
                     <select id="filter_status" onchange="filterUsers()" class="pl-3 pr-8 py-1.5 rounded-md bg-surface-container border border-outline-variant text-body-md font-body-md text-sm outline-none focus:border-primary">
-                        <option value="">All Status</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="">Semua Status</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Aktif</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
                     </select>
                 </div>
             </div>
@@ -66,11 +66,11 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-surface-container-low border-b border-surface-variant">
-                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">User</th>
-                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">Role</th>
+                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">Pengguna</th>
+                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">Peran</th>
                             <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">Status</th>
-                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">Registration Date</th>
-                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold text-right">Actions</th>
+                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold">Tanggal Daftar</th>
+                            <th class="py-3 px-6 font-label-sm text-label-sm text-on-surface-variant font-semibold text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-surface-variant bg-surface-container-lowest">
@@ -95,11 +95,11 @@
                             <td class="py-4 px-6">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full {{ $user->status === 'active' ? 'bg-primary/10 text-primary' : 'bg-error/10 text-error' }} font-caption text-caption">
                                     <span class="w-1.5 h-1.5 rounded-full {{ $user->status === 'active' ? 'bg-primary' : 'bg-error' }}"></span>
-                                    {{ $user->status === 'active' ? 'Active' : 'Inactive' }}
+                                    {{ $user->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
                                 </span>
                             </td>
                             <td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant text-sm">
-                                {{ $user->created_at->format('M d, Y') }}
+                                {{ $user->created_at->format('d M Y') }}
                             </td>
                             <td class="py-4 px-6 text-right">
                                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -121,7 +121,7 @@
                         @empty
                         <tr>
                             <td colspan="5" class="py-8 text-center text-on-surface-variant">
-                                No users found.
+                                Tidak ada pengguna ditemukan.
                             </td>
                         </tr>
                         @endforelse

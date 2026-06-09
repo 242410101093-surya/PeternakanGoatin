@@ -14,7 +14,9 @@
 <body>
     <div class="auth-layout" style="background: linear-gradient(135deg, var(--text-dark) 0%, var(--brown) 100%);">
         <div class="auth-card">
-            <div class="logo" style="color: var(--brown);">🐐 Admin Portal</div>
+            <div class="logo" style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" style="height: 36px; width: auto; display: block;">
+            </div>
             <h2 class="text-center" style="color: var(--text-dark);">Login Admin</h2>
             <p class="text-center mb-2" style="color: var(--text-light);">Manajemen sistem Goat-In.</p>
             

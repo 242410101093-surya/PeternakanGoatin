@@ -61,11 +61,18 @@ class KatalogController extends Controller
             $q->whereIn('jenis', $allowedSpecies)
               ->where('status_stok', '!=', 'Terjual');
         })->count();
+
+        // Listing Aktif = produk di katalog yang masih berstatus Tersedia (terlihat oleh customer)
         $activeListings = Produk::whereHas('inventaris', function($q) use ($allowedSpecies) {
+            $q->whereIn('jenis', $allowedSpecies)
+              ->where('status_stok', 'Tersedia');
+        })->count();
+
+        // Terbooking = produk yang sudah dipilih customer (tidak muncul di catalog customer)
+        $lowStockAlerts = Produk::whereHas('inventaris', function($q) use ($allowedSpecies) {
             $q->whereIn('jenis', $allowedSpecies)
               ->where('status_stok', 'Terbooking');
         })->count();
-        $lowStockAlerts = Inventaris::lowStockCount();
 
         // Get unique jenis for filter dropdown
         $jenisOptions = Inventaris::whereIn('jenis', $allowedSpecies)->distinct()->pluck('jenis')->sort();

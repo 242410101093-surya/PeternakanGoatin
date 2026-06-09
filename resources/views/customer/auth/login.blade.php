@@ -301,6 +301,30 @@
                     </div>
                 </form>
 
+                {{-- Divider --}}
+                <div class="relative flex items-center justify-center my-4">
+                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div class="w-full border-t border-slate-200/80"></div>
+                    </div>
+                    <div class="relative bg-white px-4 text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">
+                        atau masuk dengan
+                    </div>
+                </div>
+
+                {{-- Google Button --}}
+                <div>
+                    <a href="{{ route('auth.google') }}" 
+                       class="w-full flex justify-center items-center gap-3 py-3.5 px-6 rounded-full text-xs font-extrabold text-slate-700 uppercase tracking-widest border border-slate-200 bg-white hover:bg-slate-50 transition-all duration-300 shadow-sm hover:shadow active:scale-[0.98] cursor-pointer group">
+                        <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+                            <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.68 1.54 14.98 1 12 1 7.35 1 3.37 3.67 1.39 7.56l3.85 2.99c.9-2.69 3.42-4.51 6.76-4.51z"/>
+                            <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.36H12v4.51h6.46c-.28 1.48-1.11 2.73-2.36 3.58l3.66 2.84c2.14-1.98 3.39-4.88 3.39-8.57z"/>
+                            <path fill="#FBBC05" d="M5.24 14.57c-.23-.69-.36-1.42-.36-2.18s.13-1.49.36-2.18L1.39 7.22C.5 9 .01 10.97.01 13c0 2.03.49 4 1.38 5.78l3.85-2.99c-.23-.69-.36-1.42-.36-2.21z"/>
+                            <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.66-2.84c-1.01.68-2.31 1.09-4.3 1.09-3.34 0-5.86-1.82-6.87-4.51l-3.85 2.99C3.37 20.33 7.35 23 12 23z"/>
+                        </svg>
+                        <span>Google</span>
+                    </a>
+                </div>
+
             </div>
 
             {{-- Footer --}}

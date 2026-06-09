@@ -11,5 +11,11 @@ class LaporanKeuangan extends Model
         'jenis_transaksi',
         'jumlah',
         'keterangan',
+        'pesanan_id',
     ];
+
+    public function pesanan()
+    {
+        return $this->belongsTo(Pesanan::class);
+    }
 }

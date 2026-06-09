@@ -12,7 +12,10 @@ class RekamMedisController extends Controller
 {
     public function index(Request $request)
     {
-        $query = RekamMedis::with('inventaris');
+        $query = RekamMedis::with('inventaris')
+            ->whereHas('inventaris', function($q) {
+                $q->where('status_stok', '!=', 'Terjual');
+            });
 
         // Search by inventaris jenis or ras
         if ($request->filled('search')) {
@@ -43,7 +46,10 @@ class RekamMedisController extends Controller
         }
 
         $rekamMedis = $query->orderBy('tanggal', 'desc')->get();
-        $inventarisList = Inventaris::orderBy('jenis')->get();
+        
+        $inventarisList = Inventaris::where('status_stok', '!=', 'Terjual')
+            ->orderBy('jenis')
+            ->get();
         
         // Handle chart data for selected livestock
         $selectedInventarisId = $request->get('inventaris_id', $inventarisList->first()->id ?? null);
@@ -65,7 +71,12 @@ class RekamMedisController extends Controller
 
     public function exportPdf()
     {
-        $rekamMedis = RekamMedis::with('inventaris')->orderBy('tanggal', 'desc')->get();
+        $rekamMedis = RekamMedis::with('inventaris')
+            ->whereHas('inventaris', function($q) {
+                $q->where('status_stok', '!=', 'Terjual');
+            })
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.rekam-medis.pdf', compact('rekamMedis'));
         

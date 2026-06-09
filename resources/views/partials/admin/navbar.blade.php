@@ -31,9 +31,7 @@
         <button id="notifBtn" onclick="toggleNotificationDropdown()"
                 class="relative p-2.5 rounded-xl transition-all duration-200 hover:scale-105 border border-slate-100 hover:border-slate-200 bg-slate-50/50 hover:bg-slate-100 text-slate-500 hover:text-slate-700">
             <span class="material-symbols-outlined flex items-center justify-center text-[20px]">notifications</span>
-            @if($unreadNotifications->count() > 0)
-                <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-4 ring-white animate-pulse"></span>
-            @endif
+            <span id="navbar-notif-dot" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-4 ring-white animate-pulse {{ $unreadNotifications->count() > 0 ? '' : 'hidden' }}"></span>
         </button>
 
         <!-- Notification Dropdown -->
@@ -45,14 +43,12 @@
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary-green" style="font-size:18px;">notifications</span>
                     <span class="font-bold text-sm text-primary-dark">Notifikasi</span>
-                    @if($unreadNotifications->count() > 0)
-                        <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
-                            {{ $unreadNotifications->count() }} Baru
-                        </span>
-                    @endif
+                    <span id="navbar-notif-count-badge" class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 {{ $unreadNotifications->count() > 0 ? '' : 'hidden' }}">
+                        {{ $unreadNotifications->count() }} Baru
+                    </span>
                 </div>
                 @if($unreadNotifications->count() > 0)
-                    <form action="{{ route('admin.notifications.read-all') }}" method="POST" class="inline">
+                    <form action="{{ route('admin.notifications.read-all') }}" method="POST" class="inline" id="navbar-read-all-form">
                         @csrf
                         <button type="submit" class="text-xs font-bold text-primary-green hover:text-emerald-700 transition-colors">
                             Tandai semua dibaca
@@ -64,7 +60,7 @@
             <!-- Items -->
             <div class="max-h-80 overflow-y-auto divide-y divide-slate-50 scrollbar-thin">
                 @forelse($allNotifications as $notif)
-                    <div class="px-5 py-4 transition-all duration-150 {{ !$notif->is_read ? 'bg-emerald-50/20' : '' }} hover:bg-slate-50/50">
+                    <div class="px-5 py-4 transition-all duration-150 {{ !$notif->is_read ? 'bg-emerald-50/20' : '' }} hover:bg-slate-50/50" id="navbar-notif-item-{{ $notif->id }}">
                         <div class="flex justify-between items-start gap-2 mb-1">
                             <span class="text-xs font-bold text-primary-dark leading-tight">{{ $notif->title }}</span>
                             <span class="text-[10px] font-semibold text-slate-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans() }}</span>
@@ -73,7 +69,7 @@
                             {!! preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', nl2br(e($notif->message))) !!}
                         </p>
                         @if(!$notif->is_read)
-                            <form action="{{ route('admin.notifications.read', $notif->id) }}" method="POST" class="mt-2.5">
+                            <form action="{{ route('admin.notifications.read', $notif->id) }}" method="POST" class="mt-2.5 navbar-mark-read-form" data-notif-id="{{ $notif->id }}">
                                 @csrf
                                 <button type="submit" class="text-[11px] font-bold text-primary-green hover:text-emerald-800 flex items-center gap-1 transition-colors">
                                     <span class="material-symbols-outlined text-[14px]">done</span>
@@ -97,11 +93,11 @@
         <a href="{{ route('admin.profile') }}"
            class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold text-xs uppercase transition-all duration-300 hover:scale-105"
            style="border: 2px solid rgba(42, 120, 68, 0.2); box-shadow: 0 4px 12px rgba(42, 120, 68, 0.08);"
-           title="Lihat Profil">
+           title="Lihat Profil" id="admin-navbar-avatar-container">
             @if(auth()->user()->foto_profil)
-                <img alt="Admin" class="w-full h-full object-cover" src="{{ asset('storage/' . auth()->user()->foto_profil) }}"/>
+                <img alt="Admin" class="w-full h-full object-cover" src="{{ asset('storage/' . auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
             @else
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-green to-emerald-700 text-white font-extrabold">
+                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-green to-emerald-700 text-white font-extrabold" id="admin-navbar-avatar-placeholder">
                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                 </div>
             @endif

@@ -164,6 +164,22 @@ class KeuanganController extends Controller
     public function destroy($id)
     {
         $laporan = LaporanKeuangan::findOrFail($id);
+
+        if ($laporan->pesanan_id !== null) {
+            $pesanan = $laporan->pesanan;
+            if ($pesanan) {
+                // Change Pesanan status
+                $pesanan->update(['status' => 'Dibatalkan']);
+                
+                // Return stock to Tersedia
+                if ($pesanan->produk && $pesanan->produk->inventaris) {
+                    $pesanan->produk->inventaris->update(['status_stok' => 'Tersedia']);
+                }
+            }
+            $laporan->delete();
+            return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi dibatalkan. Pesanan telah diubah statusnya dan stok ternak dikembalikan.');
+        }
+
         $laporan->delete();
 
         return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil dihapus.');

@@ -201,15 +201,13 @@
                                 <button onclick="openEditKeuanganModal(this)" data-laporan="{{ json_encode($laporan) }}" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
                                     <span class="material-symbols-outlined text-sm">edit</span>
                                 </button>
-                                @if($laporan->pesanan_id === null && !in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']))
-                                <form action="{{ route('admin.keuangan.destroy', $laporan->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus transaksi '{{ $laporan->keterangan }}'? Tindakan ini tidak bisa dibatalkan.">
+                                <form action="{{ route('admin.keuangan.destroy', $laporan->id) }}" method="POST" class="inline delete-form" data-message="{{ $laporan->pesanan_id !== null ? 'Yakin ingin MEMBATALKAN pesanan ini? Laporan uang akan ditarik dan stok ternak akan dikembalikan menjadi Tersedia.' : 'Yakin ingin menghapus transaksi \''.$laporan->keterangan.'\'? Tindakan ini tidak bisa dibatalkan.' }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error rounded">
                                         <span class="material-symbols-outlined text-sm">delete</span>
                                     </button>
                                 </form>
-                                @endif
                             </div>
                         </td>
                     </tr>

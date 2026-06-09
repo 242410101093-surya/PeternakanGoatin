@@ -93,6 +93,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/notifications/read-all', [DashboardController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
     Route::post('/notifications/{notification}/read', [DashboardController::class, 'markNotificationRead'])->name('notifications.read');
     Route::post('/notifications/{notification}/confirm', [DashboardController::class, 'confirmNotification'])->name('notifications.confirm');
+    Route::post('/notifications/{notification}/reject', [DashboardController::class, 'rejectNotification'])->name('notifications.reject');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');

@@ -138,4 +138,34 @@ class DashboardController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', 'Pesanan berhasil dikonfirmasi dan dicatat di keuangan.');
     }
+
+    public function rejectNotification(Request $request, $id)
+    {
+        $notification = \App\Models\Notification::findOrFail($id);
+        $notification->update([
+            'is_read' => true,
+        ]);
+
+        $pesanan = \App\Models\Pesanan::where('notification_id', $notification->id)->first();
+        if ($pesanan) {
+            $pesanan->update([
+                'status' => 'Dibatalkan',
+            ]);
+
+            // Return stock to Tersedia
+            if ($pesanan->produk && $pesanan->produk->inventaris) {
+                $pesanan->produk->inventaris->update(['status_stok' => 'Tersedia']);
+            }
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan berhasil ditolak dan dibatalkan.',
+                'pendingOrders' => \App\Models\Notification::where('is_read', false)->count()
+            ]);
+        }
+
+        return redirect()->route('admin.dashboard')->with('success', 'Pesanan berhasil ditolak.');
+    }
 }

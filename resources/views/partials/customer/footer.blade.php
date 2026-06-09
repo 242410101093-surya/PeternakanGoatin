@@ -21,7 +21,7 @@
                 <div class="flex items-center gap-3 pt-2">
                     @foreach([
                         ['icon' => 'language', 'url' => '#', 'label' => 'Website'],
-                        ['icon' => 'mail', 'url' => 'mailto:info@goatin.id', 'label' => 'Email'],
+                        ['icon' => 'mail', 'url' => 'mailto:goatinnnn@gmail.com', 'label' => 'Email'],
                     ] as $social)
                     <a href="{{ $social['url'] }}" aria-label="{{ $social['label'] }}"
                        class="w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300 border shadow-md"
@@ -70,7 +70,7 @@
                     </li>
                     <li class="flex items-center gap-3 text-sm font-semibold" style="color: #F1F5F9;">
                         <span class="material-symbols-outlined shrink-0" style="font-size: 20px; color: #8EB69B;">mail</span>
-                        <a href="mailto:info@goatin.id" class="transition-colors hover:underline" style="color: #F1F5F9;" onmouseover="this.style.color='#8EB69B';" onmouseout="this.style.color='#F1F5F9';">info@goatin.id</a>
+                        <a href="mailto:goatinnnn@gmail.com" class="transition-colors hover:underline" style="color: #F1F5F9;" onmouseover="this.style.color='#8EB69B';" onmouseout="this.style.color='#F1F5F9';">goatinnnn@gmail.com</a>
                     </li>
                     <li class="flex items-center gap-3 text-sm font-semibold" style="color: #F1F5F9;">
                         <span class="material-symbols-outlined shrink-0" style="font-size: 20px; color: #8EB69B;">schedule</span>

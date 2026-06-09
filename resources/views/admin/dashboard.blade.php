@@ -294,11 +294,19 @@
                 <p class="text-xs mt-1" style="color:#94A3B8;">Anda dapat menyesuaikan rincian sebelum menyetujui.</p>
             </div>
             <div class="flex justify-end gap-3 pt-2" style="border-top:1px solid #E2E8F0;">
+                <button type="button" onclick="rejectOrder()"
+                        class="text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5"
+                        style="background:#FEE2E2;color:#991B1B;"
+                        onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEE2E2';">
+                    <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+                    Tolak Pesanan
+                </button>
+                <div class="flex-1"></div>
                 <button type="button" onclick="closeConfirmOrderModal()"
                         class="text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
                         style="background:#F1F5F9;color:#64748B;"
                         onmouseover="this.style.background='#E2E8F0';" onmouseout="this.style.background='#F1F5F9';">
-                    Batal
+                    Tutup
                 </button>
                 <button type="submit" class="btn-cta">
                     <span class="material-symbols-outlined" style="font-size:16px;">check</span>
@@ -465,6 +473,50 @@
                 });
             });
         }
+
+        window.rejectOrder = function() {
+            if (!confirm('Anda yakin ingin menolak pesanan ini secara permanen? Stok ternak akan dikembalikan.')) return;
+            
+            const form = document.getElementById('confirmOrderForm');
+            const notifId = form.dataset.notifId;
+            
+            document.getElementById('global-page-loader').style.display = 'flex';
+            
+            fetch(`/admin/notifications/${notifId}/reject`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('global-page-loader').style.display = 'none';
+                if (data.success) {
+                    window.showToast(data.message, 'success');
+                    window.closeConfirmOrderModal();
+                    
+                    // Remove item from lists
+                    const recentItem = document.getElementById(`dashboard-recent-notif-item-${notifId}`);
+                    if (recentItem) recentItem.remove();
+                    const modalItem = document.getElementById(`modal-notif-item-${notifId}`);
+                    if (modalItem) modalItem.remove();
+                    const navbarItem = document.getElementById(`navbar-notif-item-${notifId}`);
+                    if (navbarItem) navbarItem.remove();
+                    
+                    // Update global counts
+                    if (window.updateGlobalPendingCounts) {
+                        window.updateGlobalPendingCounts(data.pendingOrders);
+                    }
+                    
+                    checkEmptyNotificationStates(data.pendingOrders);
+                }
+            })
+            .catch(err => {
+                document.getElementById('global-page-loader').style.display = 'none';
+                window.showToast('Terjadi kesalahan jaringan.', 'error');
+            });
+        };
 
         function checkEmptyNotificationStates(count) {
             if (count === 0) {

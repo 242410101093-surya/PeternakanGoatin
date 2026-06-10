@@ -113,7 +113,7 @@
         
         {{-- Logo Header --}}
         <div class="flex items-center justify-center mb-6">
-            <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-12 w-auto">
+            <img src="{{ asset('images/logo-auth.png') }}" alt="Goatin Logo" class="h-14 sm:h-16 w-auto object-contain">
         </div>
 
         {{-- Form Title & Info Text --}}
@@ -146,7 +146,10 @@
                            placeholder="Masukkan email terdaftar">
                 </div>
                 @error('email')
-                    <p class="mt-1 text-[11px] text-red-500 font-semibold pl-1">{{ $message }}</p>
+                    <div class="mt-2 flex items-start gap-2 p-3 rounded-2xl bg-red-50/80 border border-red-100">
+                        <span class="material-symbols-outlined text-red-500 shrink-0 text-[16px] mt-0.5">error</span>
+                        <p class="text-[11px] text-red-600 font-semibold leading-relaxed">{{ $message }}</p>
+                    </div>
                 @enderror
             </div>
 

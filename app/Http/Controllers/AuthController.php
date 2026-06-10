@@ -32,18 +32,23 @@ class AuthController extends Controller
             'whatsapp' => ['required', 'string', 'max:255'],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user', // Default role
-            'last_active_at' => now(),
-            'whatsapp' => $request->whatsapp,
-        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'user', // Default role
+                'last_active_at' => now(),
+                'whatsapp' => $request->whatsapp,
+            ]);
 
-        Auth::login($user);
+            Auth::login($user);
 
-        return redirect()->route('customer.produk');
+            return redirect()->route('customer.produk');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Registration Error: ' . $e->getMessage());
+            return back()->withErrors(['email' => 'Terjadi kesalahan sistem saat mendaftar. Silakan coba lagi.'])->withInput();
+        }
     }
 
     public function login(Request $request)
@@ -107,20 +112,27 @@ class AuthController extends Controller
         $email = $request->email;
         $code = sprintf("%06d", mt_rand(1, 999999));
 
-        // Save code to database
-        DB::table('password_reset_codes')->updateOrInsert(
-            ['email' => $email],
-            ['code' => $code, 'created_at' => now()]
-        );
+        try {
+            // Save code to database
+            DB::table('password_reset_codes')->updateOrInsert(
+                ['email' => $email],
+                ['code' => $code, 'created_at' => now()]
+            );
 
-        // Send Email
-        \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($email, $code) {
-            $message->to($email)
-                    ->subject('Kode Verifikasi Reset Password Goatin')
-                    ->html("<h3>Goatin Stewardship Portal</h3><p>Halo,</p><p>Berikut adalah kode verifikasi reset password Anda:</p><h1 style='font-size:32px;letter-spacing:5px;color:#1e4e2f;font-weight:bold;'>$code</h1><p>Kode ini berlaku selama 15 menit. Jika Anda tidak meminta reset password ini, silakan abaikan email ini.</p>");
-        });
+            // Send Email
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($email, $code) {
+                $message->to($email)
+                        ->subject('Kode Verifikasi Reset Password Goatin')
+                        ->html("<h3>Goatin Stewardship Portal</h3><p>Halo,</p><p>Berikut adalah kode verifikasi reset password Anda:</p><h1 style='font-size:32px;letter-spacing:5px;color:#1e4e2f;font-weight:bold;'>$code</h1><p>Kode ini berlaku selama 15 menit. Jika Anda tidak meminta reset password ini, silakan abaikan email ini.</p>");
+            });
 
-        return redirect()->route('password.reset', ['email' => $email])->with('status', 'Kode verifikasi telah dikirim ke email Anda.');
+            return redirect()->route('password.reset', ['email' => $email])->with('status', 'Kode verifikasi telah dikirim ke email Anda.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Mail Send Error: ' . $e->getMessage());
+            // Rollback the code if email failed
+            DB::table('password_reset_codes')->where('email', $email)->delete();
+            return back()->withErrors(['email' => 'Gagal mengirim email verifikasi. Pastikan konfigurasi server email benar atau coba lagi nanti.']);
+        }
     }
 
     public function showResetPasswordForm(Request $request)
@@ -150,16 +162,26 @@ class AuthController extends Controller
             return back()->withErrors(['code' => 'Kode verifikasi telah kedaluwarsa. Silakan minta kode baru.']);
         }
 
-        // Update password
-        $user = User::where('email', $request->email)->firstOrFail();
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
+        try {
+            DB::beginTransaction();
 
-        // Delete used code
-        DB::table('password_reset_codes')->where('email', $request->email)->delete();
+            // Update password
+            $user = User::where('email', $request->email)->firstOrFail();
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
 
-        return redirect()->route('login')->with('status', 'Password Anda berhasil direset. Silakan login dengan password baru.');
+            // Delete used code
+            DB::table('password_reset_codes')->where('email', $request->email)->delete();
+
+            DB::commit();
+
+            return redirect()->route('login')->with('status', 'Password Anda berhasil direset. Silakan login dengan password baru.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Password Reset Error: ' . $e->getMessage());
+            return back()->withErrors(['code' => 'Terjadi kesalahan sistem saat mereset password. Silakan coba lagi.']);
+        }
     }
 
     public function redirectToGoogle()

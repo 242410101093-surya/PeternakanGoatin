@@ -103,23 +103,32 @@ class KeuanganController extends Controller
             'keterangan' => 'required|string|max:255',
         ]);
 
-        $laporan->update($request->all());
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
 
-        // Update corresponding Pesanan status if linked
-        if ($laporan->pesanan_id !== null && $laporan->pesanan) {
-            $statusMapping = [
-                'Pemasukan' => 'Disetujui',
-                'Pengiriman Kurir' => 'Pengiriman Kurir',
-                'Pesanan Sudah Sampai' => 'Pesanan Sudah Sampai',
-            ];
-            if (isset($statusMapping[$laporan->jenis_transaksi])) {
-                $laporan->pesanan->update([
-                    'status' => $statusMapping[$laporan->jenis_transaksi]
-                ]);
+            $laporan->update($request->all());
+
+            // Update corresponding Pesanan status if linked
+            if ($laporan->pesanan_id !== null && $laporan->pesanan) {
+                $statusMapping = [
+                    'Pemasukan' => 'Disetujui',
+                    'Pengiriman Kurir' => 'Pengiriman Kurir',
+                    'Pesanan Sudah Sampai' => 'Pesanan Sudah Sampai',
+                ];
+                if (isset($statusMapping[$laporan->jenis_transaksi])) {
+                    $laporan->pesanan->update([
+                        'status' => $statusMapping[$laporan->jenis_transaksi]
+                    ]);
+                }
             }
-        }
 
-        return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil diperbarui.');
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Keuangan update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat memperbarui laporan.');
+        }
     }
 
     public function updateJenis(Request $request, $id)
@@ -137,51 +146,71 @@ class KeuanganController extends Controller
             'jenis_transaksi' => 'required|in:Pemasukan,Pengiriman Kurir,Pesanan Sudah Sampai',
         ]);
 
-        $laporan->update([
-            'jenis_transaksi' => $request->jenis_transaksi
-        ]);
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
 
-        // Update corresponding Pesanan status
-        if ($laporan->pesanan) {
-            $statusMapping = [
-                'Pemasukan' => 'Disetujui',
-                'Pengiriman Kurir' => 'Pengiriman Kurir',
-                'Pesanan Sudah Sampai' => 'Pesanan Sudah Sampai',
-            ];
-            if (isset($statusMapping[$laporan->jenis_transaksi])) {
-                $laporan->pesanan->update([
-                    'status' => $statusMapping[$laporan->jenis_transaksi]
-                ]);
+            $laporan->update([
+                'jenis_transaksi' => $request->jenis_transaksi
+            ]);
+
+            // Update corresponding Pesanan status
+            if ($laporan->pesanan) {
+                $statusMapping = [
+                    'Pemasukan' => 'Disetujui',
+                    'Pengiriman Kurir' => 'Pengiriman Kurir',
+                    'Pesanan Sudah Sampai' => 'Pesanan Sudah Sampai',
+                ];
+                if (isset($statusMapping[$laporan->jenis_transaksi])) {
+                    $laporan->pesanan->update([
+                        'status' => $statusMapping[$laporan->jenis_transaksi]
+                    ]);
+                }
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Status transaksi dan pengiriman berhasil diperbarui.'
-        ]);
+            \Illuminate\Support\Facades\DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Status transaksi dan pengiriman berhasil diperbarui.'
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Keuangan updateJenis failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem saat memperbarui status.'
+            ], 500);
+        }
     }
 
     public function destroy($id)
     {
-        $laporan = LaporanKeuangan::findOrFail($id);
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            $laporan = LaporanKeuangan::findOrFail($id);
 
-        if ($laporan->pesanan_id !== null) {
-            $pesanan = $laporan->pesanan;
-            if ($pesanan) {
-                // Change Pesanan status
-                $pesanan->update(['status' => 'Dibatalkan']);
-                
-                // Return stock to Tersedia
-                if ($pesanan->produk && $pesanan->produk->inventaris) {
-                    $pesanan->produk->inventaris->update(['status_stok' => 'Tersedia']);
+            if ($laporan->pesanan_id !== null) {
+                $pesanan = $laporan->pesanan;
+                if ($pesanan) {
+                    // Change Pesanan status
+                    $pesanan->update(['status' => 'Dibatalkan']);
+                    
+                    // Return stock to Tersedia
+                    if ($pesanan->produk && $pesanan->produk->inventaris) {
+                        $pesanan->produk->inventaris->update(['status_stok' => 'Tersedia']);
+                    }
                 }
+                $laporan->delete();
+                \Illuminate\Support\Facades\DB::commit();
+                return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi dibatalkan. Pesanan telah diubah statusnya dan stok ternak dikembalikan.');
             }
+
             $laporan->delete();
-            return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi dibatalkan. Pesanan telah diubah statusnya dan stok ternak dikembalikan.');
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil dihapus.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Keuangan destroy failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat membatalkan transaksi.');
         }
-
-        $laporan->delete();
-
-        return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil dihapus.');
     }
 }

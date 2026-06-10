@@ -112,18 +112,69 @@
     <!-- Bottom: User Info + Logout -->
     <div class="p-4 space-y-3 sidebar-footer">
         <!-- Logout Button -->
-        <form method="POST" action="{{ route('logout') }}" class="w-full">
-            @csrf
-            <button type="submit"
-                    class="w-full flex items-center gap-3 px-4.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 logout-btn">
-                <span class="material-symbols-outlined text-lg">logout</span>
-                <span>Keluar</span>
-            </button>
-        </form>
+        <button type="button" onclick="document.getElementById('logoutModal').classList.remove('hidden')"
+                class="w-full flex items-center gap-3 px-4.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 logout-btn">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            <span>Keluar</span>
+        </button>
     </div>
 </nav>
 
+<!-- Ultra-Modern Logout Modal -->
+<div id="logoutModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" style="background: rgba(5, 31, 32, 0.75); backdrop-filter: blur(12px); animation: modalFadeIn 0.3s forwards;">
+    <div class="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-[#0B2B26] to-[#051F20] shadow-[0_20px_60px_rgba(0,0,0,0.5)] transform scale-95 transition-transform duration-300" style="animation: modalPopUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+        
+        <!-- Glowing Ambient Background -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-red-500 rounded-full blur-[80px] opacity-20"></div>
+        
+        <!-- Close Button -->
+        <div class="absolute top-4 right-4 z-20">
+            <button onclick="document.getElementById('logoutModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-slate-400 hover:text-white transition-all">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+        </div>
+
+        <div class="relative z-10 p-8 flex flex-col items-center text-center">
+            <!-- Icon -->
+            <div class="w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/5 flex items-center justify-center border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.15)] relative group">
+                <div class="absolute inset-0 bg-red-500/20 rounded-2xl blur-xl group-hover:bg-red-500/30 transition-all duration-500"></div>
+                <span class="material-symbols-outlined text-4xl text-red-400 relative z-10" style="font-variation-settings: 'FILL' 1;">logout</span>
+            </div>
+
+            <!-- Text -->
+            <h3 class="text-2xl font-black text-white tracking-tight mb-2">Akhiri Sesi?</h3>
+            <p class="text-sm font-medium text-slate-400/90 leading-relaxed max-w-[280px]">
+                Anda akan keluar dari panel admin. Pastikan semua perubahan data telah tersimpan.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3 w-full mt-8">
+                <button type="button" onclick="document.getElementById('logoutModal').classList.add('hidden')" 
+                        class="flex-1 py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300">
+                    Batal
+                </button>
+                <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 shadow-[0_4px_15px_rgba(239,68,68,0.3)] hover:shadow-[0_6px_25px_rgba(239,68,68,0.4)] transition-all duration-300 border border-red-400/50">
+                        Ya, Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+    @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes modalPopUp {
+        from { transform: scale(0.95) translateY(10px); }
+        to { transform: scale(1) translateY(0); }
+    }
+
     /* Premium Modern Sidebar styles */
     .sidebar-modern {
         background: linear-gradient(185deg, #051F20 0%, #0B2B26 60%, #163832 100%);

@@ -57,7 +57,7 @@ class ProdukController extends Controller
             });
         }
 
-        $produks = $query->orderBy('created_at', 'desc')->paginate(12);
+        $produks = $query->orderBy('created_at', 'desc')->paginate(8);
 
         return view('customer.produk', compact('produks'));
     }

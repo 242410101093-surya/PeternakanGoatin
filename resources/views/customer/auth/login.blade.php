@@ -214,7 +214,7 @@
             {{-- Header with Logo and Sign In/Sign Up links --}}
             <header class="flex items-center justify-between gap-4">
                 <div>
-                    <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-8 w-auto">
+                    <img src="{{ asset('images/logo-auth.png') }}" alt="Goatin Logo" class="h-10 sm:h-12 w-auto object-contain">
                 </div>
                 
                 <div class="flex items-center gap-5 text-[11px] uppercase tracking-wider font-extrabold">

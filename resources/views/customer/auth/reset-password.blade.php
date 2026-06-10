@@ -113,7 +113,7 @@
         
         {{-- Logo Header --}}
         <div class="flex items-center justify-center mb-5">
-            <img src="{{ asset('images/logo.png') }}" alt="Goatin Logo" class="h-12 w-auto">
+            <img src="{{ asset('images/logo-auth.png') }}" alt="Goatin Logo" class="h-14 sm:h-16 w-auto object-contain">
         </div>
 
         {{-- Form Title & Info Text --}}
@@ -158,9 +158,14 @@
 
             {{-- Verification Code --}}
             <div class="space-y-1.5">
-                <label class="block text-[9.5px] font-extrabold text-slate-400 uppercase tracking-widest pl-1" for="code">
-                    Kode Verifikasi (6 Digit)
-                </label>
+                <div class="flex justify-between items-center pl-1">
+                    <label class="block text-[9.5px] font-extrabold text-slate-400 uppercase tracking-widest" for="code">
+                        Kode Verifikasi (6 Digit)
+                    </label>
+                    <button type="button" id="resend-code-btn" onclick="resendCode()" class="text-[9.5px] font-extrabold text-slate-400 cursor-not-allowed transition-colors" disabled>
+                        Kirim Ulang (<span id="countdown">60</span>s)
+                    </button>
+                </div>
                 <div class="flex items-center capsule-input-container rounded-full px-5 py-2.5 gap-3 border border-transparent">
                     <span class="material-symbols-outlined text-[20px] text-[#235347]">key</span>
                     <input type="text" name="code" id="code" required maxlength="6" pattern="\d{6}"
@@ -239,6 +244,52 @@
             document.getElementById('reset-password-form').addEventListener('submit', function(e) {
                 showLoader();
             });
+
+            // Countdown Timer logic
+            let countdown = 60;
+            const countdownEl = document.getElementById('countdown');
+            const resendBtn = document.getElementById('resend-code-btn');
+            
+            if (countdownEl && resendBtn) {
+                const timer = setInterval(() => {
+                    countdown--;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        resendBtn.disabled = false;
+                        resendBtn.innerHTML = 'Kirim Ulang Sekarang';
+                        resendBtn.classList.remove('text-slate-400', 'cursor-not-allowed');
+                        resendBtn.classList.add('text-[#235347]', 'hover:text-[#163832]');
+                    } else {
+                        countdownEl.textContent = countdown;
+                    }
+                }, 1000);
+            }
+
+            window.resendCode = function() {
+                if(resendBtn.disabled) return;
+                const email = document.getElementById('email').value;
+                
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('password.email') }}";
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = "{{ csrf_token() }}";
+                
+                const emailInput = document.createElement('input');
+                emailInput.type = 'hidden';
+                emailInput.name = 'email';
+                emailInput.value = email;
+                
+                form.appendChild(csrfInput);
+                form.appendChild(emailInput);
+                document.body.appendChild(form);
+                
+                showLoader();
+                form.submit();
+            };
 
             window.addEventListener('pageshow', function() {
                 hideLoader();

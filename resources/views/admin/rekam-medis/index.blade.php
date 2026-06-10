@@ -19,11 +19,11 @@
                 <span class="material-symbols-outlined text-[18px]">download</span>
                 Ekspor Laporan
             </a>
-            <button onclick="document.getElementById('addBeratModal').classList.remove('hidden')" class="bg-surface-container-lowest border border-outline-variant text-on-surface flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors shadow-ambient">
+            <button onclick="window.dispatchEvent(new CustomEvent('open-add-berat-modal'))" class="bg-surface-container-lowest border border-outline-variant text-on-surface flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">scale</span>
                 Catat Berat
             </button>
-            <button onclick="document.getElementById('addRekamModal').classList.remove('hidden')" class="bg-primary-container text-on-primary-container flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-primary transition-colors shadow-ambient hover:text-white">
+            <button onclick="window.dispatchEvent(new CustomEvent('open-add-rekam-modal'))" class="bg-primary-container text-on-primary-container flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-primary transition-colors shadow-ambient hover:text-white">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Rekam Medis Baru
             </button>
@@ -58,60 +58,73 @@
     </div>
 
     <!-- Main Table Section -->
-    <div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient overflow-hidden flex flex-col">
-        <div class="p-6 border-b border-surface-variant flex justify-between items-center bg-surface-bright">
-            <h3 class="font-h3 text-h3 text-on-background">Riwayat Rekam Medis</h3>
+    <div class="bg-transparent mt-8 flex flex-col">
+        <div class="mb-4 flex justify-between items-center px-2">
+            <h3 class="font-h3 text-h3 text-slate-800 tracking-tight">Riwayat Rekam Medis</h3>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto pb-8">
+            <table class="w-full text-left border-separate whitespace-nowrap" style="border-spacing: 0 12px;">
                 <thead>
-                    <tr class="bg-surface-container-low border-b border-surface-variant font-label-sm text-label-sm text-on-surface-variant">
-                        <th class="py-4 px-6 font-medium">Tanggal</th>
-                        <th class="py-4 px-6 font-medium">Hewan (ID)</th>
-                        <th class="py-4 px-6 font-medium">Dokter Hewan</th>
-                        <th class="py-4 px-6 font-medium">Diagnosa</th>
-                        <th class="py-4 px-6 font-medium">Tindakan</th>
-                        <th class="py-4 px-6 font-medium">Status</th>
-                        <th class="py-4 px-6 font-medium text-right">Aksi</th>
+                    <tr class="font-label-sm text-xs text-slate-400 uppercase tracking-widest font-bold">
+                        <th class="pb-2 px-6">Tanggal</th>
+                        <th class="pb-2 px-6">Hewan (ID)</th>
+                        <th class="pb-2 px-6">Dokter Hewan</th>
+                        <th class="pb-2 px-6">Diagnosa</th>
+                        <th class="pb-2 px-6">Tindakan</th>
+                        <th class="pb-2 px-6">Status</th>
+                        <th class="pb-2 px-6 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="font-body-md text-body-md text-on-surface divide-y divide-surface-variant">
+                <tbody class="font-body-md text-sm">
                     @forelse($rekamMedis as $rekam)
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors group">
-                        <td class="py-4 px-6 text-on-surface-variant">{{ \Carbon\Carbon::parse($rekam->tanggal)->format('d M Y') }}</td>
-                        <td class="py-4 px-6">
-                            <div class="flex flex-col gap-1">
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-primary font-mono font-bold text-sm tracking-wider w-fit">
+                    <tr class="bg-white hover:bg-[#f8fdfa] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(42,120,68,0.12)] group cursor-default transform hover:-translate-y-1">
+                        <td class="py-5 px-6 rounded-l-2xl border-y border-l border-slate-100 group-hover:border-[#2A7844]/20 group-hover:text-[#2A7844] text-slate-500 font-semibold transition-colors">
+                            {{ \Carbon\Carbon::parse($rekam->tanggal)->format('d M Y') }}
+                        </td>
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
+                            <div class="flex flex-col gap-1.5">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#2A7844]/10 to-[#1e5c33]/5 border border-[#2A7844]/20 text-[#2A7844] font-mono font-black text-xs tracking-widest w-fit">
                                     <span class="material-symbols-outlined text-[14px]">tag</span>
-                                    #{{ str_pad($rekam->inventaris->id, 4, '0', STR_PAD_LEFT) }}
+                                    {{ str_pad($rekam->inventaris->id, 4, '0', STR_PAD_LEFT) }}
                                 </span>
-                                <div class="font-semibold text-on-background text-sm">{{ $rekam->inventaris->jenis }}</div>
+                                <div class="font-bold text-slate-700">{{ $rekam->inventaris->jenis }}</div>
                             </div>
                         </td>
-                        <td class="py-4 px-6 text-on-surface-variant">{{ $rekam->dokter_hewan ?? '-' }}</td>
-                        <td class="py-4 px-6 text-on-surface-variant">{{ $rekam->diagnosa }}</td>
-                        <td class="py-4 px-6 text-on-surface-variant">{{ $rekam->tindakan }}</td>
-                        <td class="py-4 px-6">
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 text-slate-600 font-medium transition-colors">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">stethoscope</span>
+                                </div>
+                                {{ $rekam->dokter_hewan ?? '-' }}
+                            </div>
+                        </td>
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 text-slate-600 transition-colors max-w-[200px] truncate" title="{{ $rekam->diagnosa }}">
+                            {{ $rekam->diagnosa }}
+                        </td>
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 text-slate-600 transition-colors max-w-[200px] truncate" title="{{ $rekam->tindakan }}">
+                            {{ $rekam->tindakan }}
+                        </td>
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
                             @php
-                                $statusColor = 'bg-secondary-container/30 text-secondary border-secondary-container';
+                                $statusColor = 'bg-blue-50 text-blue-600 border-blue-200';
                                 if(str_contains(strtolower($rekam->status), 'sakit') || str_contains(strtolower($rekam->status), 'perawatan')) {
-                                    $statusColor = 'bg-tertiary-fixed/30 text-tertiary border-tertiary-fixed';
+                                    $statusColor = 'bg-amber-50 text-amber-600 border-amber-200';
                                 }
                             @endphp
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border font-caption text-caption font-semibold {{ $statusColor }}">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold shadow-sm {{ $statusColor }}">
                                 {{ $rekam->status }}
                             </span>
                         </td>
-                        <td class="py-4 px-6 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openEditRekamModal({{ $rekam }})" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
-                                    <span class="material-symbols-outlined text-sm">edit</span>
+                        <td class="py-5 px-6 rounded-r-2xl border-y border-r border-slate-100 group-hover:border-[#2A7844]/20 text-right transition-colors">
+                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-300">
+                                <button onclick="openEditRekamModal({{ $rekam }})" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#2A7844] hover:border-[#2A7844] hover:bg-[#2A7844]/5 rounded-xl shadow-sm transition-all">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
                                 <form action="{{ route('admin.rekam-medis.destroy', $rekam->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus data rekam medis ini? Tindakan ini tidak bisa dibatalkan.">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error rounded">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    <button type="submit" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-500 hover:bg-red-50 rounded-xl shadow-sm transition-all">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
                                     </button>
                                 </form>
                             </div>
@@ -119,7 +132,13 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="py-8 px-6 text-center text-on-surface-variant">Belum ada data rekam medis.</td>
+                        <td colspan="7" class="py-16 px-6 text-center text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-slate-50 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl opacity-50">medical_information</span>
+                            </div>
+                            <p class="font-medium text-slate-500">Belum ada data rekam medis.</p>
+                            <p class="text-xs mt-1">Data yang ditambahkan akan muncul di sini.</p>
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -130,128 +149,167 @@
 </div>
 
 <!-- Modal Tambah Rekam Medis -->
-<div id="addRekamModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
-            <h3 class="font-h3 text-h3 text-on-surface">Tambah Rekam Medis</h3>
-            <button onclick="document.getElementById('addRekamModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+<div x-data="{ open: false }" @open-add-rekam-modal.window="open = true" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" style="display: none;"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-show="open" style="display: none;">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div x-show="open" @click.away="open = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_60px_rgba(5,31,32,0.15)] transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-slate-100">
+                <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">medical_information</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Tambah Rekam Medis</h3>
+                    </div>
+                    <button type="button" @click="open = false" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+                <form action="{{ route('admin.rekam-medis.store') }}" method="POST" class="p-8 space-y-6">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ternak</label>
+                            <div class="relative">
+                                <select name="inventaris_id" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none appearance-none cursor-pointer">
+                                    @foreach($inventarisList as $inv)
+                                        <option value="{{ $inv->id }}">{{ $inv->jenis }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})</option>
+                                    @endforeach
+                                </select>
+                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal</label>
+                            <input type="date" name="tanggal" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dokter Hewan</label>
+                            <input type="text" name="dokter_hewan" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Keadaan</label>
+                            <input type="text" name="status" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none" placeholder="Sehat / Masa Pemulihan">
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Diagnosa</label>
+                        <textarea name="diagnosa" required rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tindakan</label>
+                        <textarea name="tindakan" required rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                    </div>
+                    <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Baru</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form action="{{ route('admin.rekam-medis.store') }}" method="POST" class="p-6 space-y-4">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Ternak</label>
-                    <select name="inventaris_id" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                        @foreach($inventarisList as $inv)
-                            <option value="{{ $inv->id }}">{{ $inv->jenis }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tanggal</label>
-                    <input type="date" name="tanggal" required value="{{ date('Y-m-d') }}" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Dokter Hewan</label>
-                    <input type="text" name="dokter_hewan" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Status Keadaan</label>
-                    <input type="text" name="status" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface" placeholder="Sehat / Masa Pemulihan">
-                </div>
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Diagnosa</label>
-                <textarea name="diagnosa" required rows="2" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tindakan</label>
-                <textarea name="tindakan" required rows="2" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-            </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('addRekamModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <!-- Modal Edit Rekam Medis -->
-<div id="editRekamModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
-            <h3 class="font-h3 text-h3 text-on-surface">Edit Rekam Medis</h3>
-            <button onclick="document.getElementById('editRekamModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+<div x-data="{ open: false }" @open-edit-rekam-modal.window="open = true" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" style="display: none;"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-show="open" style="display: none;">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div x-show="open" @click.away="open = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_60px_rgba(5,31,32,0.15)] transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-slate-100">
+                <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">edit_document</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Edit Rekam Medis</h3>
+                    </div>
+                    <button type="button" @click="open = false" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+                <form id="editRekamForm" method="POST" class="p-8 space-y-6">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal</label>
+                            <input type="date" name="tanggal" id="edit_tanggal" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dokter Hewan</label>
+                            <input type="text" name="dokter_hewan" id="edit_dokter" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Keadaan</label>
+                            <input type="text" name="status" id="edit_status" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Diagnosa</label>
+                        <textarea name="diagnosa" id="edit_diagnosa" required rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tindakan</label>
+                        <textarea name="tindakan" id="edit_tindakan" required rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                    </div>
+                    <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form id="editRekamForm" method="POST" class="p-6 space-y-4">
-            @csrf
-            @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tanggal</label>
-                    <input type="date" name="tanggal" id="edit_tanggal" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Dokter Hewan</label>
-                    <input type="text" name="dokter_hewan" id="edit_dokter" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Status Keadaan</label>
-                    <input type="text" name="status" id="edit_status" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                </div>
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Diagnosa</label>
-                <textarea name="diagnosa" id="edit_diagnosa" required rows="2" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tindakan</label>
-                <textarea name="tindakan" id="edit_tindakan" required rows="2" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-            </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('editRekamModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <!-- Modal Catat Berat Badan -->
-<div id="addBeratModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-sm shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between">
-            <h3 class="font-h3 text-h3 text-on-surface">Catat Berat Badan</h3>
-            <button onclick="document.getElementById('addBeratModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+<div x-data="{ open: false }" @open-add-berat-modal.window="open = true" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" style="display: none;"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-show="open" style="display: none;">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div x-show="open" @click.away="open = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_60px_rgba(5,31,32,0.15)] transition-all sm:my-8 sm:w-full sm:max-w-md border border-slate-100">
+                <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">scale</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Catat Berat Badan</h3>
+                    </div>
+                    <button type="button" @click="open = false" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+                <form action="{{ route('admin.rekam-medis.berat') }}" method="POST" class="p-8 space-y-6">
+                    @csrf
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ternak</label>
+                        <div class="relative">
+                            <select name="inventaris_id" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none appearance-none cursor-pointer">
+                                @foreach($inventarisList as $inv)
+                                    <option value="{{ $inv->id }}">{{ $inv->jenis }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})</option>
+                                @endforeach
+                            </select>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal</label>
+                        <input type="date" name="tanggal_pencatatan" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Berat (Kg)</label>
+                        <input type="number" step="0.01" name="berat" required min="0" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                    </div>
+                    <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-orange-500 to-orange-400 text-white hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Berat</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form action="{{ route('admin.rekam-medis.berat') }}" method="POST" class="p-6 space-y-4">
-            @csrf
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Ternak</label>
-                <select name="inventaris_id" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                    @foreach($inventarisList as $inv)
-                        <option value="{{ $inv->id }}">{{ $inv->jenis }} (#{{ str_pad($inv->id, 4, '0', STR_PAD_LEFT) }})</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tanggal</label>
-                <input type="date" name="tanggal_pencatatan" required value="{{ date('Y-m-d') }}" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Berat (Kg)</label>
-                <input type="number" step="0.01" name="berat" required min="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('addBeratModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan</button>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -263,7 +321,7 @@
         document.getElementById('edit_diagnosa').value = rekam.diagnosa;
         document.getElementById('edit_tindakan').value = rekam.tindakan;
         document.getElementById('edit_status').value = rekam.status;
-        document.getElementById('editRekamModal').classList.remove('hidden');
+        window.dispatchEvent(new CustomEvent('open-edit-rekam-modal'));
     }
 
     // Chart.js implementation

@@ -50,17 +50,14 @@
         <!-- Right Side Controls -->
         <div class="flex items-center gap-2.5">
             <!-- Logout Button -->
-            <form action="{{ route('logout') }}" method="POST" class="hidden sm:block">
-                @csrf
-                <button type="submit"
-                        class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all border"
-                        style="color: #DAF1DE; border-color: rgba(218, 241, 222, 0.25);"
-                        onmouseover="this.style.color='#DC2626'; this.style.borderColor='rgba(239, 68, 68, 0.4)'; this.style.background='rgba(254, 242, 242, 0.15)';"
-                        onmouseout="this.style.color='#DAF1DE'; this.style.borderColor='rgba(218, 241, 222, 0.25)'; this.style.background='transparent';">
-                    <span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
-                    Keluar
-                </button>
-            </form>
+            <button type="button" onclick="document.getElementById('customerLogoutModal').classList.remove('hidden'); document.getElementById('customerLogoutModal').classList.add('flex');"
+                    class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all border"
+                    style="color: #DAF1DE; border-color: rgba(218, 241, 222, 0.25);"
+                    onmouseover="this.style.color='#DC2626'; this.style.borderColor='rgba(239, 68, 68, 0.4)'; this.style.background='rgba(254, 242, 242, 0.15)';"
+                    onmouseout="this.style.color='#DAF1DE'; this.style.borderColor='rgba(218, 241, 222, 0.25)'; this.style.background='transparent';">
+                <span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
+                Keluar
+            </button>
 
             <!-- User Avatar Quick Link -->
             <a href="{{ route('customer.profile') }}" class="w-9 h-9 rounded-full overflow-hidden border-2 border-emerald-500 hover:border-emerald-600 transition-colors" id="customer-navbar-avatar-container">
@@ -104,13 +101,10 @@
         
         <div class="h-px bg-slate-100 my-2"></div>
         
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors">
-                <span class="material-symbols-outlined" style="font-size: 18px;">logout</span>
-                Keluar Aplikasi
-            </button>
-        </form>
+        <button type="button" onclick="document.getElementById('customerLogoutModal').classList.remove('hidden'); document.getElementById('customerLogoutModal').classList.add('flex');" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors">
+            <span class="material-symbols-outlined" style="font-size: 18px;">logout</span>
+            Keluar Aplikasi
+        </button>
     </div>
 </nav>
 
@@ -127,3 +121,59 @@
         }
     });
 </script>
+
+<!-- Ultra-Modern Customer Logout Modal -->
+<div id="customerLogoutModal" class="fixed inset-0 z-[9999] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" style="background: rgba(5, 31, 32, 0.75); backdrop-filter: blur(12px); animation: modalFadeIn 0.3s forwards;">
+    <div class="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-[#0B2B26] to-[#051F20] shadow-[0_20px_60px_rgba(0,0,0,0.5)] transform scale-95 transition-transform duration-300" style="animation: modalPopUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+        
+        <!-- Glowing Ambient Background -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-red-500 rounded-full blur-[80px] opacity-20"></div>
+        
+        <!-- Close Button -->
+        <div class="absolute top-4 right-4 z-20">
+            <button onclick="document.getElementById('customerLogoutModal').classList.add('hidden'); document.getElementById('customerLogoutModal').classList.remove('flex');" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-slate-400 hover:text-white transition-all">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+        </div>
+
+        <div class="relative z-10 p-8 flex flex-col items-center text-center">
+            <!-- Icon -->
+            <div class="w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/5 flex items-center justify-center border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.15)] relative group">
+                <div class="absolute inset-0 bg-red-500/20 rounded-2xl blur-xl group-hover:bg-red-500/30 transition-all duration-500"></div>
+                <span class="material-symbols-outlined text-4xl text-red-400 relative z-10" style="font-variation-settings: 'FILL' 1;">logout</span>
+            </div>
+
+            <!-- Text -->
+            <h3 class="text-2xl font-black text-white tracking-tight mb-2">Akhiri Sesi?</h3>
+            <p class="text-sm font-medium text-slate-400/90 leading-relaxed max-w-[280px]">
+                Anda akan keluar dari sesi ini. Pastikan semua transaksi Anda sudah selesai.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3 w-full mt-8">
+                <button type="button" onclick="document.getElementById('customerLogoutModal').classList.add('hidden'); document.getElementById('customerLogoutModal').classList.remove('flex');" 
+                        class="flex-1 py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300">
+                    Batal
+                </button>
+                <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 shadow-[0_4px_15px_rgba(239,68,68,0.3)] hover:shadow-[0_6px_25px_rgba(239,68,68,0.4)] transition-all duration-300 border border-red-400/50">
+                        Ya, Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes modalPopUp {
+        from { transform: scale(0.95) translateY(10px); }
+        to { transform: scale(1) translateY(0); }
+    }
+</style>

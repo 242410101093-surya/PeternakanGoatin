@@ -98,114 +98,151 @@
     @endif
     
     <!-- Bento Grid: Key Metrics -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
         <!-- Revenue Card -->
-        <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant hover:ambient-shadow transition-shadow group">
-            <div class="flex justify-between items-start mb-stack-md">
-                <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
-                    <span class="material-symbols-outlined">payments</span>
+        <div class="bg-gradient-to-br from-[#2A7844] to-[#1e5c33] rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#2A7844]/40 transition-all duration-300 border border-[#2A7844]/50">
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur-md">
+                    <span class="material-symbols-outlined text-2xl">payments</span>
                 </div>
-                @if(isset($hasFilters) && $hasFilters)
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-caption text-[10px]">
-                        <span class="material-symbols-outlined text-[12px]">filter_alt</span> Filtered
-                    </span>
-                @endif
+                <div class="flex flex-col items-end">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-100">Pemasukan</span>
+                    @if(isset($hasFilters) && $hasFilters)
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-white/20 text-white font-caption text-[10px]">
+                            <span class="material-symbols-outlined text-[12px]">filter_alt</span> Filtered
+                        </span>
+                    @endif
+                </div>
             </div>
-            <h3 class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-1">Total Pemasukan</h3>
-            <p class="font-h2 text-h2 text-on-surface group-hover:text-primary transition-colors">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
+            <div class="relative z-10">
+                <h3 class="text-3xl lg:text-4xl font-black text-white tracking-tight truncate">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h3>
+                <p class="text-sm font-medium text-emerald-100/80 mt-1">Total Pemasukan</p>
+            </div>
+            <!-- Decorative shapes -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl group-hover:bg-emerald-400/40 transition-colors"></div>
         </div>
+
         <!-- Expenses Card -->
-        <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant hover:ambient-shadow transition-shadow group">
-            <div class="flex justify-between items-start mb-stack-md">
-                <div class="w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
-                    <span class="material-symbols-outlined">receipt_long</span>
+        <div class="bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(239,68,68,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
+                    <span class="material-symbols-outlined text-2xl">receipt_long</span>
                 </div>
-                @if(isset($hasFilters) && $hasFilters)
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-caption text-[10px]">
-                        <span class="material-symbols-outlined text-[12px]">filter_alt</span> Filtered
-                    </span>
-                @endif
+                <div class="flex flex-col items-end">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Pengeluaran</span>
+                    @if(isset($hasFilters) && $hasFilters)
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-red-100 text-red-600 font-caption text-[10px]">
+                            <span class="material-symbols-outlined text-[12px]">filter_alt</span> Filtered
+                        </span>
+                    @endif
+                </div>
             </div>
-            <h3 class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-1">Total Pengeluaran</h3>
-            <p class="font-h2 text-h2 text-on-surface group-hover:text-tertiary transition-colors">Rp {{ number_format($totalExpenses, 0, ',', '.') }}</p>
+            <div class="relative z-10">
+                <h3 class="text-3xl lg:text-4xl font-black text-slate-800 tracking-tight truncate">Rp {{ number_format($totalExpenses, 0, ',', '.') }}</h3>
+                <p class="text-sm font-medium text-slate-500 mt-1">Total Pengeluaran</p>
+            </div>
+            <div class="absolute -bottom-8 -right-8 w-28 h-28 bg-red-50/80 rounded-full blur-2xl group-hover:bg-red-100 transition-colors"></div>
         </div>
+
         <!-- Net Profit Card -->
-        <div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant hover:ambient-shadow transition-shadow relative overflow-hidden group">
-            <!-- Decorative bg -->
-            <div class="absolute -right-6 -top-6 w-32 h-32 bg-primary-fixed rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
-            <div class="flex justify-between items-start mb-stack-md relative z-10">
-                <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
-                    <span class="material-symbols-outlined">account_balance</span>
+        <div class="bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <span class="material-symbols-outlined text-2xl">account_balance</span>
                 </div>
-                @if(isset($hasFilters) && $hasFilters)
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-caption text-[10px]">
-                        <span class="material-symbols-outlined text-[12px]">filter_alt</span> Filtered
-                    </span>
-                @endif
+                <div class="flex flex-col items-end">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Laba Bersih</span>
+                    @if(isset($hasFilters) && $hasFilters)
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-blue-100 text-blue-600 font-caption text-[10px]">
+                            <span class="material-symbols-outlined text-[12px]">filter_alt</span> Filtered
+                        </span>
+                    @endif
+                </div>
             </div>
-            <h3 class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-1 relative z-10">Laba Bersih</h3>
-            <p class="font-h2 text-h2 {{ $netProfit < 0 ? 'text-error' : 'text-on-surface' }} group-hover:text-primary transition-colors relative z-10">Rp {{ number_format($netProfit, 0, ',', '.') }}</p>
+            <div class="relative z-10">
+                <h3 class="text-3xl lg:text-4xl font-black {{ $netProfit < 0 ? 'text-red-500' : 'text-slate-800' }} tracking-tight truncate">Rp {{ number_format($netProfit, 0, ',', '.') }}</h3>
+                <p class="text-sm font-medium text-slate-500 mt-1">Total Laba Bersih</p>
+            </div>
+            <div class="absolute -bottom-8 -right-8 w-28 h-28 bg-blue-50/80 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
         </div>
     </div>
     
     <!-- Main Content Split: Transactions Table -->
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl flex flex-col">
-        <div class="p-6 border-b border-surface-variant flex flex-col sm:flex-row justify-between items-center bg-surface-bright gap-4">
-            <h3 class="font-h3 text-h3 text-on-surface">Riwayat Transaksi</h3>
-            <span class="font-caption text-caption text-on-surface-variant">{{ $laporans->total() }} transaksi ditemukan</span>
+    <div class="bg-transparent flex flex-col mt-4">
+        <!-- Toolbar -->
+        <div class="px-2 mb-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <h3 class="font-h3 text-h3 text-slate-800">Riwayat Transaksi</h3>
+            <span class="font-medium text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{{ $laporans->total() }} transaksi ditemukan</span>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto pb-8 pt-2">
+            <table class="w-full text-left border-separate whitespace-nowrap" style="border-spacing: 0 12px;">
                 <thead>
-                    <tr class="bg-surface-container-low border-b border-surface-variant font-label-sm text-label-sm text-on-surface-variant">
-                        <th class="py-4 px-6 font-medium">Tanggal</th>
-                        <th class="py-4 px-6 font-medium">Jenis Transaksi</th>
-                        <th class="py-4 px-6 font-medium">Keterangan</th>
-                        <th class="py-4 px-6 font-medium">Jumlah</th>
-                        <th class="py-4 px-6 font-medium text-right">Aksi</th>
+                    <tr class="font-label-sm text-xs text-slate-400 uppercase tracking-widest font-bold">
+                        <th class="pb-2 px-6">Tanggal</th>
+                        <th class="pb-2 px-6">Jenis Transaksi</th>
+                        <th class="pb-2 px-6">Keterangan</th>
+                        <th class="pb-2 px-6">Jumlah</th>
+                        <th class="pb-2 px-6 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="font-body-md text-body-md text-on-surface divide-y divide-surface-variant">
+                <tbody class="font-body-md text-sm">
                     @forelse($laporans as $laporan)
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors group">
-                        <td class="py-4 px-6 text-on-surface-variant">{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}</td>
-                        <td class="py-4 px-6">
+                    <tr x-data="{ isRowOpen: false }" class="bg-white hover:bg-[#f8fdfa] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(42,120,68,0.12)] group cursor-default">
+                        <td class="py-5 px-6 rounded-l-2xl border-y border-l border-slate-100 group-hover:border-[#2A7844]/20 text-slate-600 font-medium transition-colors">
+                            {{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}
+                        </td>
+                        <td :class="isRowOpen ? 'relative z-50' : 'relative z-10'" class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
                             @if($laporan->pesanan_id !== null || in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']))
                                 @php
-                                    $selectBgClass = 'bg-secondary-container/30 text-secondary border-secondary-container';
-                                    if ($laporan->jenis_transaksi == 'Pengiriman Kurir') {
-                                        $selectBgClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                                    $selectColor = 'text-blue-700';
+                                    $selectBg = 'bg-blue-50';
+                                    $selectBorder = 'border-blue-200';
+                                    $selectIcon = 'text-blue-500';
+                                    $label = 'Pengiriman Kurir';
+                                    
+                                    if ($laporan->jenis_transaksi == 'Pemasukan') {
+                                        $selectColor = 'text-emerald-700';
+                                        $selectBg = 'bg-emerald-50';
+                                        $selectBorder = 'border-emerald-200';
+                                        $selectIcon = 'text-emerald-500';
+                                        $label = 'Pemasukan (Otomatis)';
                                     } elseif ($laporan->jenis_transaksi == 'Pesanan Sudah Sampai') {
-                                        $selectBgClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                        $selectColor = 'text-teal-700';
+                                        $selectBg = 'bg-teal-50';
+                                        $selectBorder = 'border-teal-200';
+                                        $label = 'Pesanan Sudah Sampai';
                                     }
                                 @endphp
-                                <select onchange="changeLaporanJenis(this, {{ $laporan->id }})" class="px-3 py-1 rounded-full border font-caption text-caption font-semibold focus:outline-none transition-colors cursor-pointer {{ $selectBgClass }}">
-                                    <option value="Pemasukan" class="bg-white text-slate-800" {{ $laporan->jenis_transaksi == 'Pemasukan' ? 'selected' : '' }}>Pemasukan (Otomatis)</option>
-                                    <option value="Pengiriman Kurir" class="bg-white text-slate-800" {{ $laporan->jenis_transaksi == 'Pengiriman Kurir' ? 'selected' : '' }}>Pengiriman Kurir</option>
-                                    <option value="Pesanan Sudah Sampai" class="bg-white text-slate-800" {{ $laporan->jenis_transaksi == 'Pesanan Sudah Sampai' ? 'selected' : '' }}>Pesanan Sudah Sampai</option>
-                                </select>
+                                <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-bold shadow-sm {{ $selectBg }} {{ $selectColor }} {{ $selectBorder }}">
+                                    {{ $label }}
+                                </span>
                             @else
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border font-caption text-caption font-semibold bg-tertiary-fixed/30 text-tertiary border-tertiary-fixed">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold shadow-sm bg-red-50 text-red-600 border-red-200 uppercase">
                                     Pengeluaran
                                 </span>
                             @endif
                         </td>
-                        <td class="py-4 px-6 text-on-surface-variant">{{ $laporan->keterangan }}</td>
-                        <td class="py-4 px-6">
-                            <span class="font-bold {{ in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']) ? 'text-primary' : 'text-on-surface' }}">
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors text-slate-600">
+                            {{ $laporan->keterangan }}
+                        </td>
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
+                            <span class="font-black text-lg {{ in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']) ? 'text-[#2A7844]' : 'text-slate-800' }}">
                                 {{ in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']) ? '+' : '-' }} Rp {{ number_format($laporan->jumlah, 0, ',', '.') }}
                             </span>
                         </td>
-                        <td class="py-4 px-6 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openEditKeuanganModal(this)" data-laporan="{{ json_encode($laporan) }}" class="p-1.5 text-on-surface-variant hover:text-primary rounded">
-                                    <span class="material-symbols-outlined text-sm">edit</span>
+                        <td class="py-5 px-6 rounded-r-2xl border-y border-r border-slate-100 group-hover:border-[#2A7844]/20 text-right transition-colors">
+                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-300">
+                                <button onclick="openEditKeuanganModal(this)" data-laporan="{{ json_encode($laporan) }}" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#2A7844] hover:border-[#2A7844] hover:bg-[#2A7844]/5 rounded-xl shadow-sm transition-all" title="Edit Transaksi">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>
                                 <form action="{{ route('admin.keuangan.destroy', $laporan->id) }}" method="POST" class="inline delete-form" data-message="{{ $laporan->pesanan_id !== null ? 'Yakin ingin MEMBATALKAN pesanan ini? Laporan uang akan ditarik dan stok ternak akan dikembalikan menjadi Tersedia.' : 'Yakin ingin menghapus transaksi \''.$laporan->keterangan.'\'? Tindakan ini tidak bisa dibatalkan.' }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error rounded">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    <button type="submit" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-500 hover:bg-red-50 rounded-xl shadow-sm transition-all" title="Hapus Transaksi">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
                                     </button>
                                 </form>
                             </div>
@@ -213,13 +250,18 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="py-8 px-6 text-center text-on-surface-variant">Belum ada transaksi tercatat.</td>
+                        <td colspan="5" class="py-16 px-6 text-center text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-slate-50 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-3xl opacity-50">receipt_long</span>
+                            </div>
+                            <p class="font-medium text-slate-500">Belum ada transaksi tercatat.</p>
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="p-4 border-t border-surface-variant bg-surface-container/30">
+        <div class="py-2">
             {{ $laporans->appends(request()->query())->links() }}
         </div>
     </div>
@@ -227,76 +269,124 @@
 </div>
 
 <!-- Modal Tambah Transaksi -->
-<div id="addKeuanganModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between">
-            <h3 class="font-h3 text-h3 text-on-surface">Catat Transaksi</h3>
-            <button onclick="document.getElementById('addKeuanganModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
+<div id="addKeuanganModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-[24px] w-full max-w-lg shadow-[0_20px_60px_rgba(5,31,32,0.15)] border border-slate-100 overflow-hidden transform transition-all">
+        <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl">add_circle</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Catat Transaksi</h3>
+            </div>
+            <button onclick="document.getElementById('addKeuanganModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
             </button>
         </div>
-        <form action="{{ route('admin.keuangan.store') }}" method="POST" class="p-6 space-y-4">
+        <form action="{{ route('admin.keuangan.store') }}" method="POST" class="p-8 space-y-6">
             @csrf
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tanggal</label>
-                <input type="date" name="tanggal" required value="{{ date('Y-m-d') }}" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
+            
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal Transaksi</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">calendar_month</span>
+                    <input type="date" name="tanggal" required value="{{ date('Y-m-d') }}" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                </div>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jenis Transaksi</label>
-                <select name="jenis_transaksi" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                    <option value="Pengeluaran">Pengeluaran</option>
-                </select>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jenis Transaksi</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">category</span>
+                    <select name="jenis_transaksi" required class="w-full pl-12 pr-10 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none appearance-none cursor-pointer">
+                        <option value="Pengeluaran">Pengeluaran</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                </div>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Keterangan</label>
-                <input type="text" name="keterangan" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface" placeholder="Contoh: Penjualan Susu">
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Keterangan</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">description</span>
+                    <input type="text" name="keterangan" required class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none" placeholder="Misal: Pembelian pakan ternak">
+                </div>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jumlah (Rp)</label>
-                <input type="number" name="jumlah" required min="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jumlah (Rp)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rp</span>
+                    <input type="number" name="jumlah" required min="0" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-black text-lg transition-all outline-none placeholder-slate-300" placeholder="0">
+                </div>
             </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('addKeuanganModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan</button>
+
+            <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                <button type="button" onclick="document.getElementById('addKeuanganModal').classList.add('hidden')" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Transaksi</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal Edit Transaksi -->
-<div id="editKeuanganModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between">
-            <h3 class="font-h3 text-h3 text-on-surface">Edit Transaksi</h3>
-            <button onclick="document.getElementById('editKeuanganModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
+<div id="editKeuanganModal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-[24px] w-full max-w-lg shadow-[0_20px_60px_rgba(5,31,32,0.15)] border border-slate-100 overflow-hidden transform transition-all">
+        <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl">edit_document</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Edit Transaksi</h3>
+            </div>
+            <button onclick="document.getElementById('editKeuanganModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
             </button>
         </div>
-        <form id="editKeuanganForm" method="POST" class="p-6 space-y-4">
+        <form id="editKeuanganForm" method="POST" class="p-8 space-y-6">
             @csrf
             @method('PUT')
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Tanggal</label>
-                <input type="date" name="tanggal" id="edit_tanggal" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
+            
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal Transaksi</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">calendar_month</span>
+                    <input type="date" name="tanggal" id="edit_tanggal" required class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                </div>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jenis Transaksi</label>
-                <select name="jenis_transaksi" id="edit_jenis" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                    <option value="Pemasukan">Pemasukan</option>
-                    <option value="Pengeluaran">Pengeluaran</option>
-                </select>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jenis Transaksi</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">category</span>
+                    <select name="jenis_transaksi" id="edit_jenis" required class="w-full pl-12 pr-10 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none appearance-none cursor-pointer">
+                        <option value="Pemasukan">Pemasukan (Otomatis)</option>
+                        <option value="Pengeluaran">Pengeluaran</option>
+                        <option value="Pengiriman Kurir">Pengiriman Kurir</option>
+                        <option value="Pesanan Sudah Sampai">Pesanan Sudah Sampai</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                </div>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Keterangan</label>
-                <input type="text" name="keterangan" id="edit_keterangan" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Keterangan</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">description</span>
+                    <input type="text" name="keterangan" id="edit_keterangan" required class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                </div>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Jumlah (Rp)</label>
-                <input type="number" name="jumlah" id="edit_jumlah" required min="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jumlah (Rp)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rp</span>
+                    <input type="number" name="jumlah" id="edit_jumlah" required min="0" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-black text-lg transition-all outline-none">
+                </div>
             </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('editKeuanganModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan Perubahan</button>
+
+            <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                <button type="button" onclick="document.getElementById('editKeuanganModal').classList.add('hidden')" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
             </div>
         </form>
     </div>

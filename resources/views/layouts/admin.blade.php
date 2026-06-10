@@ -17,6 +17,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
@@ -702,6 +704,22 @@
                 }, 400);
             }, 4000);
         };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            @if(session('success'))
+                window.showToast("{{ session('success') }}", 'success');
+            @endif
+
+            @if(session('error'))
+                window.showToast("{{ session('error') }}", 'error');
+            @endif
+
+            @if($errors->any())
+                @foreach($errors->all() as $error)
+                    window.showToast("{{ $error }}", 'error');
+                @endforeach
+            @endif
+        });
     </script>
 
     @stack('modals')

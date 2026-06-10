@@ -85,20 +85,31 @@ class ProfileController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        if ($request->hasFile('foto_profil')) {
-            // Delete old photo if exists
-            if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto_profil)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
+        try {
+            if ($request->hasFile('foto_profil')) {
+                // Delete old photo if exists
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
+                }
+                $path = $request->file('foto_profil')->store('profile_photos', 'public');
+                $data['foto_profil'] = $path;
             }
-            $path = $request->file('foto_profil')->store('profile_photos', 'public');
-            $data['foto_profil'] = $path;
-        }
 
-        $user->fill($data);
-        if ($request->email !== $user->email) {
-            $user->email_verified_at = null;
+            $user->fill($data);
+            if ($request->email !== $user->email) {
+                $user->email_verified_at = null;
+            }
+            $user->save();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Profile update failed: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'errors' => ['system' => ['Terjadi kesalahan sistem saat memperbarui profil.']]
+                ], 500);
+            }
+            return back()->with('error', 'Terjadi kesalahan sistem saat memperbarui profil.');
         }
-        $user->save();
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

@@ -318,17 +318,20 @@
 </div>
 
 <script>
-    function openNotificationsModal()  { const m=document.getElementById('notificationsModal'); m.classList.remove('hidden'); m.classList.add('flex'); }
-    function closeNotificationsModal() { const m=document.getElementById('notificationsModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+    function openNotificationsModal()  { const m=document.getElementById('notificationsModal'); if(m) { m.classList.remove('hidden'); m.classList.add('flex'); } }
+    function closeNotificationsModal() { const m=document.getElementById('notificationsModal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
     function openConfirmOrderModal(n) {
-        document.getElementById('confirmOrderForm').action = `/admin/notifications/${n.id}/confirm`;
-        document.getElementById('confirmOrderForm').dataset.notifId = n.id;
-        document.getElementById('confirm_title').value = n.title;
-        document.getElementById('confirm_message').value = n.message;
-        document.getElementById('confirm_harga_jual').value = Math.round(n.pesanan ? n.pesanan.harga_jual : 0);
-        const m=document.getElementById('confirmOrderModal'); m.classList.remove('hidden'); m.classList.add('flex');
+        const form = document.getElementById('confirmOrderForm');
+        if (form) {
+            form.action = `/admin/notifications/${n.id}/confirm`;
+            form.dataset.notifId = n.id;
+        }
+        const t = document.getElementById('confirm_title'); if(t) t.value = n.title;
+        const msg = document.getElementById('confirm_message'); if(msg) msg.value = n.message;
+        const hj = document.getElementById('confirm_harga_jual'); if(hj) hj.value = Math.round(n.pesanan ? n.pesanan.harga_jual : 0);
+        const m=document.getElementById('confirmOrderModal'); if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
     }
-    function closeConfirmOrderModal() { const m=document.getElementById('confirmOrderModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+    function closeConfirmOrderModal() { const m=document.getElementById('confirmOrderModal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
 
     document.addEventListener('DOMContentLoaded', function() {
         // Sync harga_jual dengan teks di dalam textarea confirm_message
@@ -353,7 +356,8 @@
         if (readAllForm) {
             readAllForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                document.getElementById('global-page-loader').style.display = 'flex';
+                const loader = document.getElementById('global-page-loader');
+                if(loader) loader.style.display = 'flex';
                 
                 fetch(readAllForm.getAttribute('action'), {
                     method: 'POST',
@@ -364,9 +368,9 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById('global-page-loader').style.display = 'none';
+                    if(loader) loader.style.display = 'none';
                     if (data.success) {
-                        window.showToast(data.message, 'success');
+                        if(window.showToast) window.showToast(data.message, 'success');
                         
                         // Clear list in modal
                         const list = document.getElementById('modal-notifications-list');
@@ -411,8 +415,8 @@
                     }
                 })
                 .catch(err => {
-                    document.getElementById('global-page-loader').style.display = 'none';
-                    window.showToast('Terjadi kesalahan jaringan.', 'error');
+                    if(loader) loader.style.display = 'none';
+                    if(window.showToast) window.showToast('Terjadi kesalahan jaringan.', 'error');
                 });
             });
         }
@@ -422,7 +426,8 @@
         if (confirmOrderForm) {
             confirmOrderForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                document.getElementById('global-page-loader').style.display = 'flex';
+                const loader = document.getElementById('global-page-loader');
+                if(loader) loader.style.display = 'flex';
                 
                 const notifId = confirmOrderForm.dataset.notifId;
                 const formData = new FormData(confirmOrderForm);
@@ -437,10 +442,10 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById('global-page-loader').style.display = 'none';
+                    if(loader) loader.style.display = 'none';
                     if (data.success) {
-                        window.showToast(data.message, 'success');
-                        window.closeConfirmOrderModal();
+                        if(window.showToast) window.showToast(data.message, 'success');
+                        if(window.closeConfirmOrderModal) window.closeConfirmOrderModal();
                         
                         // Remove item from recent notifications list
                         const recentItem = document.getElementById(`dashboard-recent-notif-item-${notifId}`);
@@ -468,8 +473,8 @@
                     }
                 })
                 .catch(err => {
-                    document.getElementById('global-page-loader').style.display = 'none';
-                    window.showToast('Terjadi kesalahan jaringan.', 'error');
+                    if(loader) loader.style.display = 'none';
+                    if(window.showToast) window.showToast('Terjadi kesalahan jaringan.', 'error');
                 });
             });
         }
@@ -478,9 +483,11 @@
             if (!confirm('Anda yakin ingin menolak pesanan ini secara permanen? Stok ternak akan dikembalikan.')) return;
             
             const form = document.getElementById('confirmOrderForm');
+            if(!form) return;
             const notifId = form.dataset.notifId;
             
-            document.getElementById('global-page-loader').style.display = 'flex';
+            const loader = document.getElementById('global-page-loader');
+            if(loader) loader.style.display = 'flex';
             
             fetch(`/admin/notifications/${notifId}/reject`, {
                 method: 'POST',
@@ -491,10 +498,10 @@
             })
             .then(res => res.json())
             .then(data => {
-                document.getElementById('global-page-loader').style.display = 'none';
+                if(loader) loader.style.display = 'none';
                 if (data.success) {
-                    window.showToast(data.message, 'success');
-                    window.closeConfirmOrderModal();
+                    if(window.showToast) window.showToast(data.message, 'success');
+                    if(window.closeConfirmOrderModal) window.closeConfirmOrderModal();
                     
                     // Remove item from lists
                     const recentItem = document.getElementById(`dashboard-recent-notif-item-${notifId}`);
@@ -513,8 +520,8 @@
                 }
             })
             .catch(err => {
-                document.getElementById('global-page-loader').style.display = 'none';
-                window.showToast('Terjadi kesalahan jaringan.', 'error');
+                if(loader) loader.style.display = 'none';
+                if(window.showToast) window.showToast('Terjadi kesalahan jaringan.', 'error');
             });
         };
 

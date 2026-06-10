@@ -11,7 +11,7 @@
             <h2 class="font-h2 text-h2 text-on-surface">Educational Articles</h2>
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage and publish animal care stewardship content.</p>
         </div>
-        <button onclick="document.getElementById('addArtikelModal').classList.remove('hidden')" class="bg-primary text-on-primary font-label-sm text-label-sm px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary-container transition-colors ambient-shadow whitespace-nowrap">
+        <button onclick="window.dispatchEvent(new CustomEvent('open-add-artikel-modal'))" class="bg-primary text-on-primary font-label-sm text-label-sm px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-primary-container transition-colors ambient-shadow whitespace-nowrap">
             <span class="material-symbols-outlined text-sm">add</span>
             Create New Article
         </button>
@@ -113,84 +113,113 @@
 </div>
 
 <!-- Modal Tambah Artikel -->
-<div id="addArtikelModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
-            <h3 class="font-h3 text-h3 text-on-surface">Tambah Artikel</h3>
-            <button onclick="document.getElementById('addArtikelModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+<div x-data="{ open: false }" @open-add-artikel-modal.window="open = true" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" style="display: none;"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-show="open" style="display: none;">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div x-show="open" @click.away="open = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_60px_rgba(5,31,32,0.15)] transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-100">
+                <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">article</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Tambah Artikel</h3>
+                    </div>
+                    <button type="button" @click="open = false" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                    </button>
+                </div>
+                <form action="{{ route('admin.artikel.store') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Judul Artikel</label>
+                            <input type="text" name="judul" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kategori</label>
+                            <input type="text" name="kategori" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Foto Artikel (Opsional)</label>
+                            <input type="file" name="foto" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Konten Artikel</label>
+                        <textarea name="konten" required rows="8" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                    </div>
+                    <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Publish Artikel</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form action="{{ route('admin.artikel.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
-            @csrf
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Judul Artikel</label>
-                <input type="text" name="judul" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Kategori</label>
-                <input type="text" name="kategori" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Konten Artikel</label>
-                <textarea name="konten" required rows="6" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Foto Artikel (Opsional)</label>
-                <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('addArtikelModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <!-- Modal Edit Artikel -->
-<div id="editArtikelModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-surface-container-lowest rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-variant">
-        <div class="p-6 border-b border-surface-variant flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
-            <h3 class="font-h3 text-h3 text-on-surface">Edit Artikel</h3>
-            <button onclick="document.getElementById('editArtikelModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <form id="editArtikelForm" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
-            @csrf
-            @method('PUT')
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Judul Artikel</label>
-                <input type="text" name="judul" id="edit_judul" required class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Kategori</label>
-                <input type="text" name="kategori" id="edit_kategori" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Konten Artikel</label>
-                <textarea name="konten" id="edit_konten" required rows="6" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-            </div>
-            <div id="edit_foto_preview_container" class="hidden flex items-center gap-4 p-3 bg-surface-container/50 rounded-lg border border-surface-variant">
-                <img id="edit_foto_preview" src="" class="w-16 h-16 object-cover rounded">
-                <div class="flex-1">
-                    <span class="text-sm font-semibold text-on-surface block">Foto Saat Ini</span>
-                    <button type="button" onclick="hapusFotoArtikel()" class="mt-1 text-xs text-error font-semibold flex items-center gap-1 hover:underline">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                        Hapus Foto Ini
+<div x-data="{ open: false }" @open-edit-artikel-modal.window="open = true" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" style="display: none;"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-show="open" style="display: none;">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div x-show="open" @click.away="open = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_60px_rgba(5,31,32,0.15)] transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-slate-100">
+                <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">edit_document</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Edit Artikel</h3>
+                    </div>
+                    <button type="button" @click="open = false" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined text-xl">close</span>
                     </button>
                 </div>
-                <input type="hidden" name="hapus_foto" id="edit_hapus_foto" value="0">
+                <form id="editArtikelForm" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5 md:col-span-2">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Judul Artikel</label>
+                            <input type="text" name="judul" id="edit_judul" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kategori</label>
+                            <input type="text" name="kategori" id="edit_kategori" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Foto Artikel Baru <span class="text-[10px] font-normal normal-case">(Biarkan kosong jika tidak diubah)</span></label>
+                            <input type="file" name="foto" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                        </div>
+                    </div>
+                    
+                    <div id="edit_foto_preview_container" class="hidden flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                        <img id="edit_foto_preview" src="" class="w-20 h-20 object-cover rounded-lg shadow-sm border border-slate-200">
+                        <div class="flex-1">
+                            <span class="text-sm font-bold text-slate-700 block">Foto Saat Ini</span>
+                            <p class="text-xs text-slate-500 mb-2">Ini adalah foto artikel yang saat ini ditampilkan.</p>
+                            <button type="button" onclick="hapusFotoArtikel()" class="text-xs text-red-500 font-bold flex items-center gap-1 hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                                Hapus Foto
+                            </button>
+                        </div>
+                        <input type="hidden" name="hapus_foto" id="edit_hapus_foto" value="0">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Konten Artikel</label>
+                        <textarea name="konten" id="edit_konten" required rows="8" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                    </div>
+                    <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
+                    </div>
+                </form>
             </div>
-            <div>
-                <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Foto Artikel (Biarkan kosong jika tidak ingin mengubah)</label>
-                <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-            </div>
-            <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                <button type="button" onclick="document.getElementById('editArtikelModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan Perubahan</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -201,7 +230,6 @@
         document.getElementById('edit_kategori').value = artikel.kategori || '';
         document.getElementById('edit_konten').value = artikel.konten;
         
-        // Reset hapus_foto input value
         document.getElementById('edit_hapus_foto').value = "0";
 
         // Show/hide preview container based on whether the article has a photo
@@ -216,7 +244,7 @@
             previewContainer.classList.add('hidden');
         }
 
-        document.getElementById('editArtikelModal').classList.remove('hidden');
+        window.dispatchEvent(new CustomEvent('open-edit-artikel-modal'));
     }
 
     function hapusFotoArtikel() {

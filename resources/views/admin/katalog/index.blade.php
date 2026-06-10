@@ -133,11 +133,10 @@
                 {{-- ID Kambing badge kiri atas (khusus admin) --}}
                 @if($produk->inventaris)
                 <div class="absolute top-3 left-3 z-10">
-                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold shadow-sm flex items-center gap-1"
-                          style="background:rgba(74,124,89,0.92); color:#fff; border:1px solid rgba(255,255,255,0.15);">
-                        <span class="material-symbols-outlined text-white" style="font-size:11px;">tag</span>
-                        #{{ str_pad($produk->inventaris->id, 4, '0', STR_PAD_LEFT) }}
-                    </span>
+                    <div class="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-black/50 backdrop-blur-md border border-white/20 shadow-lg transition-transform hover:scale-105 cursor-default">
+                        <span class="material-symbols-outlined text-[13px] text-emerald-400">tag</span>
+                        <span class="text-[11px] font-black tracking-widest text-white">{{ str_pad($produk->inventaris->id, 4, '0', STR_PAD_LEFT) }}</span>
+                    </div>
                 </div>
 
                 {{-- Kelamin badge kanan atas (seperti customer di kiri, di admin pindah ke kanan) --}}
@@ -222,35 +221,49 @@
     </div>
 
     {{-- ── Modal Edit Produk ── --}}
-    <div id="editProdukModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-surface-container-lowest rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-variant">
-            <div class="p-6 border-b border-surface-variant flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
-                <h3 class="font-h3 text-h3 text-on-surface">Edit Produk</h3>
-                <button onclick="document.getElementById('editProdukModal').classList.add('hidden')" class="text-on-surface-variant hover:text-error transition-colors">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+    <div x-data="{ open: false }" @open-edit-produk-modal.window="open = true" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" style="display: none;"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto" x-show="open" style="display: none;">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div x-show="open" @click.away="open = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-[0_20px_60px_rgba(5,31,32,0.15)] transition-all sm:my-8 sm:w-full sm:max-w-lg border border-slate-100">
+                    <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">edit_document</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Edit Produk</h3>
+                        </div>
+                        <button type="button" @click="open = false" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                            <span class="material-symbols-outlined text-xl">close</span>
+                        </button>
+                    </div>
+                    <form id="editProdukForm" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+                        @csrf
+                        @method('PUT')
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Harga (Rp)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rp</span>
+                                <input type="number" name="harga" id="edit_produk_harga" required min="0" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-black text-lg transition-all outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Spesifikasi Ternak</label>
+                            <textarea name="spesifikasi" id="edit_produk_spesifikasi" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Foto Ternak (Biarkan kosong jika tidak ingin mengubah)</label>
+                            <input type="file" name="foto" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                            <p class="text-xs text-slate-400 mt-1">Format: JPG, PNG, JPEG, IMG (Maks 10MB)</p>
+                        </div>
+                        <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
+                            <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                            <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <form id="editProdukForm" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
-                @csrf
-                @method('PUT')
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Harga (Rp)</label>
-                    <input type="number" name="harga" id="edit_produk_harga" required min="0" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Spesifikasi Ternak</label>
-                    <textarea name="spesifikasi" id="edit_produk_spesifikasi" rows="3" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface"></textarea>
-                </div>
-                <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Foto Ternak (Biarkan kosong jika tidak ingin mengubah)</label>
-                    <input type="file" name="foto" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-outline-variant focus:border-primary bg-surface-bright text-on-surface">
-                    <p class="text-xs text-on-surface-variant mt-1">Format: JPG, PNG, JPEG, IMG (Maks 10MB)</p>
-                </div>
-                <div class="pt-4 flex justify-end gap-3 border-t border-surface-variant">
-                    <button type="button" onclick="document.getElementById('editProdukModal').classList.add('hidden')" class="px-4 py-2 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">Batal</button>
-                    <button type="submit" class="px-4 py-2 font-label-sm text-label-sm bg-primary text-on-primary hover:bg-primary-container rounded-lg transition-colors shadow-sm">Simpan Perubahan</button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -265,7 +278,7 @@
                 spec = `Jenis: ${inv.jenis || ''} | Kelamin: ${inv.gender || ''} | Berat: ${inv.berat || ''} kg | Umur: ${inv.umur || ''} bulan`;
             }
             document.getElementById('edit_produk_spesifikasi').value = spec || '';
-            document.getElementById('editProdukModal').classList.remove('hidden');
+            window.dispatchEvent(new CustomEvent('open-edit-produk-modal'));
         }
     </script>
     </div>

@@ -85,39 +85,55 @@ class KatalogController extends Controller
         $request->validate([
             'harga' => 'required|numeric|min:0',
             'spesifikasi' => 'nullable|string',
-            'foto' => 'nullable|file|mimes:jpeg,png,jpg,gif,img|max:10240',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
-        $produk = Produk::findOrFail($id);
+        try {
+            $produk = Produk::findOrFail($id);
+            $data = $request->only(['harga', 'spesifikasi']);
 
-        $data = $request->only(['harga', 'spesifikasi']);
-
-        if ($request->hasFile('foto')) {
-            if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
-                Storage::disk('public')->delete($produk->foto);
+            if ($request->hasFile('foto')) {
+                if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
+                    Storage::disk('public')->delete($produk->foto);
+                }
+                $data['foto'] = $request->file('foto')->store('produk_fotos', 'public');
             }
-            $data['foto'] = $request->file('foto')->store('produk_fotos', 'public');
+
+            $produk->update($data);
+            return redirect()->route('admin.katalog.index')->with('success', 'Katalog berhasil diperbarui.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Katalog update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat memperbarui katalog.');
         }
-
-        $produk->update($data);
-
-        return redirect()->route('admin.katalog.index')->with('success', 'Katalog berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $produk = Produk::findOrFail($id);
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            $produk = Produk::findOrFail($id);
 
-        if ($produk->inventaris) {
-            $produk->inventaris->update(['status_stok' => 'Tersedia']);
+            // Cek apakah produk ini ada di pesanan yang aktif
+            if (\App\Models\Pesanan::where('produk_id', $produk->id)->exists()) {
+                return redirect()->route('admin.katalog.index')->with('error', 'Gagal menghapus! Produk ini sedang terkait dengan sebuah Pesanan.');
+            }
+
+            if ($produk->inventaris) {
+                $produk->inventaris->update(['status_stok' => 'Dalam Perawatan']); // Kembalikan ke perawatan, bukan tersedia
+            }
+
+            if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
+                Storage::disk('public')->delete($produk->foto);
+            }
+
+            $produk->delete();
+            \Illuminate\Support\Facades\DB::commit();
+            
+            return redirect()->route('admin.katalog.index')->with('success', 'Produk dihapus dari katalog.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Katalog destroy failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat menghapus produk.');
         }
-
-        if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
-            Storage::disk('public')->delete($produk->foto);
-        }
-
-        $produk->delete();
-
-        return redirect()->route('admin.katalog.index')->with('success', 'Produk dihapus dari katalog.');
     }
 }

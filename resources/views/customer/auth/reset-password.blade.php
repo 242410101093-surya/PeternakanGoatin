@@ -82,31 +82,10 @@
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png?v=3') }}" alt="" style="width:20px;height:20px;object-fit:contain;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
 
     {{-- ── Centered Card: Premium White Floating Capsule ── --}}
     <div class="relative z-10 w-full max-w-md bg-white p-8 sm:p-10 rounded-[32px] shadow-2xl border border-white/10 flex flex-col justify-between animate-container">
@@ -122,18 +101,27 @@
             <p class="text-xs text-slate-500 font-medium leading-relaxed">Masukkan kode verifikasi dan password baru untuk akun Anda.</p>
         </div>
 
-        {{-- Informational Alert: Verification Code Sent --}}
-        <div class="mb-5 p-3.5 rounded-xl text-xs font-semibold border flex items-center gap-2.5" 
+        {{-- Countdown Alert Banner --}}
+        <div id="otp-timer-banner" class="mb-5 p-4 rounded-[16px] text-xs font-semibold border flex flex-col items-center justify-center gap-1 text-center transition-all duration-300" 
              style="background:#f0faf3; color:#1e5c33; border-color:rgba(42, 120, 68, 0.15);">
-            <span class="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
-            <span>Kode verifikasi telah dikirim ke email Anda.</span>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-emerald-600">mark_email_read</span>
+                <span>Kode OTP berhasil dikirim ke Email Anda.</span>
+            </div>
+            <div class="text-[10.5px] text-[#2A7844] mt-1 font-bold">
+                Harap tunggu <span id="top-countdown" class="font-black text-sm mx-0.5">60</span> detik sebelum mengirim ulang.
+            </div>
         </div>
 
-        {{-- Success Session Alert --}}
-        @if(session('status'))
-            <div class="mb-5 p-4 rounded-xl text-xs font-semibold border" 
-                 style="background:#f0faf3; color:#1e5c33; border-color:rgba(42, 120, 68, 0.15);">
-                {{ session('status') }}
+        {{-- Error Alert --}}
+        @if($errors->any())
+            <div class="mb-5 p-4 rounded-xl text-xs font-semibold border bg-red-50 text-red-600 border-red-100 flex flex-col gap-1">
+                @foreach ($errors->all() as $error)
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">error</span>
+                        <span>{{ $error }}</span>
+                    </div>
+                @endforeach
             </div>
         @endif
 
@@ -169,6 +157,7 @@
                 <div class="flex items-center capsule-input-container rounded-full px-5 py-2.5 gap-3 border border-transparent">
                     <span class="material-symbols-outlined text-[20px] text-[#235347]">key</span>
                     <input type="text" name="code" id="code" required maxlength="6" pattern="\d{6}"
+                           value="{{ old('code', request()->query('dev_code')) }}"
                            class="bg-transparent border-none p-0 text-sm w-full text-slate-800 placeholder-slate-300 focus:ring-0 focus:outline-none tracking-[0.2em] font-bold" 
                            placeholder="123456">
                 </div>
@@ -248,19 +237,28 @@
             // Countdown Timer logic
             let countdown = 60;
             const countdownEl = document.getElementById('countdown');
+            const topCountdownEl = document.getElementById('top-countdown');
             const resendBtn = document.getElementById('resend-code-btn');
+            const bannerEl = document.getElementById('otp-timer-banner');
             
-            if (countdownEl && resendBtn) {
+            if ((countdownEl || topCountdownEl) && resendBtn) {
                 const timer = setInterval(() => {
                     countdown--;
                     if (countdown <= 0) {
                         clearInterval(timer);
-                        resendBtn.disabled = false;
-                        resendBtn.innerHTML = 'Kirim Ulang Sekarang';
-                        resendBtn.classList.remove('text-slate-400', 'cursor-not-allowed');
-                        resendBtn.classList.add('text-[#235347]', 'hover:text-[#163832]');
+                        if (resendBtn) {
+                            resendBtn.disabled = false;
+                            resendBtn.innerHTML = 'Kirim Ulang Sekarang';
+                            resendBtn.classList.remove('text-slate-400', 'cursor-not-allowed');
+                            resendBtn.classList.add('text-[#235347]', 'hover:text-[#163832]', 'underline');
+                        }
+                        if (bannerEl) {
+                            bannerEl.style.opacity = '0';
+                            setTimeout(() => { bannerEl.style.display = 'none'; }, 300);
+                        }
                     } else {
-                        countdownEl.textContent = countdown;
+                        if (countdownEl) countdownEl.textContent = countdown;
+                        if (topCountdownEl) topCountdownEl.textContent = countdown;
                     }
                 }, 1000);
             }

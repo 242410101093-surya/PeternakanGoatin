@@ -23,36 +23,64 @@
         </div>
     </div>
 
-    {{-- ── Bento Grid Metrics ── --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-        <div class="bg-surface-container-lowest rounded-xl p-gutter border border-surface-container shadow-[0_2px_8px_rgba(74,124,89,0.03)] flex items-start justify-between">
-            <div>
-                <p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider">Total Produk</p>
-                <p class="font-h2 text-h2 text-on-surface mt-stack-xs">{{ number_format($totalProducts) }}</p>
+    {{-- ── Premium Bento Grid Metrics ── --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Total Produk -->
+        <div class="bg-gradient-to-br from-[#FEFCE8] to-[#FFFcf2] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(234,179,8,0.15)] transition-all duration-300 border border-yellow-200/60 flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-6 relative z-10">
+                <div class="w-14 h-14 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300 shadow-sm border border-yellow-200">
+                    <span class="material-symbols-outlined text-[28px]">inventory_2</span>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-yellow-700 bg-yellow-100 px-3 py-1.5 rounded-full border border-yellow-200">Katalog</span>
             </div>
-            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">inventory_2</span>
+            <div class="relative z-10">
+                <p class="text-xs font-bold text-yellow-600 uppercase tracking-wider mb-1">Total Produk</p>
+                <div class="flex items-end gap-3">
+                    <h3 class="text-5xl font-black text-slate-800 tracking-tight">{{ number_format($totalProducts) }}</h3>
+                    <p class="text-[11px] font-medium text-yellow-600/80 mb-2 leading-tight">Seluruh<br>inventaris</p>
+                </div>
             </div>
+            <!-- Decorative shapes -->
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-yellow-300/20 rounded-full blur-2xl group-hover:bg-yellow-400/30 transition-colors"></div>
+            <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-amber-200/20 rounded-full blur-3xl group-hover:bg-amber-300/30 transition-colors"></div>
         </div>
-        <div class="bg-primary-container rounded-xl p-gutter border border-primary shadow-[0_4px_16px_rgba(74,124,89,0.15)] flex items-start justify-between">
-            <div>
-                <p class="font-caption text-caption text-on-primary-container/80 uppercase tracking-wider">Tersedia di Katalog</p>
-                <p class="font-h2 text-h2 text-on-primary-container mt-stack-xs">{{ number_format($activeListings) }}</p>
-                <p class="font-caption text-caption text-on-primary-container/60 mt-1">Terlihat oleh pelanggan</p>
+
+        <!-- Tersedia di Katalog -->
+        <div class="bg-gradient-to-br from-[#2A7844] to-[#164e28] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(42,120,68,0.3)] transition-all duration-300 border border-[#2A7844]/50 flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-6 relative z-10">
+                <div class="w-14 h-14 rounded-2xl bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300 shadow-inner">
+                    <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">Live</span>
             </div>
-            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-on-primary-container">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+            <div class="relative z-10">
+                <p class="text-xs font-bold text-emerald-100/90 uppercase tracking-wider mb-1">Tersedia di Katalog</p>
+                <div class="flex items-end gap-3">
+                    <h3 class="text-5xl font-black text-white tracking-tight">{{ number_format($activeListings) }}</h3>
+                    <p class="text-[11px] font-medium text-emerald-200 mb-2 leading-tight">Terlihat<br>pelanggan</p>
+                </div>
             </div>
+            <!-- Decorative shapes -->
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors"></div>
+            <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl group-hover:bg-emerald-400/30 transition-colors"></div>
         </div>
-        <div class="bg-surface-container-lowest rounded-xl p-gutter border border-tertiary-container shadow-[0_2px_8px_rgba(74,124,89,0.03)] flex items-start justify-between">
-            <div>
-                <p class="font-caption text-caption text-tertiary uppercase tracking-wider">Terbooking Customer</p>
-                <p class="font-h2 text-h2 text-on-surface mt-stack-xs">{{ number_format($lowStockAlerts) }}</p>
-                <p class="font-caption text-caption text-on-surface-variant mt-1">Menunggu konfirmasi</p>
+
+        <!-- Terbooking Customer -->
+        <div class="bg-gradient-to-br from-[#FFF8F1] to-[#FFF1E5] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(249,115,22,0.15)] transition-all duration-300 border border-orange-100 flex flex-col justify-between">
+            <div class="flex items-start justify-between mb-6 relative z-10">
+                <div class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300 shadow-sm border border-orange-200">
+                    <span class="material-symbols-outlined text-[28px]">bookmark_added</span>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-orange-600 bg-orange-100 px-3 py-1.5 rounded-full border border-orange-200">Pending</span>
             </div>
-            <div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-tertiary">
-                <span class="material-symbols-outlined">bookmark_added</span>
+            <div class="relative z-10">
+                <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-1">Terbooking Customer</p>
+                <div class="flex items-end gap-3">
+                    <h3 class="text-5xl font-black text-slate-800 tracking-tight">{{ number_format($lowStockAlerts) }}</h3>
+                    <p class="text-[11px] font-medium text-orange-400 mb-2 leading-tight">Menunggu<br>konfirmasi</p>
+                </div>
             </div>
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-200/40 rounded-full blur-3xl group-hover:bg-orange-300/40 transition-colors"></div>
         </div>
     </div>
 
@@ -238,7 +266,7 @@
                             <span class="material-symbols-outlined text-xl">close</span>
                         </button>
                     </div>
-                    <form id="editProdukForm" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+                    <form id="editProdukForm" method="POST" enctype="multipart/form-data" data-ajax="true" class="p-8 space-y-6">
                         @csrf
                         @method('PUT')
                         <div class="space-y-1.5">
@@ -258,7 +286,7 @@
                             <p class="text-xs text-slate-400 mt-1">Format: JPG, PNG, JPEG, IMG (Maks 10MB)</p>
                         </div>
                         <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                            <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                            <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                             <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
                         </div>
                     </form>

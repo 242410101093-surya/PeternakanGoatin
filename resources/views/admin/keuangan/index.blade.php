@@ -226,7 +226,22 @@
                             @endif
                         </td>
                         <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors text-slate-600">
-                            {{ $laporan->keterangan }}
+                            <div class="flex flex-col items-start gap-2">
+                                <span>{{ $laporan->keterangan }}</span>
+                                @if($laporan->nota_pembayaran)
+                                <button type="button" onclick="openViewNotaModal('{{ asset('storage/nota_pembayaran/' . $laporan->nota_pembayaran) }}')" class="inline-flex items-center gap-1 px-3 py-1 bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-lg text-[11px] font-bold border border-slate-200 transition-colors shadow-sm">
+                                    <span class="material-symbols-outlined text-[14px]">receipt_long</span>
+                                    Lihat Nota
+                                </button>
+                                @else
+                                    @if($laporan->jenis_transaksi == 'Pengeluaran')
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-slate-50 text-slate-400 rounded-lg text-[11px] font-medium border border-slate-100 border-dashed">
+                                        <span class="material-symbols-outlined text-[14px]">receipt_long</span>
+                                        Tidak ada nota
+                                    </span>
+                                    @endif
+                                @endif
+                            </div>
                         </td>
                         <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
                             <span class="font-black text-lg {{ in_array($laporan->jenis_transaksi, ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai']) ? 'text-[#2A7844]' : 'text-slate-800' }}">
@@ -282,7 +297,7 @@
                 <span class="material-symbols-outlined text-xl">close</span>
             </button>
         </div>
-        <form action="{{ route('admin.keuangan.store') }}" method="POST" class="p-8 space-y-6">
+        <form id="addKeuanganForm" action="{{ route('admin.keuangan.store') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
             @csrf
             
             <div class="space-y-1.5">
@@ -320,8 +335,17 @@
                 </div>
             </div>
 
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bukti Nota Transaksi</label>
+                <div class="relative group">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-[#2A7844] transition-colors">upload_file</span>
+                    <input type="file" name="nota_pembayaran" required accept=".jpg,.jpeg,.png,.pdf" class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 text-sm font-medium transition-all outline-none file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#2A7844]/10 file:text-[#2A7844] hover:file:bg-[#2A7844]/20 cursor-pointer">
+                </div>
+                <p class="text-[11px] text-slate-400 font-medium ml-1">Format: JPG, PNG, PDF. Maks: 5MB</p>
+            </div>
+
             <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('addKeuanganModal').classList.add('hidden')" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                <button type="button" onclick="document.getElementById('addKeuanganModal').classList.add('hidden')" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                 <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Transaksi</button>
             </div>
         </form>
@@ -342,7 +366,7 @@
                 <span class="material-symbols-outlined text-xl">close</span>
             </button>
         </div>
-        <form id="editKeuanganForm" method="POST" class="p-8 space-y-6">
+        <form id="editKeuanganForm" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
             @csrf
             @method('PUT')
             
@@ -384,15 +408,120 @@
                 </div>
             </div>
 
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider flex justify-between items-center">
+                    <span>Ganti Nota Transaksi <span class="text-[10px] text-slate-400 normal-case font-medium">(Opsional)</span></span>
+                    <button type="button" id="edit_view_nota" onclick="" class="hidden text-[#2A7844] hover:text-emerald-700 font-semibold lowercase text-[11px] items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[14px]">visibility</span> Lihat Nota Saat Ini
+                    </button>
+                </label>
+                <div class="relative group">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-blue-500 transition-colors">upload_file</span>
+                    <input type="file" name="nota_pembayaran" accept=".jpg,.jpeg,.png,.pdf" class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 text-sm font-medium transition-all outline-none file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer">
+                </div>
+                <p class="text-[11px] text-slate-400 font-medium ml-1">Kosongkan jika tidak ingin mengubah nota.</p>
+            </div>
+
             <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('editKeuanganModal').classList.add('hidden')" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                <button type="button" onclick="document.getElementById('editKeuanganModal').classList.add('hidden')" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                 <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Modal Lihat Nota -->
+<div id="viewNotaModal" class="fixed inset-0 z-[60] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-[24px] w-full max-w-2xl shadow-[0_20px_60px_rgba(5,31,32,0.15)] border border-slate-100 overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl">receipt_long</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Nota Pembayaran</h3>
+            </div>
+            <button onclick="document.getElementById('viewNotaModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+        </div>
+        <div class="p-4 flex-1 overflow-auto bg-slate-50/30 flex items-center justify-center min-h-[300px]">
+            <iframe id="notaIframe" src="" class="w-full h-[60vh] rounded-xl border border-slate-200 hidden" frameborder="0"></iframe>
+            <img id="notaImage" src="" class="max-w-full max-h-[60vh] rounded-xl object-contain hidden shadow-sm border border-slate-200" alt="Nota Pembayaran">
+        </div>
+        <div class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center">
+            <a id="downloadNotaBtn" href="#" download class="inline-flex items-center gap-2 px-4 py-2 font-bold text-sm text-[#2A7844] hover:bg-[#2A7844]/10 rounded-xl transition-colors">
+                <span class="material-symbols-outlined text-[18px]">download</span> Unduh File
+            </a>
+            <button type="button" onclick="document.getElementById('viewNotaModal').classList.add('hidden')" class="px-6 py-2 font-bold text-sm bg-slate-800 text-white hover:bg-slate-700 rounded-xl transition-all">Tutup</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    window.currentNetProfit = {{ $netProfit ?? 0 }};
+    
+    function openViewNotaModal(fileUrl) {
+        const modal = document.getElementById('viewNotaModal');
+        const iframe = document.getElementById('notaIframe');
+        const image = document.getElementById('notaImage');
+        const downloadBtn = document.getElementById('downloadNotaBtn');
+
+        modal.classList.remove('hidden');
+        iframe.classList.add('hidden');
+        image.classList.add('hidden');
+        
+        // Ensure URL is properly encoded for spaces
+        const encodedUrl = encodeURI(fileUrl);
+        downloadBtn.href = encodedUrl;
+
+        // Cek ekstensi file
+        const isPdf = encodedUrl.toLowerCase().endsWith('.pdf');
+
+        if (isPdf) {
+            iframe.src = encodedUrl;
+            iframe.classList.remove('hidden');
+        } else {
+            image.src = encodedUrl;
+            image.classList.remove('hidden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const addForm = document.getElementById('addKeuanganForm');
+        if (addForm) {
+            addForm.addEventListener('submit', function(e) {
+                const jenis = this.querySelector('[name="jenis_transaksi"]').value;
+                const jumlah = parseFloat(this.querySelector('[name="jumlah"]').value) || 0;
+                
+                if (jenis === 'Pengeluaran' && jumlah > window.currentNetProfit) {
+                    e.preventDefault();
+                    if (window.showToast) {
+                        window.showToast('Peringatan: Jumlah pengeluaran melebihi total laba bersih yang tersedia!', 'error');
+                    } else {
+                        alert('Peringatan: Jumlah pengeluaran melebihi total laba bersih yang tersedia!');
+                    }
+                }
+            });
+        }
+
+        const editForm = document.getElementById('editKeuanganForm');
+        if (editForm) {
+            editForm.addEventListener('submit', function(e) {
+                const jenis = this.querySelector('[name="jenis_transaksi"]').value;
+                const jumlah = parseFloat(this.querySelector('[name="jumlah"]').value) || 0;
+                
+                if (jenis === 'Pengeluaran' && jumlah > window.currentNetProfit) {
+                    e.preventDefault();
+                    if (window.showToast) {
+                        window.showToast('Peringatan: Jumlah pengeluaran melebihi total laba bersih yang tersedia!', 'error');
+                    } else {
+                        alert('Peringatan: Jumlah pengeluaran melebihi total laba bersih yang tersedia!');
+                    }
+                }
+            });
+        }
+    });
+
     function openEditKeuanganModal(button) {
         const laporan = JSON.parse(button.getAttribute('data-laporan'));
         
@@ -457,7 +586,18 @@
             keteranganInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
             jumlahInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
         }
-        
+
+        const viewNotaBtn = document.getElementById('edit_view_nota');
+        if (laporan.nota_pembayaran) {
+            viewNotaBtn.setAttribute('onclick', `openViewNotaModal('/storage/nota_pembayaran/${laporan.nota_pembayaran}')`);
+            viewNotaBtn.classList.remove('hidden');
+            viewNotaBtn.classList.add('inline-flex');
+        } else {
+            viewNotaBtn.setAttribute('onclick', '');
+            viewNotaBtn.classList.add('hidden');
+            viewNotaBtn.classList.remove('inline-flex');
+        }
+
         document.getElementById('editKeuanganModal').classList.remove('hidden');
     }
 

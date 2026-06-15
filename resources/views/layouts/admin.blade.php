@@ -148,6 +148,54 @@
       }
     </script>
     <style>
+      /* Batal Button Global */
+      .btn-batal {
+          background-color: transparent !important;
+          color: #ef4444 !important;
+          border: 1.5px solid #ef4444 !important;
+          transition: all 0.3s ease !important;
+      }
+      .btn-batal:hover, .btn-batal:focus, .btn-batal:active {
+          background-color: #ef4444 !important;
+          color: white !important;
+          border-color: #ef4444 !important;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+      }
+      /* Custom Validation Tooltip */
+      .custom-val-tooltip {
+          position: absolute;
+          bottom: 100%;
+          left: 10px;
+          margin-bottom: 8px;
+          background: #ef4444; /* red-500 */
+          color: white;
+          padding: 6px 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 600;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+          z-index: 50;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          animation: bounceIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          pointer-events: none;
+      }
+      .custom-val-tooltip::after {
+          content: '';
+          position: absolute;
+          top: 100%;
+          left: 16px;
+          border-width: 6px;
+          border-style: solid;
+          border-color: #ef4444 transparent transparent transparent;
+      }
+      @keyframes bounceIn {
+          0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+          50% { opacity: 1; transform: translateY(-3px) scale(1.02); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
       /* ── Premium Glassmorphic Toast ── */
       .premium-toast {
           background: rgba(255, 255, 255, 0.9);
@@ -355,35 +403,10 @@
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.52); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <!-- Outer ring pulse -->
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <!-- Spinning arc -->
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <!-- Dashed inner ring -->
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <!-- Center goat logo -->
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png') }}" alt="" style="width:20px;height:20px;object-fit:cover;border-radius:50%;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
 
     <!-- Mobile Sidebar Toggle Script -->
     <script>
@@ -423,12 +446,66 @@
                     href.startsWith('mailto') || href.startsWith('tel') ||
                     link.target === '_blank' || link.hasAttribute('download') ||
                     href.includes('/export-pdf') || href.includes('.pdf')) return;
-                showLoader();
+                
+                // Wait for other listeners to execute and check if default was prevented
+                setTimeout(() => {
+                    if (!e.defaultPrevented) {
+                        showLoader();
+                    }
+                }, 10);
             });
+
+            // Automatically disable native validation globally
+            document.querySelectorAll('form').forEach(f => f.setAttribute('novalidate', 'true'));
 
             // Intercept all form submissions
             document.addEventListener('submit', function(e) {
                 const form = e.target;
+                
+                // --- CUSTOM HTML5 REQUIRED VALIDATION ---
+                const requiredInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+                let isHtml5Valid = true;
+                
+                for (let i = requiredInputs.length - 1; i >= 0; i--) {
+                    const input = requiredInputs[i];
+                    if (!input.value.trim() || (input.type === 'checkbox' && !input.checked)) {
+                        isHtml5Valid = false;
+                        
+                        form.querySelectorAll('.custom-val-tooltip').forEach(el => el.remove());
+
+                        const errorMsg = input.getAttribute('data-error-msg') || 'Harap isi semua kolom';
+
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'custom-val-tooltip';
+                        tooltip.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-pulse">error</span> ${errorMsg}`;
+                        
+                        const container = input.parentElement;
+                        const originalPos = window.getComputedStyle(container).position;
+                        if (originalPos === 'static') container.style.position = 'relative';
+                        container.appendChild(tooltip);
+                        
+                        setTimeout(() => {
+                            if (tooltip.parentElement) {
+                                tooltip.style.animation = 'bounceIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                                setTimeout(() => tooltip.remove(), 200);
+                            }
+                        }, 3500);
+                        
+                        input.focus();
+                        input.addEventListener('input', function onInput() {
+                            if (tooltip.parentElement) tooltip.remove();
+                            input.removeEventListener('input', onInput);
+                        });
+                    }
+                }
+                
+                if (!isHtml5Valid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                }
+                // --- END CUSTOM HTML5 REQUIRED VALIDATION ---
                 
                 // If it is a delete form requiring confirmation
                 if (form.classList.contains('delete-form') && !form.dataset.confirmed) {
@@ -438,15 +515,159 @@
                     const message = form.getAttribute('data-message') || 'Apakah Anda yakin ingin menghapus data ini?';
                     window.openConfirmModal(message, function() {
                         form.dataset.confirmed = 'true';
-                        showLoader();
-                        form.submit();
+                        
+                        // Execute AJAX Delete
+                        fetch(form.action, {
+                            method: 'POST', // DELETE is handled via _method=DELETE
+                            body: new FormData(form),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(res => {
+                            if (!res.ok) throw res;
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                window.showToast(data.message || 'Data berhasil dihapus.', 'success');
+                                
+                                // Find the closest table row or grid card to animate out
+                                const row = form.closest('tr') || form.closest('.group');
+                                if (row) {
+                                    row.style.transition = 'all 0.3s ease';
+                                    row.style.opacity = '0';
+                                    row.style.transform = 'scale(0.95)';
+                                    setTimeout(() => row.remove(), 300);
+                                }
+                            } else {
+                                window.showToast(data.message || 'Gagal menghapus data.', 'error');
+                            }
+                        })
+                        .catch(async err => {
+                            let msg = 'Terjadi kesalahan sistem.';
+                            try {
+                                const errData = await err.json();
+                                msg = errData.message || msg;
+                            } catch (e) {}
+                            window.showToast(msg, 'error');
+                        })
+                        .finally(() => {
+                            form.dataset.confirmed = ''; // Reset
+                        });
                     });
                     return;
                 }
 
                 if (e.defaultPrevented) return;
-                showLoader();
-            });
+
+                // Handle AJAX form submission
+                if (form.getAttribute('data-ajax') === 'true') {
+                    e.preventDefault();
+                    
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnContent = submitBtn ? submitBtn.innerHTML : '';
+                    
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> Memproses...';
+                    }
+
+                    // Clear previous errors
+                    form.querySelectorAll('.ajax-error').forEach(el => el.remove());
+                    form.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
+
+                    fetch(form.action, {
+                        method: form.method || 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(async res => {
+                        const data = await res.json().catch(() => null);
+                        if (!res.ok) {
+                            if (res.status === 422 && data && data.errors) {
+                                // Validation error
+                                Object.keys(data.errors).forEach(key => {
+                                    // Handle array names like foto[0] -> foto
+                                    const inputName = key.split('.')[0];
+                                    const input = form.querySelector(`[name="${inputName}"]`) || form.querySelector(`[name="${key}"]`);
+                                    if (input) {
+                                        input.classList.add('border-red-500');
+                                        const errorMsg = document.createElement('p');
+                                        errorMsg.className = 'ajax-error text-red-500 text-xs mt-1 font-medium';
+                                        errorMsg.textContent = data.errors[key][0];
+                                        input.parentElement.appendChild(errorMsg);
+                                    }
+                                });
+                                window.showToast('Format data tidak valid, silakan periksa kembali inputan Anda', 'error');
+                            } else {
+                                window.showToast(data?.message || 'Terjadi kesalahan sistem.', 'error');
+                            }
+                            throw new Error('Validation failed');
+                        }
+                        return data;
+                    })
+                    .then(data => {
+                        window.showToast(data.message || 'Data berhasil disimpan.', 'success');
+                        
+                        // Close modal if form is inside an Alpine modal
+                        const alpineWrapper = form.closest('[x-data]');
+                        if (alpineWrapper) {
+                            // Find the property that controls 'open'
+                            const xData = alpineWrapper.getAttribute('x-data');
+                            if (xData && xData.includes('open')) {
+                                // Dispatch a custom event that Alpine can listen to, or just close the standard modal
+                            }
+                        }
+                        
+                        // Close standard custom modal if used
+                        const modalContent = form.closest('.fixed.inset-0.z-10');
+                        if (modalContent) {
+                            const closeBtn = modalContent.querySelector('[x-show] button[type="button"], button[type="button"][x-on\\:click="open = false"]');
+                            if (closeBtn) closeBtn.click();
+                            else {
+                                // Trigger Alpine JS open = false
+                                form.dispatchEvent(new CustomEvent('close-modal', { bubbles: true }));
+                            }
+                        }
+
+                        // Refresh datatable
+                        if (typeof window.fetchInventaris === 'function') {
+                            window.fetchInventaris();
+                        } else if (typeof window.fetchProducts === 'function') {
+                            window.fetchProducts();
+                        } else {
+                            setTimeout(() => window.location.reload(), 500);
+                        }
+                        
+                        // Reset form
+                        if (form.method.toUpperCase() !== 'GET') {
+                            form.reset();
+                        }
+                    })
+                    .catch(err => {
+                        // Handled above
+                    })
+                    .finally(() => {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnContent;
+                        }
+                    });
+                    return;
+                }
+
+                // Only show loader for normal forms
+                if (form.method && form.method.toUpperCase() === 'GET') {
+                    showLoader();
+                } else if (!form.classList.contains('delete-form')) {
+                    showLoader();
+                }
+            }, true);
 
             // Hide when page is re-shown (back/forward navigation)
             window.addEventListener('pageshow', hideLoader);
@@ -627,6 +848,18 @@
                         span.textContent = count > 0 ? 'Konfirmasi Sekarang' : 'Semua dibaca';
                     }
                 }
+
+                const readAllContainer = document.getElementById('modal-read-all-container');
+                if (readAllContainer) {
+                    if (count > 0) readAllContainer.classList.remove('hidden');
+                    else readAllContainer.classList.add('hidden');
+                }
+
+                const lihatSemuaContainer = document.getElementById('dashboard-lihat-semua-container');
+                if (lihatSemuaContainer) {
+                    if (count > 0) lihatSemuaContainer.classList.remove('hidden');
+                    else lihatSemuaContainer.classList.add('hidden');
+                }
             };
         });
     </script>
@@ -643,7 +876,7 @@
                 <p id="globalConfirmMessage" class="text-sm text-on-surface-variant font-medium leading-relaxed">Apakah Anda yakin ingin melakukan tindakan ini?</p>
             </div>
             <div class="px-6 py-4 bg-slate-50 flex justify-end gap-3 border-t border-surface-variant">
-                <button id="globalConfirmCancelBtn" type="button" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-semibold">Batal</button>
+                <button id="globalConfirmCancelBtn" type="button" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-semibold btn-batal">Batal</button>
                 <button id="globalConfirmBtn" type="button" class="px-4 py-2 text-sm bg-red-600 text-white hover:bg-red-700 rounded-lg transition-all shadow-sm font-semibold">Ya, Hapus</button>
             </div>
         </div>
@@ -723,5 +956,56 @@
     </script>
 
     @stack('modals')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let lastUnreadCount = parseInt(document.getElementById('dashboard-pending-orders-count')?.textContent || '0');
+
+            // Polling for new notifications every 15 seconds
+            setInterval(() => {
+                fetch('{{ route('admin.notifications.check') }}', {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if(!res.ok) throw new Error('Polling failed');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const newCount = data.unread_count;
+                        window.updateGlobalPendingCounts(newCount);
+
+                        // Inject HTML if available
+                        if (data.modal_html) {
+                            const modalList = document.getElementById('modal-notifications-list');
+                            if (modalList) modalList.innerHTML = data.modal_html;
+                        }
+                        if (data.dashboard_html) {
+                            const recentList = document.getElementById('dashboard-recent-notifications-list');
+                            if (recentList) recentList.innerHTML = data.dashboard_html;
+                        }
+
+                        // If there is an increase in unread notifications, show a toast
+                        if (newCount > lastUnreadCount) {
+                            window.showToast('Anda memiliki pesanan baru!', 'info');
+                            
+                            // Animate bell icon
+                            const bellIcon = document.querySelector('#navbar-notif-btn .material-symbols-outlined');
+                            if (bellIcon) {
+                                bellIcon.classList.add('animate-bounce');
+                                setTimeout(() => bellIcon.classList.remove('animate-bounce'), 3000);
+                            }
+                        }
+                        lastUnreadCount = newCount;
+                    }
+                })
+                .catch(err => {
+                    // Fail silently for polling
+                });
+            }, 15000);
+        });
+    </script>
 </body>
 </html>

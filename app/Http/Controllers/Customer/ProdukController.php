@@ -59,6 +59,10 @@ class ProdukController extends Controller
 
         $produks = $query->orderBy('created_at', 'desc')->paginate(8);
 
+        if ($request->ajax()) {
+            return view('customer.partials.produk_grid', compact('produks'))->render();
+        }
+
         return view('customer.produk', compact('produks'));
     }
 

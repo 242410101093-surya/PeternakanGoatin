@@ -26,6 +26,8 @@
                         "primary-dark": "#051F20",
                         "accent-teal": "#235347",
                         "accent-teal-dark": "#163832",
+                        "goatin-green": "#2A7844",
+                        "goatin-light": "#EDF4F8",
                     },
                     fontFamily: {
                         "sans": ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -35,14 +37,19 @@
         }
     </script>
     <style>
+        /* ── Fallback Styling (when sandboxed or Tailwind CDN is blocked) ── */
+        img {
+            max-width: 100%;
+        }
+        .h-10, .h-12, .h-11, nav img, header img {
+            height: 48px !important;
+            width: auto !important;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #051F20;
             overflow-x: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
         }
 
         /* ── Input Styling ── */
@@ -142,45 +149,60 @@
             background-color: rgba(255, 255, 255, 0.12);
             border-color: rgba(255, 255, 255, 0.22);
         }
+
+        /* custom validation tooltip */
+        .custom-val-tooltip {
+            position: absolute;
+            top: -42px;
+            left: 10px;
+            background: #ef4444; /* red-500 */
+            color: white;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 50;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+            animation: bounceIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .custom-val-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            transform: rotate(45deg);
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
     </style>
 </head>
-<body class="min-h-screen antialiased flex items-center justify-center p-4 md:p-6 select-none overflow-x-hidden">
+<body class="min-h-screen antialiased flex flex-col justify-between select-none overflow-x-hidden pt-[100px]">
 
     {{-- ── Global Full-screen Blurred Background Underlay ── --}}
-    <div class="absolute inset-0 bg-cover bg-center select-none z-0"
+    <div class="fixed inset-0 bg-cover bg-center select-none z-0"
          style="background-image: url('{{ asset('images/background_goats.png') }}'); filter: blur(20px) brightness(0.42); transform: scale(1.05);"></div>
 
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png?v=3') }}" alt="" style="width:20px;height:20px;object-fit:contain;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
 
-    {{-- ── Main Container: Floating Rounded Card (No Padding to match 100% boundary) ── --}}
-    <div class="relative z-10 w-full max-w-[1100px] flex flex-col md:flex-row rounded-[32px] overflow-hidden shadow-2xl border border-white/10 bg-white p-0 animate-container">
+    @include('partials.landing.header')
+
+    <main class="flex-grow flex items-center justify-center py-10 px-4 md:px-6 relative z-10">
+        {{-- ── Main Container: Floating Rounded Card (No Padding to match 100% boundary) ── --}}
+        <div class="relative w-full max-w-[1100px] flex flex-col md:flex-row rounded-[32px] overflow-hidden shadow-2xl border border-white/10 bg-white p-0 animate-container">
 
         {{-- ── LEFT SECTION: Image Banner (62% Width, Flush with Left/Top/Bottom margins) ── --}}
         <section class="hidden md:flex md:w-[62%] relative overflow-hidden flex-col justify-between p-10 min-h-[580px] z-10 rounded-l-[32px] rounded-r-[48px] animate-left"
@@ -242,7 +264,21 @@
                     </div>
                 @endif
 
-                <form id="login-form" action="{{ route('login.submit') }}" method="POST" class="space-y-5">
+                @if($errors->any())
+                    <div class="flex items-center gap-3 p-4 rounded-xl text-xs font-semibold border animate-container" 
+                         style="background:rgba(239, 68, 68, 0.04); color:#ba1a1a; border-color:rgba(239, 68, 68, 0.2);">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px] text-red-600">error</span>
+                        </div>
+                        <ul class="list-none space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form id="login-form" action="{{ route('login.submit') }}" method="POST" class="space-y-5" novalidate>
                     @csrf
                     
                     {{-- Username / Email Input --}}
@@ -256,9 +292,6 @@
                                    class="bg-transparent border-none p-0 text-sm w-full text-slate-800 focus:ring-0 focus:outline-none" 
                                    placeholder="e-mail">
                         </div>
-                        @error('email')
-                            <p class="mt-1 text-[11px] text-red-500 font-semibold pl-1">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     {{-- Password Input --}}
@@ -280,9 +313,6 @@
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                             </button>
                         </div>
-                        @error('password')
-                            <p class="mt-1 text-[11px] text-red-500 font-semibold pl-1">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     {{-- Remember me checkbox --}}
@@ -339,6 +369,9 @@
         </section>
 
     </div>
+    </main>
+
+    @include('partials.landing.footer')
 
     <script>
         (function() {
@@ -356,7 +389,51 @@
                 showLoader();
             });
 
-            document.getElementById('login-form').addEventListener('submit', function(e) {
+            const loginForm = document.getElementById('login-form');
+            loginForm.addEventListener('submit', function(e) {
+                // Clear any existing custom tooltips
+                document.querySelectorAll('.custom-val-tooltip').forEach(el => el.remove());
+                
+                let isValid = true;
+                const requiredInputs = loginForm.querySelectorAll('input[required]');
+                
+                // Reverse loop so the first empty input gets focus
+                for (let i = requiredInputs.length - 1; i >= 0; i--) {
+                    const input = requiredInputs[i];
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'custom-val-tooltip';
+                        tooltip.innerHTML = '<span class="material-symbols-outlined text-[16px]">error</span> Harap isi semua kolom';
+                        
+                        const container = input.closest('.capsule-input-container');
+                        container.style.position = 'relative';
+                        container.appendChild(tooltip);
+                        
+                        // Auto-hide after 3.5s
+                        setTimeout(() => {
+                            if (tooltip.parentElement) {
+                                tooltip.style.animation = 'bounceIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                                setTimeout(() => tooltip.remove(), 200);
+                            }
+                        }, 3500);
+                        
+                        input.focus();
+                        
+                        // Remove tooltip on typing
+                        input.addEventListener('input', function onInput() {
+                            if (tooltip.parentElement) tooltip.remove();
+                            input.removeEventListener('input', onInput);
+                        });
+                    }
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
+                
                 showLoader();
             });
 

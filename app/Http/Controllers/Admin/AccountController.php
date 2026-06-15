@@ -66,7 +66,7 @@ class AccountController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
             'role' => $request->role,
             'last_active_at' => now(), // Active by default
             'whatsapp' => $request->whatsapp,
@@ -98,7 +98,7 @@ class AccountController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = bcrypt($request->password);
+            $data['password'] = $request->password;
         }
 
         $user->update($data);
@@ -109,17 +109,23 @@ class AccountController extends Controller
     /**
      * Remove the specified account.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         // Prevent admin from deleting their own account
         if ($user->id === auth()->id()) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Anda tidak dapat menghapus akun Anda sendiri.'], 400);
+            }
             return redirect()->route('admin.accounts.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
         $user->delete();
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Akun berhasil dihapus.']);
+        }
         return redirect()->route('admin.accounts.index')->with('success', 'Akun berhasil dihapus.');
     }
 }

@@ -58,25 +58,62 @@
             </div>
 
             <!-- Items -->
-            <div class="max-h-80 overflow-y-auto divide-y divide-slate-50 scrollbar-thin">
+            <div class="max-h-80 overflow-y-auto divide-y divide-slate-100/60 scrollbar-thin">
                 @forelse($allNotifications as $notif)
-                    <div class="px-5 py-4 transition-all duration-150 {{ !$notif->is_read ? 'bg-emerald-50/20' : '' }} hover:bg-slate-50/50" id="navbar-notif-item-{{ $notif->id }}">
-                        <div class="flex justify-between items-start gap-2 mb-1">
-                            <span class="text-xs font-bold text-primary-dark leading-tight">{{ $notif->title }}</span>
-                            <span class="text-[10px] font-semibold text-slate-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans() }}</span>
+                    @php
+                        $msg = $notif->message ?? '';
+                        preg_match('/Pelanggan \*\*(.+?)\*\* \(WhatsApp: \*\*(.+?)\*\*\)/', $msg, $customerMatch);
+                        preg_match('/ingin membeli produk \*\*(.+?)\*\*/', $msg, $produkMatch);
+                        preg_match('/\*\*Harga:\*\* (.+?)(?:\n|$)/', $msg, $hargaMatch);
+                        
+                        $namaCustomer   = trim($customerMatch[1] ?? '');
+                        $waCustomer     = trim($customerMatch[2] ?? '');
+                        $namaProduk     = trim($produkMatch[1] ?? '');
+                        $hargaTernak    = trim($hargaMatch[1] ?? '');
+                        
+                        $waDigits       = preg_replace('/[^0-9]/', '', $waCustomer);
+                        $waLink         = $waDigits ? 'https://wa.me/' . $waDigits : '';
+                    @endphp
+                    <div class="px-5 py-4 transition-all duration-150 {{ !$notif->is_read ? 'bg-emerald-50/15' : '' }} hover:bg-slate-50 relative group/item" id="navbar-notif-item-{{ $notif->id }}">
+                        <div onclick="handleNavbarNotificationClick({{ $notif->id }})" class="cursor-pointer">
+                            <div class="flex justify-between items-start gap-2 mb-1">
+                                <span class="text-xs font-black text-primary-dark uppercase tracking-wide group-hover/item:text-emerald-800 transition-colors">
+                                    {{ $namaCustomer ?: $notif->title }}
+                                </span>
+                                <span class="text-[9px] font-bold text-slate-400 whitespace-nowrap">{{ $notif->created_at->diffForHumans() }}</span>
+                            </div>
+                            <p class="text-[11px] leading-relaxed text-slate-500 font-semibold mt-1">
+                                @if($namaProduk)
+                                    Membeli: <span class="text-slate-800 font-bold">{{ $namaProduk }}</span>
+                                    @if($hargaTernak)
+                                        <br>
+                                        <span class="text-amber-700 font-bold">{{ $hargaTernak }}</span>
+                                    @endif
+                                @else
+                                    {{ \Illuminate\Support\Str::limit(strip_tags($msg), 80) }}
+                                @endif
+                            </p>
                         </div>
-                        <p class="text-xs leading-relaxed text-slate-500 mt-1">
-                            {!! preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', nl2br(e($notif->message))) !!}
-                        </p>
-                        @if(!$notif->is_read)
-                            <form action="{{ route('admin.notifications.read', $notif->id) }}" method="POST" class="mt-2.5 navbar-mark-read-form" data-notif-id="{{ $notif->id }}">
-                                @csrf
-                                <button type="submit" class="text-[11px] font-bold text-primary-green hover:text-emerald-800 flex items-center gap-1 transition-colors">
-                                    <span class="material-symbols-outlined text-[14px]">done</span>
-                                    Tandai dibaca
-                                </button>
-                            </form>
-                        @endif
+                        <div class="flex items-center gap-2 mt-2.5">
+                            @if(!$notif->is_read)
+                                <form action="{{ route('admin.notifications.read', $notif->id) }}" method="POST" class="navbar-mark-read-form" data-notif-id="{{ $notif->id }}">
+                                    @csrf
+                                    <button type="submit" class="text-[10px] font-black uppercase tracking-wider text-primary-green hover:text-emerald-800 flex items-center gap-1 transition-colors">
+                                        <span class="material-symbols-outlined text-[13px] font-bold">done</span>
+                                        Tandai dibaca
+                                    </button>
+                                </form>
+                            @endif
+                            @if($waLink)
+                                @if(!$notif->is_read)
+                                    <span class="text-slate-300 text-[10px]">•</span>
+                                @endif
+                                <a href="{{ $waLink }}" target="_blank" class="text-[10px] font-black uppercase tracking-wider text-emerald-600 hover:text-emerald-800 flex items-center gap-1 transition-colors">
+                                    <span class="material-symbols-outlined text-[13px] font-bold">chat</span>
+                                    WhatsApp
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 @empty
                     <div class="px-5 py-10 text-center flex flex-col items-center justify-center">
@@ -109,6 +146,16 @@
     function toggleNotificationDropdown() {
         const d = document.getElementById('notificationDropdown');
         d.classList.toggle('hidden');
+    }
+    function handleNavbarNotificationClick(notifId) {
+        const d = document.getElementById('notificationDropdown');
+        if (d) d.classList.add('hidden');
+        
+        if (typeof window.focusNotificationInModal === 'function') {
+            window.focusNotificationInModal(notifId);
+        } else {
+            window.location.href = `/admin/dashboard?notif_id=${notifId}`;
+        }
     }
     document.addEventListener('click', function(e) {
         const d = document.getElementById('notificationDropdown');

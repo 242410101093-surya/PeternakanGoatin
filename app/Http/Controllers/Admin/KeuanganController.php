@@ -79,9 +79,19 @@ class KeuanganController extends Controller
             'jenis_transaksi' => 'required|in:Pemasukan,Pengeluaran,Pengiriman Kurir,Pesanan Sudah Sampai',
             'jumlah' => 'required|numeric|min:0',
             'keterangan' => 'required|string|max:255',
+            'nota_pembayaran' => 'required|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
-        LaporanKeuangan::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('nota_pembayaran')) {
+            $file = $request->file('nota_pembayaran');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('nota_pembayaran', $filename, 'public');
+            $data['nota_pembayaran'] = $filename;
+        }
+
+        LaporanKeuangan::create($data);
 
         return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil ditambahkan.');
     }
@@ -101,12 +111,27 @@ class KeuanganController extends Controller
             'jenis_transaksi' => 'required|in:' . implode(',', $allowedTypes),
             'jumlah' => 'required|numeric|min:0',
             'keterangan' => 'required|string|max:255',
+            'nota_pembayaran' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
 
-            $laporan->update($request->all());
+            $data = $request->all();
+
+            if ($request->hasFile('nota_pembayaran')) {
+                // Hapus file lama jika ada
+                if ($laporan->nota_pembayaran) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                }
+
+                $file = $request->file('nota_pembayaran');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('nota_pembayaran', $filename, 'public');
+                $data['nota_pembayaran'] = $filename;
+            }
+
+            $laporan->update($data);
 
             // Update corresponding Pesanan status if linked
             if ($laporan->pesanan_id !== null && $laporan->pesanan) {
@@ -182,7 +207,7 @@ class KeuanganController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
@@ -199,17 +224,35 @@ class KeuanganController extends Controller
                         $pesanan->produk->inventaris->update(['status_stok' => 'Tersedia']);
                     }
                 }
+
+                if ($laporan->nota_pembayaran) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                }
+
                 $laporan->delete();
                 \Illuminate\Support\Facades\DB::commit();
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => true, 'message' => 'Transaksi dibatalkan. Pesanan telah diubah statusnya dan stok ternak dikembalikan.']);
+                }
                 return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi dibatalkan. Pesanan telah diubah statusnya dan stok ternak dikembalikan.');
+            }
+
+            if ($laporan->nota_pembayaran) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
             }
 
             $laporan->delete();
             \Illuminate\Support\Facades\DB::commit();
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Laporan Keuangan berhasil dihapus.']);
+            }
             return redirect()->route('admin.keuangan.index')->with('success', 'Laporan Keuangan berhasil dihapus.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             \Illuminate\Support\Facades\Log::error('Keuangan destroy failed: ' . $e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem saat membatalkan transaksi.'], 500);
+            }
             return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat membatalkan transaksi.');
         }
     }

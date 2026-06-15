@@ -39,12 +39,18 @@ class ArtikelController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'foto.image' => 'Format file gambar tidak valid (Gunakan .jpg/.png)',
+            'foto.mimes' => 'Format file gambar tidak valid (Gunakan .jpg/.png)',
+            'foto.max' => 'Ukuran gambar maksimal 10MB',
+        ];
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-        ]);
+        ], $messages);
 
         $data = $request->except('foto');
 
@@ -59,12 +65,18 @@ class ArtikelController extends Controller
 
     public function update(Request $request, $id)
     {
+        $messages = [
+            'foto.image' => 'Format file gambar tidak valid (Gunakan .jpg/.png)',
+            'foto.mimes' => 'Format file gambar tidak valid (Gunakan .jpg/.png)',
+            'foto.max' => 'Ukuran gambar maksimal 10MB',
+        ];
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-        ]);
+        ], $messages);
 
         $artikel = Artikel::findOrFail($id);
         $data = $request->except(['foto', 'hapus_foto']);
@@ -88,7 +100,7 @@ class ArtikelController extends Controller
         return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $artikel = Artikel::findOrFail($id);
 
@@ -98,6 +110,22 @@ class ArtikelController extends Controller
 
         $artikel->delete();
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus.']);
+        }
         return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil dihapus.');
+    }
+
+    public function hapusFoto(Request $request, $id)
+    {
+        $artikel = Artikel::findOrFail($id);
+
+        if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
+            Storage::disk('public')->delete($artikel->foto);
+        }
+
+        $artikel->update(['foto' => null]);
+
+        return response()->json(['success' => true, 'message' => 'Foto artikel berhasil dihapus.']);
     }
 }

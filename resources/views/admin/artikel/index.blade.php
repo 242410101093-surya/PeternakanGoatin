@@ -151,7 +151,7 @@
                         <textarea name="konten" required rows="8" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
                     </div>
                     <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                         <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Publish Artikel</button>
                     </div>
                 </form>
@@ -192,7 +192,7 @@
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Foto Artikel Baru <span class="text-[10px] font-normal normal-case">(Biarkan kosong jika tidak diubah)</span></label>
-                            <input type="file" name="foto" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
+                            <input type="file" name="foto" id="edit_foto_input" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
                         </div>
                     </div>
                     
@@ -214,7 +214,7 @@
                         <textarea name="konten" id="edit_konten" required rows="8" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
                     </div>
                     <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                         <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
                     </div>
                 </form>
@@ -229,6 +229,7 @@
         document.getElementById('edit_judul').value = artikel.judul;
         document.getElementById('edit_kategori').value = artikel.kategori || '';
         document.getElementById('edit_konten').value = artikel.konten;
+        document.getElementById('edit_foto_input').value = '';
         
         document.getElementById('edit_hapus_foto').value = "0";
 
@@ -249,11 +250,72 @@
 
     function hapusFotoArtikel() {
         const container = document.getElementById('edit_foto_preview_container');
-        openDeleteModal('Yakin ingin menghapus foto artikel ini?', () => {
-            document.getElementById('edit_hapus_foto').value = "1";
-            container.classList.add('hidden');
+        const actionUrl = document.getElementById('editArtikelForm').action;
+        const artikelId = actionUrl.split('/').pop();
+
+        openDeleteModal('Yakin ingin menghapus foto artikel ini secara permanen?', () => {
+            // Show Loader
+            document.getElementById('global-page-loader').style.display = 'flex';
+
+            fetch(`/admin/artikel/${artikelId}/hapus-foto`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('global-page-loader').style.display = 'none';
+                if (data.success) {
+                    window.showToast(data.message, 'success');
+                    container.classList.add('hidden');
+                    document.getElementById('edit_foto_preview').src = '';
+                    document.getElementById('edit_hapus_foto').value = "1";
+                    
+                    // Refresh halaman setelah beberapa saat untuk update tabel di latar
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    window.showToast(data.message || 'Gagal menghapus foto.', 'error');
+                }
+            })
+            .catch(err => {
+                document.getElementById('global-page-loader').style.display = 'none';
+                window.showToast('Terjadi kesalahan jaringan.', 'error');
+            });
         });
     }
+
+    // Live preview for new photo selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('edit_foto_input');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewContainer = document.getElementById('edit_foto_preview_container');
+                        const previewImg = document.getElementById('edit_foto_preview');
+                        previewImg.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                        
+                        // Change text to reflect new upload
+                        const titleText = previewContainer.querySelector('.text-sm.font-bold');
+                        const descText = previewContainer.querySelector('.text-xs.text-slate-500');
+                        if(titleText) titleText.textContent = "Preview Foto Baru";
+                        if(descText) descText.textContent = "Ini adalah foto baru yang akan disimpan.";
+                        
+                        // Hide delete button for unsaved preview
+                        const delBtn = previewContainer.querySelector('button');
+                        if(delBtn) delBtn.style.display = 'none';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
 </script>
 
 @endsection

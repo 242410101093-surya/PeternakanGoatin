@@ -218,7 +218,7 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5" for="whatsapp">Nomor WhatsApp</label>
-                                <input type="text" name="whatsapp" id="whatsapp" value="{{ old('whatsapp', auth()->user()->whatsapp) }}"
+                                <input type="text" name="whatsapp" id="whatsapp" required value="{{ old('whatsapp', auth()->user()->whatsapp) }}"
                                        class="premium-input text-xs font-semibold" placeholder="Contoh: 08123456789">
                             </div>
 
@@ -281,7 +281,7 @@
                         {{-- Alamat Lengkap --}}
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5" for="alamat">Alamat Lengkap</label>
-                            <textarea name="alamat" id="alamat" rows="2" class="premium-input text-xs font-semibold" placeholder="Tuliskan nama jalan, RT/RW, nomor rumah, kecamatan, kota/kabupaten...">{{ old('alamat', auth()->user()->alamat) }}</textarea>
+                            <textarea name="alamat" id="alamat" rows="2" required class="premium-input text-xs font-semibold" placeholder="Tuliskan nama jalan, RT/RW, nomor rumah, kecamatan, kota/kabupaten...">{{ old('alamat', auth()->user()->alamat) }}</textarea>
                         </div>
 
                         {{-- Map Picker --}}
@@ -307,13 +307,13 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1" for="latitude">Latitude</label>
-                                <input type="text" name="latitude" id="latitude" readonly value="{{ old('latitude', auth()->user()->latitude) }}"
+                                <input type="text" name="latitude" id="latitude" required readonly value="{{ old('latitude', auth()->user()->latitude) }}"
                                        class="premium-input text-xs font-semibold bg-slate-50 cursor-not-allowed" placeholder="Belum ditandai">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1" for="longitude">Longitude</label>
-                                <input type="text" name="longitude" id="longitude" readonly value="{{ old('longitude', auth()->user()->longitude) }}"
+                                <input type="text" name="longitude" id="longitude" required readonly value="{{ old('longitude', auth()->user()->longitude) }}"
                                        class="premium-input text-xs font-semibold bg-slate-50 cursor-not-allowed" placeholder="Belum ditandai">
                             </div>
                         </div>
@@ -388,9 +388,7 @@
                         Verifikasi Akun Saya
                     </button>
                     <button type="button" onclick="closeModal('emailVerifyModal')" 
-                            class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all">
-                        Batal
-                    </button>
+                            class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all btn-batal">Batal</button>
                 </div>
             </form>
             
@@ -459,9 +457,7 @@
                         Verifikasi & Ubah Sandi
                     </button>
                     <button type="button" onclick="closeModal('passwordVerifyModal')" 
-                            class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all">
-                        Batal
-                    </button>
+                            class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all btn-batal">Batal</button>
                 </div>
             </div>
             

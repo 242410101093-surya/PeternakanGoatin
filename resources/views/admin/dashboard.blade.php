@@ -3,19 +3,43 @@
 @section('title', 'Dashboard')
 
 @section('content')
+<style>
+    /* ── Premium Admin Dashboard Styles ── */
+    .admin-card {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 24px;
+        box-shadow: 0 10px 30px -10px rgba(5, 31, 32, 0.03);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .admin-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -15px rgba(5, 31, 32, 0.08);
+        border-color: rgba(42, 120, 68, 0.2);
+    }
+    .hover-scale-btn {
+        transition: all 0.2s ease-in-out;
+    }
+    .hover-scale-btn:hover {
+        transform: scale(1.02);
+    }
+</style>
+
 <div class="px-6 md:px-8 py-8 fade-in">
     <div class="max-w-[1280px] mx-auto space-y-8">
 
         {{-- Flash Messages --}}
         @if(session('success'))
-        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium" style="background:#DCFCE7;color:#166534;border:1px solid #bbf7d0;">
-            <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl text-sm font-semibold shadow-sm" style="background:#DCFCE7;color:#166534;border:1px solid #bbf7d0;">
+            <span class="material-symbols-outlined text-emerald-600" style="font-size:20px;">check_circle</span>
             {{ session('success') }}
         </div>
         @endif
         @if(session('error'))
-        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium" style="background:#FEE2E2;color:#991B1B;border:1px solid #fecaca;">
-            <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+        <div class="flex items-center gap-3 px-5 py-4 rounded-2xl text-sm font-semibold shadow-sm" style="background:#FEE2E2;color:#991B1B;border:1px solid #fecaca;">
+            <span class="material-symbols-outlined text-red-600" style="font-size:20px;">error</span>
             {{ session('error') }}
         </div>
         @endif
@@ -23,115 +47,125 @@
         {{-- Page Header --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold" style="color:#051F20; letter-spacing:-.02em;">Ringkasan Dashboard</h1>
-                <p class="text-sm mt-1" style="color:#64748B;">Selamat datang kembali. Berikut ringkasan aktivitas platform Goatin.</p>
+                <h1 class="text-2xl font-black" style="color:#051F20; letter-spacing:-.025em; text-transform: uppercase;">Ringkasan Dashboard</h1>
+                <p class="text-xs md:text-sm mt-1 font-semibold" style="color:#64748B;">Selamat datang kembali, Admin. Berikut ringkasan aktivitas peternakan Goatin.</p>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style="background:#DCFCE7;color:#166534;">
-                    <span class="w-1.5 h-1.5 rounded-full inline-block" style="background:#2A7844;"></span>
-                    Sistem Berjalan
+            <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-full border border-[#bbf7d0]" style="background:#DCFCE7;color:#166534;">
+                    <span class="w-2 h-2 rounded-full inline-block bg-[#2A7844] animate-pulse"></span>
+                    Sistem Aktif & Normal
                 </span>
-                <span class="text-xs" style="color:#94A3B8;">{{ now()->format('d M Y, H:i') }}</span>
+                <span class="text-xs font-bold" style="color:#94A3B8;">{{ now()->format('d M Y, H:i') }}</span>
             </div>
         </div>
 
         {{-- ── KPI Stat Cards ── --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {{-- Card 1: Total Users --}}
-            <a href="{{ route('admin.accounts.index') }}" class="card p-6 block group">
+            <a href="{{ route('admin.accounts.index') }}" class="admin-card p-6 block group">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm" style="background: linear-gradient(135deg, #2A7844 0%, #338f52 100%);">
-                        <span class="material-symbols-outlined text-white" style="font-size:22px;">group</span>
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md bg-gradient-to-tr from-goatin-green to-emerald-500 text-white">
+                        <span class="material-symbols-outlined" style="font-size:24px;">group</span>
                     </div>
-                    <span class="text-xs font-semibold px-2 py-1 rounded-full" style="background:#DBEAFE;color:#1E40AF;">+12%</span>
+                    <span class="text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 border border-blue-200">Mitra Aktif</span>
                 </div>
-                <p class="text-3xl font-extrabold mb-1" style="color:#051F20;">{{ number_format($totalUsers) }}</p>
-                <p class="text-sm font-medium" style="color:#64748B;">Total Pengguna</p>
-                <div class="flex items-center gap-1 mt-3 text-xs font-semibold" style="color:#2A7844;">
-                    Kelola Akun
-                    <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+                <p class="text-3xl font-black mb-1 text-primary-dark tracking-tight">{{ number_format($totalUsers) }}</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Pengguna Terdaftar</p>
+                <div class="flex items-center gap-1 mt-4 text-xs font-bold text-goatin-green group-hover:translate-x-1 transition-transform">
+                    <span>Kelola Akun Mitra</span>
+                    <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
                 </div>
             </a>
 
             {{-- Card 2: Net Profit --}}
-            <a href="{{ route('admin.keuangan.index') }}" class="card p-6 block group">
+            <a href="{{ route('admin.keuangan.index') }}" class="admin-card p-6 block group">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm" style="background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);">
-                        <span class="material-symbols-outlined text-white" style="font-size:22px;">payments</span>
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md bg-gradient-to-tr from-amber-600 to-amber-400 text-white">
+                        <span class="material-symbols-outlined" style="font-size:24px;">payments</span>
                     </div>
-                    <span class="text-xs font-semibold px-2 py-1 rounded-full {{ $labaBersih >= 0 ? '' : '' }}"
-                          style="{{ $labaBersih >= 0 ? 'background:#DCFCE7;color:#166534;' : 'background:#FEE2E2;color:#991B1B;' }}">
-                        {{ $labaBersih >= 0 ? 'Laba' : 'Rugi' }}
+                    <span class="text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg {{ $labaBersih >= 0 ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-red-100 text-red-800 border-red-200' }} border">
+                        {{ $labaBersih >= 0 ? 'Laba Bersih' : 'Rugi Bersih' }}
                     </span>
                 </div>
-                <p id="dashboard-laba-bersih-count" class="text-3xl font-extrabold mb-1 {{ $labaBersih < 0 ? 'text-[#DC2626]' : '' }}"
+                <p id="dashboard-laba-bersih-count" class="text-3xl font-black mb-1 tracking-tight"
                    style="color:{{ $labaBersih < 0 ? '#DC2626' : '#051F20' }};">
                     Rp {{ number_format(abs($labaBersih), 0, ',', '.') }}
                 </p>
-                <p class="text-sm font-medium" style="color:#64748B;">Laba Bersih — {{ $currentMonth }}</p>
-                <div class="flex items-center gap-1 mt-3 text-xs font-semibold" style="color:#2A7844;">
-                    Lihat Laporan
-                    <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Laba Bersih — {{ $currentMonth }}</p>
+                <div class="flex items-center gap-1 mt-4 text-xs font-bold text-goatin-green group-hover:translate-x-1 transition-transform">
+                    <span>Lihat Laporan Keuangan</span>
+                    <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
                 </div>
             </a>
 
             {{-- Card 3: Notifications --}}
-            <button onclick="openNotificationsModal()" class="card p-6 text-left block w-full cursor-pointer">
+            <button onclick="openNotificationsModal()" class="admin-card p-6 text-left block w-full cursor-pointer group">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm" style="background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);">
-                        <span class="material-symbols-outlined text-white" style="font-size:22px;">notifications</span>
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md bg-gradient-to-tr from-red-600 to-red-400 text-white">
+                        <span class="material-symbols-outlined" style="font-size:24px;">notifications</span>
                     </div>
-                    <span id="dashboard-pending-orders-badge" class="text-xs font-bold px-2 py-1 rounded-full animate-pulse {{ $pendingOrders > 0 ? '' : 'hidden' }}" style="background:#FEE2E2;color:#991B1B;">Baru</span>
+                    <span id="dashboard-pending-orders-badge" class="text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-red-100 text-red-800 border border-red-200 animate-pulse {{ $pendingOrders > 0 ? '' : 'hidden' }}">Baru</span>
                 </div>
-                <p id="dashboard-pending-orders-count" class="text-3xl font-extrabold mb-1" style="color:#051F20;">{{ number_format($pendingOrders) }}</p>
-                <p class="text-sm font-medium" style="color:#64748B;">Notifikasi Belum Dibaca</p>
-                <div class="flex items-center gap-1 mt-3 text-xs font-semibold" style="color:#DC2626;" id="dashboard-pending-orders-action">
-                    <span>{{ $pendingOrders > 0 ? 'Konfirmasi Sekarang' : 'Semua dibaca' }}</span>
-                    <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+                <p id="dashboard-pending-orders-count" class="text-3xl font-black mb-1 text-primary-dark tracking-tight">{{ number_format($pendingOrders) }}</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Notifikasi Belum Dibaca</p>
+                <div class="flex items-center gap-1 mt-4 text-xs font-bold group-hover:translate-x-1 transition-transform" style="color:{{ $pendingOrders > 0 ? '#DC2626' : '#2A7844' }};" id="dashboard-pending-orders-action">
+                    <span>{{ $pendingOrders > 0 ? 'Konfirmasi Sekarang' : 'Semua sudah dibaca' }}</span>
+                    <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
                 </div>
             </button>
         </div>
 
         {{-- ── Charts Section ── --}}
         <div class="grid grid-cols-1 gap-5">
-
             {{-- Sales Chart --}}
-            <div class="card p-6">
+            <div class="admin-card p-6">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="font-bold text-base" style="color:#051F20;">Pertumbuhan Penjualan</h3>
-                        <p class="text-xs mt-0.5" style="color:#94A3B8;">6 bulan terakhir</p>
+                        <h3 class="font-black text-sm md:text-base uppercase tracking-wider text-primary-dark">Pertumbuhan Penjualan</h3>
+                        <p class="text-[10px] md:text-xs mt-0.5 font-bold text-slate-400 uppercase tracking-wide">Analisis Tren 6 Bulan Terakhir</p>
                     </div>
-                    <select class="text-xs font-medium px-3 py-1.5 rounded-lg border focus:outline-none"
-                            style="border-color:#E2E8F0;color:#64748B;background:#F8FAFC;">
+                    <select class="text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-600">
                         <option>6 Bulan Terakhir</option>
                         <option>Tahun Ini</option>
                     </select>
                 </div>
                 {{-- SVG Chart --}}
-                <div class="relative h-56 w-full">
+                <div class="relative h-60 w-full">
                     <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
                         <defs>
                             <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" style="stop-color:#2A7844;stop-opacity:.18"/>
+                                <stop offset="0%" style="stop-color:#2A7844;stop-opacity:.25"/>
                                 <stop offset="100%" style="stop-color:#2A7844;stop-opacity:0"/>
                             </linearGradient>
                         </defs>
                         {{-- Grid lines --}}
                         @foreach([40,80,120,160] as $y)
-                        <line x1="0" y1="{{ $y }}" x2="600" y2="{{ $y }}" stroke="#E2E8F0" stroke-width="1"/>
+                        <line x1="0" y1="{{ $y }}" x2="600" y2="{{ $y }}" stroke="#F1F5F9" stroke-width="1.5"/>
                         @endforeach
                         {{-- Area --}}
-                        <path d="M 30,160 C 80,150 130,130 180,110 S 280,75 360,60 S 470,35 570,20 L570,200 L30,200 Z"
-                              fill="url(#chartGrad)"/>
+                        @php
+                            $pathD = "M 30,200 ";
+                            $lineD = "";
+                            if(isset($svgPoints) && count($svgPoints) > 0) {
+                                $lineD = "M {$svgPoints[0][0]},{$svgPoints[0][1]} ";
+                                foreach($svgPoints as $index => $pt) {
+                                    $pathD .= "L {$pt[0]},{$pt[1]} ";
+                                    if($index > 0) $lineD .= "L {$pt[0]},{$pt[1]} ";
+                                }
+                            } else {
+                                $pathD .= "L 30,160 L 570,20 L 570,200 ";
+                                $lineD = "M 30,160 L 570,20";
+                            }
+                            $pathD .= "L 570,200 Z";
+                        @endphp
+                        <path d="{{ $pathD }}" fill="url(#chartGrad)"/>
                         {{-- Line --}}
-                        <path d="M 30,160 C 80,150 130,130 180,110 S 280,75 360,60 S 470,35 570,20"
-                              fill="none" stroke="#2A7844" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="{{ $lineD }}" fill="none" stroke="#2A7844" stroke-width="3.5" stroke-linecap="round"/>
                         {{-- Data points --}}
-                        @foreach([[30,160,'Jan'],[150,115,'Feb'],[270,85,'Mar'],[390,62,'Apr'],[480,40,'Mei'],[570,20,'Jun']] as [$x,$y,$label])
-                        <circle cx="{{ $x }}" cy="{{ $y }}" r="4" fill="#2A7844" stroke="#fff" stroke-width="2"/>
-                        <text x="{{ $x }}" y="188" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="'Plus Jakarta Sans',sans-serif">{{ $label }}</text>
+                        @foreach($svgPoints ?? [[30,160,'Jan'],[570,20,'Jun']] as [$x,$y,$label])
+                        <circle cx="{{ $x }}" cy="{{ $y }}" r="5" fill="#2A7844" stroke="#fff" stroke-width="2.5" class="shadow-sm"/>
+                        <text x="{{ $x }}" y="190" text-anchor="middle" font-size="10" font-weight="800" fill="#94A3B8" font-family="'Plus Jakarta Sans',sans-serif">{{ $label }}</text>
                         @endforeach
                     </svg>
                 </div>
@@ -139,11 +173,11 @@
         </div>
 
         {{-- ── Recent Activity / Quick Access ── --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Quick Links --}}
-            <div class="card p-6">
-                <h3 class="font-bold text-base mb-4" style="color:#051F20;">Akses Cepat</h3>
-                <div class="grid grid-cols-2 gap-3">
+            <div class="admin-card p-6">
+                <h3 class="font-black text-sm md:text-base uppercase tracking-wider text-primary-dark mb-5">Akses Cepat Panel</h3>
+                <div class="grid grid-cols-2 gap-4">
                     @foreach([
                         ['route'=>'admin.inventaris.index','icon'=>'inventory_2','label'=>'Inventaris','color'=>'#051F20','bg'=>'linear-gradient(135deg, #051F20 0%, #0B2B26 100%)'],
                         ['route'=>'admin.rekam-medis.index','icon'=>'medical_services','label'=>'Rekam Medis','color'=>'#2A7844','bg'=>'linear-gradient(135deg, #2A7844 0%, #338f52 100%)'],
@@ -151,50 +185,34 @@
                         ['route'=>'admin.katalog.index','icon'=>'menu_book','label'=>'Katalog','color'=>'#7C3AED','bg'=>'linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%)'],
                     ] as $item)
                     <a href="{{ route($item['route']) }}"
-                       class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group"
-                       style="border:1px solid #E2E8F0;"
-                       onmouseover="this.style.background='#F8FAFC';this.style.borderColor='{{ $item['color'] }}';"
-                       onmouseout="this.style.background='transparent';this.style.borderColor='#E2E8F0';">
-                        <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 shadow-sm"
+                       class="flex items-center gap-3.5 p-3.5 rounded-2xl transition-all duration-300 group hover-scale-btn"
+                       style="border:1px solid rgba(226, 232, 240, 0.8); background: rgba(255,255,255,0.4);"
+                       onmouseover="this.style.background='rgba(255,255,255,0.9)';this.style.borderColor='{{ $item['color'] }}';"
+                       onmouseout="this.style.background='rgba(255,255,255,0.4)';this.style.borderColor='rgba(226, 232, 240, 0.8)';">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
                              style="background:{{ $item['bg'] }};">
-                            <span class="material-symbols-outlined text-white" style="font-size:18px;">{{ $item['icon'] }}</span>
+                            <span class="material-symbols-outlined text-white text-[20px]">{{ $item['icon'] }}</span>
                         </div>
-                        <span class="text-sm font-semibold" style="color:#1E293B;">{{ $item['label'] }}</span>
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-wide">{{ $item['label'] }}</span>
                     </a>
                     @endforeach
                 </div>
             </div>
 
             {{-- Recent Notifications --}}
-            <div class="card p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-base" style="color:#051F20;">Notifikasi Terbaru</h3>
+            <div class="admin-card p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="font-black text-sm md:text-base uppercase tracking-wider text-primary-dark">Notifikasi Terbaru</h3>
                     <div id="dashboard-lihat-semua-container" class="{{ $pendingOrders > 0 ? '' : 'hidden' }}">
                         <button onclick="openNotificationsModal()"
-                                class="text-xs font-semibold px-3 py-1 rounded-full transition-colors"
-                                style="background:#DCFCE7;color:#166534;"
-                                onmouseover="this.style.background='#bbf7d0';" onmouseout="this.style.background='#DCFCE7';">
+                                class="text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-xl transition-all hover:bg-emerald-200 cursor-pointer shadow-sm"
+                                style="background:#DCFCE7;color:#166534;border:1px solid #bbf7d0;">
                             Lihat Semua
                         </button>
                     </div>
                 </div>
-                <div class="space-y-3" id="dashboard-recent-notifications-list">
-                    @forelse($unreadNotifications->take(4) as $notif)
-                    <div class="flex items-start gap-3 p-3 rounded-xl" style="background:#F8FAFC;" id="dashboard-recent-notif-item-{{ $notif->id }}">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background:#FEE2E2;">
-                            <span class="material-symbols-outlined" style="font-size:16px;color:#DC2626;">notifications</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold truncate" style="color:#051F20;">{{ $notif->title }}</p>
-                            <p class="text-xs mt-0.5 line-clamp-1" style="color:#94A3B8;">{{ $notif->created_at->diffForHumans() }}</p>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="text-center py-6 empty-placeholder">
-                        <span class="material-symbols-outlined text-3xl" style="color:#CBD5E1;">done_all</span>
-                        <p class="text-xs mt-2" style="color:#94A3B8;">Semua notifikasi sudah dibaca</p>
-                    </div>
-                    @endforelse
+                <div class="space-y-3.5" id="dashboard-recent-notifications-list">
+                    @include('admin.partials.notifications_dashboard_list')
                 </div>
             </div>
         </div>
@@ -202,115 +220,55 @@
 </div>
 
 {{-- ── MODAL: Notifikasi Pesanan ── --}}
-<div id="notificationsModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
-     style="background:rgba(5,31,32,.5);backdrop-filter:blur(4px);">
-    <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl"
-         style="border:1px solid #E2E8F0;">
-        <div class="flex items-center justify-between px-6 py-4 sticky top-0 bg-white rounded-t-2xl"
-             style="border-bottom:1px solid #E2E8F0;">
-            <h3 class="font-bold text-base flex items-center gap-2" style="color:#051F20;">
-                <span class="material-symbols-outlined" style="color:#DC2626;">notifications</span>
-                Notifikasi Pesanan
-            </h3>
-            <button onclick="closeNotificationsModal()" class="p-1 rounded-lg hover:bg-slate-100 transition-colors">
-                <span class="material-symbols-outlined" style="color:#64748B;">close</span>
-            </button>
-        </div>
-        <div class="overflow-y-auto flex-1 p-6 space-y-3" id="modal-notifications-list">
-            @forelse($unreadNotifications as $notif)
-            <div class="p-4 rounded-xl flex flex-col md:flex-row gap-4 items-start md:items-center"
-                 style="background:#F8FAFC;border:1px solid #E2E8F0;" id="modal-notif-item-{{ $notif->id }}">
-                <div class="flex-1 space-y-1">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full" style="background:#DC2626;"></div>
-                        <h4 class="text-sm font-bold" style="color:#051F20;">{{ $notif->title }}</h4>
-                    </div>
-                    <p class="text-xs" style="color:#94A3B8;">{{ $notif->created_at->diffForHumans() }}</p>
-                    <p class="text-xs leading-relaxed mt-1" style="color:#64748B;">{{ $notif->message }}</p>
-                </div>
-                <button onclick="openConfirmOrderModal({{ json_encode($notif) }})"
-                        class="btn-cta shrink-0 text-xs">
-                    <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
-                    Konfirmasi
-                </button>
-            </div>
-            @empty
-            <div class="text-center py-12 empty-placeholder">
-                <span class="material-symbols-outlined text-5xl" style="color:#CBD5E1;">notifications_none</span>
-                <p class="text-sm mt-3" style="color:#94A3B8;">Tidak ada notifikasi baru</p>
-            </div>
-            @endforelse
-        </div>
-        <div class="flex justify-between items-center px-6 py-4 rounded-b-2xl"
-             style="border-top:1px solid #E2E8F0;background:#F8FAFC;" id="modal-notifications-footer">
-            <div id="modal-read-all-container" class="{{ count($unreadNotifications) > 0 ? '' : 'hidden' }}">
-                <form action="{{ route('admin.notifications.read-all') }}" method="POST" id="readAllNotificationsForm">
-                    @csrf
-                    <button type="submit" class="text-xs font-semibold transition-colors" style="color:#DC2626;">
-                        Tandai Semua Dibaca
-                    </button>
-                </form>
-            </div>
-            <button onclick="closeNotificationsModal()"
-                    class="text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
-                    style="background:#F1F5F9;color:#64748B;"
-                    onmouseover="this.style.background='#E2E8F0';" onmouseout="this.style.background='#F1F5F9';">
-                Tutup
-            </button>
-        </div>
-    </div>
-</div>
+@include('admin.partials.notifications_order_modal')
 
 {{-- ── MODAL: Konfirmasi & Edit Pesanan ── --}}
 <div id="confirmOrderModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4"
-     style="background:rgba(5,31,32,.6);backdrop-filter:blur(4px);">
-    <div class="bg-white rounded-2xl w-full max-w-xl shadow-2xl" style="border:1px solid #E2E8F0;">
-        <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid #E2E8F0;">
-            <h3 class="font-bold text-base flex items-center gap-2" style="color:#051F20;">
-                <span class="material-symbols-outlined" style="color:#2A7844;">edit_note</span>
+     style="background:rgba(5,31,32,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+    <div class="bg-white rounded-[2rem] w-full max-w-xl shadow-2xl border border-white/20">
+        <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100">
+            <h3 class="font-black text-sm md:text-base uppercase tracking-wider flex items-center gap-2 text-primary-dark">
+                <span class="material-symbols-outlined text-goatin-green">edit_note</span>
                 Konfirmasi & Edit Pesanan
             </h3>
-            <button onclick="closeConfirmOrderModal()" class="p-1 rounded-lg hover:bg-slate-100 transition-colors">
-                <span class="material-symbols-outlined" style="color:#64748B;">close</span>
+            <button onclick="closeConfirmOrderModal()" class="p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+                <span class="material-symbols-outlined text-[20px]" style="color:#64748B;">close</span>
             </button>
         </div>
         <form id="confirmOrderForm" method="POST" class="p-6 space-y-4">
             @csrf
             <div>
-                <label class="block text-xs font-semibold mb-1.5" style="color:#64748B;">Judul Notifikasi</label>
+                <label class="block text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-400">Judul Notifikasi</label>
                 <input type="text" name="title" id="confirm_title" required
-                       class="w-full px-3 py-2.5 rounded-xl text-sm" style="border:1px solid #E2E8F0;background:#F8FAFC;color:#1E293B;">
+                       class="w-full px-4 py-3 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-800 focus:outline-none">
             </div>
             <div>
-                <label class="block text-xs font-semibold mb-1.5" style="color:#64748B;">Harga Jual (Rp)</label>
+                <label class="block text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-400">Harga Jual (Rp)</label>
                 <input type="number" name="harga_jual" id="confirm_harga_jual" required min="0"
-                       class="w-full px-3 py-2.5 rounded-xl text-sm" style="border:1px solid #E2E8F0;background:#F8FAFC;color:#1E293B;">
+                       class="w-full px-4 py-3 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-800 focus:outline-none">
             </div>
             <div>
-                <label class="block text-xs font-semibold mb-1.5" style="color:#64748B;">Isi Data Pesanan</label>
-                <textarea name="message" id="confirm_message" rows="6" required
-                          class="w-full px-3 py-2.5 rounded-xl text-sm font-mono leading-relaxed"
-                          style="border:1px solid #E2E8F0;background:#F8FAFC;color:#1E293B;"></textarea>
-                <p class="text-xs mt-1" style="color:#94A3B8;">Anda dapat menyesuaikan rincian sebelum menyetujui.</p>
+                <label class="block text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-400">Isi Data Pesanan</label>
+                <textarea name="message" id="confirm_message" rows="5" required
+                          class="w-full px-4 py-3 rounded-xl text-xs font-mono leading-relaxed border border-slate-200 focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-800 focus:outline-none"></textarea>
+                <p class="text-[10px] mt-1 text-slate-400 font-medium">Anda dapat menyesuaikan rincian sebelum menyetujui.</p>
             </div>
-            <div class="flex justify-end gap-3 pt-2" style="border-top:1px solid #E2E8F0;">
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="rejectOrder()"
-                        class="text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5"
+                        class="text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 border border-red-200"
                         style="background:#FEE2E2;color:#991B1B;"
                         onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEE2E2';">
-                    <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+                    <span class="material-symbols-outlined text-[16px]">close</span>
                     Tolak Pesanan
                 </button>
                 <div class="flex-1"></div>
                 <button type="button" onclick="closeConfirmOrderModal()"
-                        class="text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-                        style="background:#F1F5F9;color:#64748B;"
-                        onmouseover="this.style.background='#E2E8F0';" onmouseout="this.style.background='#F1F5F9';">
-                    Tutup
+                        class="text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all bg-slate-100 text-slate-500 hover:bg-slate-200">
+                    Batal
                 </button>
-                <button type="submit" class="btn-cta">
+                <button type="submit" class="btn-cta text-xs font-bold py-2.5 px-4 rounded-xl flex items-center gap-1 hover-scale-btn shadow-md">
                     <span class="material-symbols-outlined" style="font-size:16px;">check</span>
-                    Setujui & Tandai Dibaca
+                    Setujui & Proses
                 </button>
             </div>
         </form>
@@ -323,7 +281,8 @@
     function openConfirmOrderModal(n) {
         const form = document.getElementById('confirmOrderForm');
         if (form) {
-            form.action = `/admin/notifications/${n.id}/confirm`;
+            const baseUrl = "{{ url('/') }}";
+            form.action = `${baseUrl}/admin/notifications/${n.id}/confirm`;
             form.dataset.notifId = n.id;
         }
         const t = document.getElementById('confirm_title'); if(t) t.value = n.title;
@@ -331,9 +290,48 @@
         const hj = document.getElementById('confirm_harga_jual'); if(hj) hj.value = Math.round(n.pesanan ? n.pesanan.harga_jual : 0);
         const m=document.getElementById('confirmOrderModal'); if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
     }
+    function openConfirmWithPrice(n, notifId) {
+        openConfirmOrderModal(n);
+        const input = document.querySelector(`.notif-harga-input[data-notif-id="${notifId}"]`);
+        if (input) {
+            const editedPrice = Number(input.value) || 0;
+            const hj = document.getElementById('confirm_harga_jual');
+            if (hj) {
+                hj.value = editedPrice;
+                hj.dispatchEvent(new Event('input'));
+            }
+        }
+    }
+    function focusNotificationInModal(notifId) {
+        openNotificationsModal();
+        setTimeout(() => {
+            const item = document.getElementById(`modal-notif-item-${notifId}`);
+            if (item) {
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                item.style.transition = 'all 0.3s ease';
+                item.style.borderColor = '#10B981';
+                item.style.boxShadow = '0 0 0 4px rgba(16, 185, 129, 0.25)';
+                setTimeout(() => {
+                    item.style.borderColor = 'rgba(42,120,68,0.1)';
+                    item.style.boxShadow = '';
+                }, 2500);
+            }
+        }, 300);
+    }
     function closeConfirmOrderModal() { const m=document.getElementById('confirmOrderModal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Auto-focus notification from url parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const notifId = urlParams.get('notif_id');
+        if (notifId) {
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+            setTimeout(() => {
+                focusNotificationInModal(notifId);
+            }, 600);
+        }
+
         // Sync harga_jual dengan teks di dalam textarea confirm_message
         const confirmHargaInput = document.getElementById('confirm_harga_jual');
         const confirmMessageInput = document.getElementById('confirm_message');
@@ -376,9 +374,12 @@
                         const list = document.getElementById('modal-notifications-list');
                         if (list) {
                             list.innerHTML = `
-                                <div class="text-center py-12 empty-placeholder">
-                                    <span class="material-symbols-outlined text-5xl" style="color:#CBD5E1;">notifications_none</span>
-                                    <p class="text-sm mt-3" style="color:#94A3B8;">Tidak ada notifikasi baru</p>
+                                <div class="text-center py-16 empty-placeholder">
+                                    <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-4" style="background:#F1F5F9;">
+                                        <span class="material-symbols-outlined text-5xl" style="color:#CBD5E1;">notifications_none</span>
+                                    </div>
+                                    <p class="text-sm font-black" style="color:#94A3B8;">Tidak Ada Notifikasi Baru</p>
+                                    <p class="text-xs mt-1" style="color:#CBD5E1;">Semua pesanan sudah ditangani</p>
                                 </div>`;
                         }
                         

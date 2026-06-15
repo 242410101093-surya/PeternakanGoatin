@@ -135,14 +135,25 @@ class RekamMedisController extends Controller
         return redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam Medis berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $rekam = RekamMedis::findOrFail($id);
-        $inventarisId = $rekam->inventaris_id;
-        $rekam->delete();
-        $this->syncInventarisStatus($inventarisId);
+        try {
+            $rekam = RekamMedis::findOrFail($id);
+            $inventarisId = $rekam->inventaris_id;
+            $rekam->delete();
+            $this->syncInventarisStatus($inventarisId);
 
-        return redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam Medis berhasil dihapus.');
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Rekam Medis berhasil dihapus.']);
+            }
+            return redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam Medis berhasil dihapus.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Rekam medis destroy failed: ' . $e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem saat menghapus rekam medis.'], 500);
+            }
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat menghapus rekam medis.');
+        }
     }
 
     private function syncInventarisStatus($inventarisId)

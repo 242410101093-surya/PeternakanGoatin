@@ -17,7 +17,7 @@
         <div class="flex gap-3">
             <a href="{{ route('admin.rekam-medis.export-pdf') }}" download class="bg-primary text-on-primary flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">download</span>
-                Ekspor Laporan
+                Unduh PDF
             </a>
             <button onclick="window.dispatchEvent(new CustomEvent('open-add-berat-modal'))" class="bg-surface-container-lowest border border-outline-variant text-on-surface flex items-center gap-2 px-4 py-2 rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors shadow-ambient">
                 <span class="material-symbols-outlined text-[18px]">scale</span>
@@ -202,7 +202,7 @@
                         <textarea name="tindakan" required rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
                     </div>
                     <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                         <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Baru</button>
                     </div>
                 </form>
@@ -255,7 +255,7 @@
                         <textarea name="tindakan" id="edit_tindakan" required rows="2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none"></textarea>
                     </div>
                     <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                         <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-[#2A7844] to-[#1e5c33] text-white hover:shadow-lg hover:shadow-[#2A7844]/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Perubahan</button>
                     </div>
                 </form>
@@ -304,7 +304,7 @@
                         <input type="number" step="0.01" name="berat" required min="0" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#2A7844] focus:ring-2 focus:ring-[#2A7844]/20 bg-slate-50 focus:bg-white text-slate-800 font-medium transition-all outline-none">
                     </div>
                     <div class="pt-6 mt-2 flex justify-end gap-3 border-t border-slate-100">
-                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                        <button type="button" @click="open = false" class="px-6 py-2.5 font-bold text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors btn-batal">Batal</button>
                         <button type="submit" class="px-6 py-2.5 font-bold text-sm bg-gradient-to-r from-orange-500 to-orange-400 text-white hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-0.5 rounded-xl transition-all">Simpan Berat</button>
                     </div>
                 </form>

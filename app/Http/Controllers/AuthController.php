@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -30,13 +31,25 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'whatsapp' => ['required', 'string', 'max:255'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 255 karakter.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.unique' => 'Alamat email ini sudah terdaftar. Silakan gunakan email lain.',
+            'email.max' => 'Alamat email maksimal 255 karakter.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal harus 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
+            'whatsapp.max' => 'Nomor WhatsApp maksimal 255 karakter.'
         ]);
 
         try {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
                 'role' => 'user', // Default role
                 'last_active_at' => now(),
                 'whatsapp' => $request->whatsapp,
@@ -44,7 +57,15 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            return redirect()->route('customer.produk');
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Selamat, Anda selesai registrasi akun!',
+                    'redirect' => route('customer.dashboard')
+                ]);
+            }
+
+            return redirect()->route('customer.dashboard')->with('success', 'Selamat datang di Goatin! Akun Anda berhasil dibuat.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Registration Error: ' . $e->getMessage());
             return back()->withErrors(['email' => 'Terjadi kesalahan sistem saat mendaftar. Silakan coba lagi.'])->withInput();
@@ -68,7 +89,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('customer.produk');
+            return redirect()->route('customer.dashboard');
         }
 
         // If email attempt fails, try attempting using name (username)
@@ -80,11 +101,11 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('customer.produk');
+            return redirect()->route('customer.dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+            'email' => 'Email atau Password salah, silakan coba lagi.',
         ])->onlyInput('email');
     }
 
@@ -95,7 +116,8 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        // Redirect to landing page after logout
+        return redirect()->route('landing');
     }
 
     public function showForgotPassword()
@@ -107,6 +129,10 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => ['required', 'string', 'email', 'exists:users,email'],
+        ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.exists' => 'Email ini tidak ditemukan dalam sistem kami.'
         ]);
 
         $email = $request->email;
@@ -120,18 +146,27 @@ class AuthController extends Controller
             );
 
             // Send Email
-            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($email, $code) {
-                $message->to($email)
-                        ->subject('Kode Verifikasi Reset Password Goatin')
-                        ->html("<h3>Goatin Stewardship Portal</h3><p>Halo,</p><p>Berikut adalah kode verifikasi reset password Anda:</p><h1 style='font-size:32px;letter-spacing:5px;color:#1e4e2f;font-weight:bold;'>$code</h1><p>Kode ini berlaku selama 15 menit. Jika Anda tidak meminta reset password ini, silakan abaikan email ini.</p>");
-            });
-
-            return redirect()->route('password.reset', ['email' => $email])->with('status', 'Kode verifikasi telah dikirim ke email Anda.');
+            try {
+                \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($email, $code) {
+                    $message->to($email)
+                            ->subject('Kode Verifikasi Reset Password Goatin')
+                            ->html("<h3>Goatin Stewardship Portal</h3><p>Halo,</p><p>Berikut adalah kode verifikasi reset password Anda:</p><h1 style='font-size:32px;letter-spacing:5px;color:#1e4e2f;font-weight:bold;'>$code</h1><p>Kode ini berlaku selama 15 menit. Jika Anda tidak meminta reset password ini, silakan abaikan email ini.</p>");
+                });
+                return redirect()->route('password.reset', ['email' => $email])->with('status', 'Kode verifikasi telah dikirim ke email Anda.');
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Mail Send Error: ' . $e->getMessage());
+                if (config('app.env') === 'local') {
+                    // Fallback for development: skip email and auto-fill the code
+                    return redirect()->route('password.reset', ['email' => $email, 'dev_code' => $code]);
+                }
+                // Rollback the code if email failed
+                DB::table('password_reset_codes')->where('email', $email)->delete();
+                return back()->withErrors(['email' => 'Gagal mengirim email verifikasi. Pastikan konfigurasi server email benar atau coba lagi nanti.']);
+            }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Mail Send Error: ' . $e->getMessage());
-            // Rollback the code if email failed
+            \Illuminate\Support\Facades\Log::error('Mail Send Critical Error: ' . $e->getMessage());
             DB::table('password_reset_codes')->where('email', $email)->delete();
-            return back()->withErrors(['email' => 'Gagal mengirim email verifikasi. Pastikan konfigurasi server email benar atau coba lagi nanti.']);
+            return back()->withErrors(['email' => 'Terjadi kesalahan internal.']);
         }
     }
 
@@ -146,6 +181,15 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'exists:users,email'],
             'code' => ['required', 'string', 'size:6'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.exists' => 'Email ini tidak ditemukan.',
+            'code.required' => 'Kode verifikasi wajib diisi.',
+            'code.size' => 'Kode verifikasi harus 6 digit.',
+            'password.required' => 'Password baru wajib diisi.',
+            'password.min' => 'Password minimal harus 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.'
         ]);
 
         $resetRecord = DB::table('password_reset_codes')
@@ -168,7 +212,7 @@ class AuthController extends Controller
             // Update password
             $user = User::where('email', $request->email)->firstOrFail();
             $user->update([
-                'password' => Hash::make($request->password)
+                'password' => $request->password
             ]);
 
             // Delete used code
@@ -184,36 +228,51 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Redirect the user to the Google authentication page.
+     */
     public function redirectToGoogle()
     {
-        return view('customer.auth.google-mock');
+        return Socialite::driver('google')->redirect();
     }
 
+    /**
+     * Obtain the user information from Google and log them in.
+     */
     public function handleGoogleCallback(Request $request)
     {
-        $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'name' => ['required', 'string'],
-        ]);
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Google OAuth Error: ' . $e->getMessage());
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Login dengan Google gagal. Silakan coba lagi.']);
+        }
 
-        $user = User::where('email', $request->email)->first();
+        // Find or create the user
+        $user = User::where('email', $googleUser->getEmail())->first();
 
         if (!$user) {
+            // New user → register automatically
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make(Str::random(16)),
-                'role' => 'user',
+                'name'           => $googleUser->getName(),
+                'email'          => $googleUser->getEmail(),
+                'password'       => Hash::make(Str::random(24)),
+                'role'           => 'user',
                 'last_active_at' => now(),
-                'whatsapp' => '6281234567890', // Default mock whatsapp
+                'whatsapp'       => '', // User can fill in later via profile
             ]);
         }
 
         Auth::login($user);
-        
         $user->update(['last_active_at' => now()]);
         $request->session()->regenerate();
 
-        return redirect()->route('customer.produk');
+        // Redirect based on role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('customer.dashboard');
     }
 }

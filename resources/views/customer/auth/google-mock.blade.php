@@ -100,9 +100,7 @@
                 
                 <div class="flex items-center justify-between gap-3 pt-2">
                     <button type="button" onclick="hideCustomForm()"
-                            class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all">
-                        Batal
-                    </button>
+                            class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all btn-batal">Batal</button>
                     <button type="submit"
                             class="px-5 py-2.5 bg-[#4285F4] hover:bg-[#357ae8] text-white text-xs font-extrabold rounded-xl transition-all shadow-sm">
                         Lanjutkan

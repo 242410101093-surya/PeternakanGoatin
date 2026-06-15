@@ -26,6 +26,8 @@
                         "primary-dark": "#051F20",
                         "accent-teal": "#235347",
                         "accent-teal-dark": "#163832",
+                        "goatin-green": "#2A7844",
+                        "goatin-light": "#EDF4F8",
                     },
                     fontFamily: {
                         "sans": ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -35,14 +37,19 @@
         }
     </script>
     <style>
+        /* ── Fallback Styling (when sandboxed or Tailwind CDN is blocked) ── */
+        img {
+            max-width: 100%;
+        }
+        .h-10, .h-12, .h-11, nav img, header img {
+            height: 48px !important;
+            width: auto !important;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #051F20;
             overflow-x: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
         }
 
         /* ── Input Styling ── */
@@ -142,45 +149,60 @@
             background-color: rgba(255, 255, 255, 0.12);
             border-color: rgba(255, 255, 255, 0.22);
         }
+
+        /* custom validation tooltip */
+        .custom-val-tooltip {
+            position: absolute;
+            top: -42px;
+            left: 10px;
+            background: #ef4444; /* red-500 */
+            color: white;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 50;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+            animation: bounceIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .custom-val-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            transform: rotate(45deg);
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
     </style>
 </head>
-<body class="min-h-screen antialiased flex items-center justify-center p-4 md:p-6 select-none overflow-x-hidden">
+<body class="min-h-screen antialiased flex flex-col justify-between select-none overflow-x-hidden pt-[100px]">
 
     {{-- ── Global Full-screen Blurred Background Underlay ── --}}
-    <div class="absolute inset-0 bg-cover bg-center select-none z-0"
+    <div class="fixed inset-0 bg-cover bg-center select-none z-0"
          style="background-image: url('{{ asset('images/background_goats.png') }}'); filter: blur(20px) brightness(0.42); transform: scale(1.05);"></div>
 
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png?v=3') }}" alt="" style="width:20px;height:20px;object-fit:contain;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
 
-    {{-- ── Main Container: Floating Rounded Card (No Padding to match 100% boundary) ── --}}
-    <div class="relative z-10 w-full max-w-[1100px] flex flex-col md:flex-row rounded-[32px] overflow-hidden shadow-2xl border border-white/10 bg-white p-0 animate-container">
+    @include('partials.landing.header')
+
+    <main class="flex-grow flex items-center justify-center py-10 px-4 md:px-6 relative z-10">
+        {{-- ── Main Container: Floating Rounded Card (No Padding to match 100% boundary) ── --}}
+        <div class="relative w-full max-w-[1100px] flex flex-col md:flex-row rounded-[32px] overflow-hidden shadow-2xl border border-white/10 bg-white p-0 animate-container">
 
         {{-- ── LEFT SECTION: Image Banner (62% Width, Flush with Left/Top/Bottom margins) ── --}}
         <section class="hidden md:flex md:w-[62%] relative overflow-hidden flex-col justify-between p-10 min-h-[620px] z-10 rounded-l-[32px] rounded-r-[48px] animate-left"
@@ -228,7 +250,7 @@
             </header>
 
             {{-- Form Wrapper --}}
-            <div class="my-auto py-6 space-y-6">
+            <div id="form-area" class="my-auto py-6 space-y-6">
                 
                 <div class="space-y-1.5">
                     <h1 class="text-3xl font-extrabold tracking-tight text-[#051F20] uppercase" style="letter-spacing:-0.03em;">SIGN UP</h1>
@@ -237,7 +259,7 @@
 
                 {{-- Validation Errors --}}
                 @if ($errors->any())
-                    <div class="p-4 rounded-xl text-xs font-semibold border" 
+                    <div id="error-container" class="p-4 rounded-xl text-xs font-semibold border" 
                          style="background:rgba(239, 68, 68, 0.03); color:#ba1a1a; border-color:rgba(186, 26, 26, 0.15);">
                         <ul class="list-disc list-inside space-y-1">
                             @foreach ($errors->all() as $error)
@@ -247,7 +269,7 @@
                     </div>
                 @endif
 
-                <form id="register-form" action="{{ route('register.submit') }}" method="POST" class="space-y-4">
+                <form id="register-form" action="{{ route('register.submit') }}" method="POST" class="space-y-4" novalidate>
                     @csrf
                     
                     {{-- Nama Lengkap --}}
@@ -331,7 +353,7 @@
                 </form>
 
                 {{-- Divider --}}
-                <div class="relative flex items-center justify-center my-4">
+                <div class="register-extras relative flex items-center justify-center my-4">
                     <div class="absolute inset-0 flex items-center" aria-hidden="true">
                         <div class="w-full border-t border-slate-200/80"></div>
                     </div>
@@ -341,7 +363,7 @@
                 </div>
 
                 {{-- Google Button --}}
-                <div>
+                <div class="register-extras">
                     <a href="{{ route('auth.google') }}" 
                        class="w-full flex justify-center items-center gap-3 py-3 px-6 rounded-full text-xs font-extrabold text-slate-700 uppercase tracking-widest border border-slate-200 bg-white hover:bg-slate-50 transition-all duration-300 shadow-sm hover:shadow active:scale-[0.98] cursor-pointer group">
                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24">
@@ -368,6 +390,9 @@
         </section>
 
     </div>
+    </main>
+
+    @include('partials.landing.footer')
 
     <script>
         (function() {
@@ -385,8 +410,125 @@
                 showLoader();
             });
 
-            document.getElementById('register-form').addEventListener('submit', function(e) {
+            const form = document.getElementById('register-form');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Clear any existing custom tooltips
+                document.querySelectorAll('.custom-val-tooltip').forEach(el => el.remove());
+                
+                let isValid = true;
+                const requiredInputs = form.querySelectorAll('input[required]');
+                
+                for (let i = requiredInputs.length - 1; i >= 0; i--) {
+                    const input = requiredInputs[i];
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'custom-val-tooltip';
+                        tooltip.innerHTML = '<span class="material-symbols-outlined text-[16px]">error</span> Harap isi semua kolom';
+                        
+                        const container = input.closest('.capsule-input-container');
+                        container.style.position = 'relative';
+                        container.appendChild(tooltip);
+                        
+                        setTimeout(() => {
+                            if (tooltip.parentElement) {
+                                tooltip.style.animation = 'bounceIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                                setTimeout(() => tooltip.remove(), 200);
+                            }
+                        }, 3500);
+                        
+                        input.focus();
+                        
+                        input.addEventListener('input', function onInput() {
+                            if (tooltip.parentElement) tooltip.remove();
+                            input.removeEventListener('input', onInput);
+                        });
+                    }
+                }
+                
+                if (!isValid) return false;
+
                 showLoader();
+                
+                // clear previous errors
+                const errorDiv = document.getElementById('error-container');
+                if (errorDiv) errorDiv.remove();
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    hideLoader();
+                    
+                    if (response.ok && result.success) {
+                        // Hide google buttons and dividers
+                        const extras = document.querySelectorAll('.register-extras');
+                        extras.forEach(el => el.style.display = 'none');
+                        
+                        // Show success banner inside the form area
+                        const formArea = document.getElementById('form-area');
+                        formArea.innerHTML = `
+                            <div class="flex flex-col items-center justify-center text-center space-y-4 py-12 animate-container">
+                                <div class="w-16 h-16 rounded-full bg-[#f0faf3] border border-[rgba(42,120,68,0.15)] flex items-center justify-center mb-2">
+                                    <span class="material-symbols-outlined text-4xl text-emerald-600">check_circle</span>
+                                </div>
+                                <h2 class="text-2xl font-black text-[#051F20] uppercase tracking-tight">Pendaftaran Berhasil!</h2>
+                                <p class="text-sm text-[#2A7844] font-bold px-5 py-2.5 rounded-xl bg-[#f0faf3] border border-[rgba(42,120,68,0.15)]">Selamat, akun Anda telah selesai diregistrasi.</p>
+                                <p class="text-xs text-slate-500 font-medium mt-6">Akan dialihkan ke halaman dashboard dalam <span id="reg-countdown" class="font-black text-[#235347] mx-1 text-sm">3</span> detik...</p>
+                            </div>
+                        `;
+                        
+                        let timeLeft = 3;
+                        const cId = document.getElementById('reg-countdown');
+                        const interval = setInterval(() => {
+                            timeLeft--;
+                            if (timeLeft <= 0) {
+                                clearInterval(interval);
+                                showLoader(); // Show the spinning ring during the final redirect
+                                window.location.href = result.redirect;
+                            } else {
+                                if (cId) cId.textContent = timeLeft;
+                            }
+                        }, 1000);
+                        
+                    } else {
+                        // Show errors
+                        let errorHtml = '';
+                        if (result.errors) {
+                            for (let key in result.errors) {
+                                errorHtml += `<li>${result.errors[key][0]}</li>`;
+                            }
+                        } else if (result.message) {
+                            errorHtml += `<li>${result.message}</li>`;
+                        } else {
+                            errorHtml += `<li>Terjadi kesalahan sistem.</li>`;
+                        }
+                        
+                        const errHTML = `
+                            <div id="error-container" class="p-4 rounded-xl text-xs font-semibold border" 
+                                 style="background:rgba(239, 68, 68, 0.03); color:#ba1a1a; border-color:rgba(186, 26, 26, 0.15);">
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${errorHtml}
+                                </ul>
+                            </div>
+                        `;
+                        form.insertAdjacentHTML('beforebegin', errHTML);
+                    }
+                } catch (err) {
+                    hideLoader();
+                    alert("Terjadi kesalahan jaringan atau server.");
+                }
             });
 
             window.addEventListener('pageshow', function() {

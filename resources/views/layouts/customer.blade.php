@@ -107,6 +107,19 @@
         }
 
         /* ── UI Buttons ── */
+        .btn-batal {
+            background-color: transparent !important;
+            color: #ef4444 !important;
+            border: 1.5px solid #ef4444 !important;
+            transition: all 0.3s ease !important;
+        }
+        .btn-batal:hover, .btn-batal:focus, .btn-batal:active {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+        }
+
         .btn-premium {
             background: linear-gradient(135deg, #2A7844 0%, #1e5c33 100%);
             color: #ffffff;
@@ -297,6 +310,42 @@
         .animate-modal-content-out {
             animation: modalScaleOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* ── Custom Validation Tooltip ── */
+        .custom-val-tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #DC2626;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+            animation: bounceIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+        .custom-val-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: #DC2626 transparent transparent transparent;
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: translateX(-50%) scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-white text-text-body min-h-screen flex flex-col pt-[100px] w-full overflow-x-hidden">
@@ -315,31 +364,10 @@
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png') }}" alt="" style="width:20px;height:20px;object-fit:cover;border-radius:50%;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
     <script>
         (function() {
             const loader = document.getElementById('global-page-loader');
@@ -352,14 +380,71 @@
                 const href = link.getAttribute('href');
                 if (!href || href.startsWith('#') || href.startsWith('javascript') ||
                     href.startsWith('mailto') || href.startsWith('tel') ||
-                    link.target === '_blank' || link.hasAttribute('download')) return;
-                showLoader();
+                    link.target === '_blank' || link.hasAttribute('download') ||
+                    href.includes('/export-pdf') || href.includes('.pdf')) return;
+                
+                // Wait for other listeners to execute and check if default was prevented
+                setTimeout(() => {
+                    if (!e.defaultPrevented) {
+                        showLoader();
+                    }
+                }, 10);
             });
 
+            // Automatically disable native validation globally
+            document.querySelectorAll('form').forEach(f => f.setAttribute('novalidate', 'true'));
+
             document.addEventListener('submit', function(e) {
+                const form = e.target;
+                
+                // --- CUSTOM HTML5 REQUIRED VALIDATION ---
+                const requiredInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+                let isHtml5Valid = true;
+                
+                for (let i = requiredInputs.length - 1; i >= 0; i--) {
+                    const input = requiredInputs[i];
+                    if (!input.value.trim() || (input.type === 'checkbox' && !input.checked)) {
+                        isHtml5Valid = false;
+                        
+                        form.querySelectorAll('.custom-val-tooltip').forEach(el => el.remove());
+
+                        const errorMsg = input.getAttribute('data-error-msg') || 'Harap isi semua kolom';
+
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'custom-val-tooltip';
+                        tooltip.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-pulse">error</span> ${errorMsg}`;
+                        
+                        const container = input.parentElement;
+                        const originalPos = window.getComputedStyle(container).position;
+                        if (originalPos === 'static') container.style.position = 'relative';
+                        container.appendChild(tooltip);
+                        
+                        setTimeout(() => {
+                            if (tooltip.parentElement) {
+                                tooltip.style.animation = 'bounceIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                                setTimeout(() => tooltip.remove(), 200);
+                            }
+                        }, 3500);
+                        
+                        input.focus();
+                        input.addEventListener('input', function onInput() {
+                            if (tooltip.parentElement) tooltip.remove();
+                            input.removeEventListener('input', onInput);
+                        });
+                    }
+                }
+                
+                if (!isHtml5Valid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                }
+                // --- END CUSTOM HTML5 REQUIRED VALIDATION ---
+
                 if (e.defaultPrevented) return;
                 showLoader();
-            });
+            }, true);
 
             window.addEventListener('pageshow', hideLoader);
             window.addEventListener('load', hideLoader);

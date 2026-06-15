@@ -82,31 +82,10 @@
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png?v=3') }}" alt="" style="width:20px;height:20px;object-fit:contain;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
 
     {{-- ── Centered Card: Premium White Floating Capsule ── --}}
     <div class="relative z-10 w-full max-w-md bg-white p-8 sm:p-10 rounded-[32px] shadow-2xl border border-white/10 flex flex-col justify-between animate-container">
@@ -145,12 +124,6 @@
                            class="bg-transparent border-none p-0 text-sm w-full text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none" 
                            placeholder="Masukkan email terdaftar">
                 </div>
-                @error('email')
-                    <div class="mt-2 flex items-start gap-2 p-3 rounded-2xl bg-red-50/80 border border-red-100">
-                        <span class="material-symbols-outlined text-red-500 shrink-0 text-[16px] mt-0.5">error</span>
-                        <p class="text-[11px] text-red-600 font-semibold leading-relaxed">{{ $message }}</p>
-                    </div>
-                @enderror
             </div>
 
             {{-- Submit Button --}}
@@ -171,6 +144,39 @@
         </div>
 
     </div>
+
+    {{-- ── MODERN POPUP ERROR MODAL ── --}}
+    @error('email')
+    <div id="email-error-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(5,31,32,.75);backdrop-filter:blur(8px);">
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-8 text-center shadow-2xl border border-white/20 relative animate-container">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full bg-red-50 flex items-center justify-center border-[8px] border-white shadow-lg">
+                <span class="material-symbols-outlined text-red-500 text-[40px] animate-pulse">error</span>
+            </div>
+            
+            <div class="mt-8 space-y-3">
+                <h3 class="text-xl font-black text-slate-800 tracking-tight">Email Tidak Ditemukan</h3>
+                <p class="text-xs text-slate-500 leading-relaxed font-medium px-2">
+                    {{ $message }} Silakan periksa kembali penulisan alamat email Anda atau daftar jika belum memiliki akun.
+                </p>
+            </div>
+            
+            <div class="mt-8">
+                <button type="button" onclick="closeEmailErrorModal()" class="w-full flex justify-center items-center py-3.5 rounded-2xl text-xs font-extrabold text-white uppercase tracking-widest transition-all duration-300 shadow-md active:scale-[0.98] cursor-pointer" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
+                    Coba Lagi
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function closeEmailErrorModal() {
+            const modal = document.getElementById('email-error-modal');
+            if (modal) {
+                modal.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        }
+    </script>
+    @enderror
 
     <script>
         (function() {

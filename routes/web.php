@@ -12,15 +12,30 @@ use App\Http\Controllers\ProfileController;
 
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    // If already logged in, redirect to the appropriate dashboard
+    if (Auth::check()) {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('customer.dashboard');
+    }
+
+    $featuredProducts = \App\Models\Produk::with(['inventaris.rekamMedis'])
+        ->whereHas('inventaris', function ($q) {
+            $q->where('status_stok', 'Tersedia');
+        })
+        ->orderBy('created_at', 'desc')
+        ->take(3)
+        ->get();
+    return view('welcome', compact('featuredProducts'));
+})->name('landing');
 
 Route::get('/dashboard', function () {
     if (Auth::user()->role === 'admin') {
         return redirect()->route('admin.dashboard');
     }
 
-    return redirect()->route('customer.produk');
+    return redirect()->route('customer.dashboard');
 })->middleware('auth')->name('dashboard');
 
 // Login
@@ -44,11 +59,11 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // CUSTOMER
-Route::prefix('customer')->name('customer.')->middleware('auth')->group(function () {
+Route::prefix('customer')->name('customer.')->middleware(['auth', 'customer.role'])->group(function () {
 
     // Main Features
     Route::get('/dashboard', function () {
-        $artikels = Artikel::orderBy('created_at', 'desc')->get();
+        $artikels = Artikel::orderBy('created_at', 'desc')->take(7)->get();
         return view('customer.dashboard', compact('artikels'));
     })->name('dashboard');
 
@@ -86,10 +101,11 @@ use App\Http\Controllers\Admin\ArtikelController;
 use App\Http\Controllers\Admin\KeuanganController;
 
 // ADMIN ROUTES
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.role'])->group(function () {
 
     // Main Features
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/notifications/check', [DashboardController::class, 'checkNew'])->name('notifications.check');
     Route::post('/notifications/read-all', [DashboardController::class, 'markAllNotificationsRead'])->name('notifications.read-all');
     Route::post('/notifications/{notification}/read', [DashboardController::class, 'markNotificationRead'])->name('notifications.read');
     Route::post('/notifications/{notification}/confirm', [DashboardController::class, 'confirmNotification'])->name('notifications.confirm');
@@ -105,6 +121,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Artikel
     Route::resource('artikel', ArtikelController::class)->except(['create', 'show', 'edit']);
+    Route::post('/artikel/{id}/hapus-foto', [ArtikelController::class, 'hapusFoto'])->name('artikel.hapus-foto');
 
     // Keuangan
     Route::resource('keuangan', KeuanganController::class)->except(['create', 'show', 'edit']);

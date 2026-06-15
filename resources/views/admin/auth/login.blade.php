@@ -10,6 +10,41 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16.png?v=3') }}">
     <link rel="shortcut icon" href="{{ asset('images/favicon.png?v=3') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        /* custom validation tooltip */
+        .custom-val-tooltip {
+            position: absolute;
+            top: -42px;
+            left: 10px;
+            background: #ef4444; /* red-500 */
+            color: white;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 50;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+            animation: bounceIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .custom-val-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            transform: rotate(45deg);
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
 </head>
 <body>
     <div class="auth-layout" style="background: linear-gradient(135deg, var(--text-dark) 0%, var(--brown) 100%);">
@@ -20,7 +55,7 @@
             <h2 class="text-center" style="color: var(--text-dark);">Login Admin</h2>
             <p class="text-center mb-2" style="color: var(--text-light);">Manajemen sistem Goat-In.</p>
             
-            <form id="admin-login-form" action="{{ route('admin.login.submit') }}" method="POST">
+            <form id="admin-login-form" action="{{ route('admin.login.submit') }}" method="POST" novalidate>
                 @csrf
                 <div class="form-group">
                     <label class="form-label">Username</label>
@@ -40,31 +75,10 @@
     <!-- ═══ Global Page-Navigation Loading Spinner ═══ -->
     <div id="global-page-loader"
          style="display:none; position:fixed; inset:0; z-index:9999;
-                background:rgba(5,31,32,0.50); backdrop-filter:blur(5px);
-                align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-        <div style="position:relative; width:72px; height:72px;">
-            <div style="position:absolute; inset:-6px; border-radius:50%;
-                        border:2px solid rgba(35,83,71,0.18); animation:gpl-pulse 2s ease-in-out infinite;"></div>
-            <div style="position:absolute; inset:0; border-radius:50%;
-                        border:4px solid transparent;
-                        border-top-color:#235347; border-right-color:#235347;
-                        animation:gpl-spin 0.8s linear infinite;"></div>
-            <div style="position:absolute; inset:10px; border-radius:50%;
-                        border:1.5px dashed rgba(35,83,71,0.35);
-                        animation:gpl-spin 4s linear infinite reverse;"></div>
-            <div style="position:absolute; inset:18px; border-radius:50%;
-                        background:rgba(35,83,71,0.1); display:flex;
-                        align-items:center; justify-content:center;">
-                <img src="{{ asset('images/favicon-32.png?v=3') }}" alt="" style="width:20px;height:20px;object-fit:cover;border-radius:50%;opacity:0.85;">
-            </div>
-        </div>
-        <p style="color:#8EB69B; font-size:10px; font-weight:700; letter-spacing:0.2em;
-                  text-transform:uppercase; animation:gpl-pulse 1.5s ease-in-out infinite;">Memuat...</p>
+                background:rgba(255,255,255,0.3); backdrop-filter:blur(2px);
+                align-items:center; justify-content:center;">
+        @include('partials.modern_loader')
     </div>
-    <style>
-        @keyframes gpl-spin  { to { transform: rotate(360deg); } }
-        @keyframes gpl-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
-    </style>
     <script>
         (function() {
             const loader = document.getElementById('global-page-loader');
@@ -81,7 +95,51 @@
                 showLoader();
             });
 
-            document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+            const adminLoginForm = document.getElementById('admin-login-form');
+            adminLoginForm.addEventListener('submit', function(e) {
+                // Clear any existing custom tooltips
+                document.querySelectorAll('.custom-val-tooltip').forEach(el => el.remove());
+                
+                let isValid = true;
+                const requiredInputs = adminLoginForm.querySelectorAll('input[required]');
+                
+                // Reverse loop so the first empty input gets focus
+                for (let i = requiredInputs.length - 1; i >= 0; i--) {
+                    const input = requiredInputs[i];
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'custom-val-tooltip';
+                        tooltip.innerHTML = '<span class="material-symbols-outlined text-[16px]">error</span> Harap isi semua kolom';
+                        
+                        const container = input.closest('.form-group');
+                        container.style.position = 'relative';
+                        container.appendChild(tooltip);
+                        
+                        // Auto-hide after 3.5s
+                        setTimeout(() => {
+                            if (tooltip.parentElement) {
+                                tooltip.style.animation = 'bounceIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards';
+                                setTimeout(() => tooltip.remove(), 200);
+                            }
+                        }, 3500);
+                        
+                        input.focus();
+                        
+                        // Remove tooltip on typing
+                        input.addEventListener('input', function onInput() {
+                            if (tooltip.parentElement) tooltip.remove();
+                            input.removeEventListener('input', onInput);
+                        });
+                    }
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
+                
                 showLoader();
             });
 

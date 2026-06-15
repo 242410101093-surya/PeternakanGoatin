@@ -370,3 +370,16 @@ tr:hover {
 .dot.active, .dot:hover {
     background: white;
 }
+
+/* Button Batal Global Style */
+.btn-batal {
+    background-color: transparent !important;
+    color: #ef4444 !important; /* red-500 */
+    border: 1.5px solid #ef4444 !important;
+    transition: all 0.3s ease !important;
+}
+.btn-batal:hover, .btn-batal:focus, .btn-batal:active {
+    background-color: #ef4444 !important;
+    color: white !important;
+    border-color: #ef4444 !important;
+}

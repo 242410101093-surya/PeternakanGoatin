@@ -12,6 +12,7 @@ class LaporanKeuangan extends Model
         'jumlah',
         'keterangan',
         'pesanan_id',
+        'nota_pembayaran',
     ];
 
     public function pesanan()

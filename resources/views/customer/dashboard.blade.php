@@ -6,10 +6,32 @@
 @php
     $featured = $artikels->first();
     $otherArticles = $artikels->skip(1);
+    
+    // Compute customer statistics dynamically
+    $userId = auth()->id();
+    
+    // 1. Active Orders Count (Pending or approved/shipping)
+    $activeOrdersCount = \App\Models\Pesanan::where('user_id', $userId)
+        ->whereIn('status', ['Pending', 'Disetujui', 'Pengiriman Kurir'])
+        ->count();
+        
+    // 2. Monitored Goats Count (Approved, shipping or arrived)
+    $monitoredGoatsCount = \App\Models\Pesanan::where('user_id', $userId)
+        ->whereIn('status', ['Disetujui', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
+        ->count();
+        
+    // 3. Total Investment / Transaction Amount
+    $totalInvestment = \App\Models\Pesanan::where('user_id', $userId)
+        ->whereIn('status', ['Disetujui', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
+        ->sum('harga_jual');
+        
+    // 4. Security Status
+    $isEmailVerified = !empty(auth()->user()->email_verified_at);
 @endphp
+
 <main class="max-w-[1200px] mx-auto px-6 py-10 space-y-12">
 
-    {{-- ── Hero Banner Section ── --}}
+    {{-- ── Hero Welcome Banner Section ── --}}
     <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-slate-700/30 shadow-2xl"
              style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 45%, #163832 85%, #235347 100%);"
              data-aos="fade-down">
@@ -24,100 +46,157 @@
 
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div class="lg:col-span-8 space-y-4">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase animate-pulse"
-                     style="background: rgba(35, 83, 71, 0.15); border: 1px solid rgba(35, 83, 71, 0.3); backdrop-filter: blur(8px);">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase"
+                     style="background: rgba(42, 120, 68, 0.15); border: 1px solid rgba(42, 120, 68, 0.3); backdrop-filter: blur(8px);">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8EB69B] opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#8EB69B]"></span>
                     </span>
-                    <span class="text-[#8EB69B]">Wawasan & Riset Peternakan</span>
+                    <span class="text-[#8EB69B]">Goatin Digital Panel</span>
                 </div>
                 
                 <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-                    Temukan Pengetahuan <br class="hidden md:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-green-200">
-                        Ternak Modern
-                    </span> Anda
+                    Halo, <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-green-200">{{ auth()->user()->name }}</span>!
                 </h1>
                 
                 <p class="text-sm md:text-base text-slate-200/90 max-w-xl leading-relaxed font-medium">
-                    Akses wawasan, riset mutakhir, dan panduan praktis yang didesain khusus untuk mengoptimalkan kesehatan, pertumbuhan, serta profitabilitas peternakan kambing & domba Anda.
+                    Selamat datang di dasbor utama Goatin. Di sini Anda dapat memantau kesehatan ternak secara real-time, memesan hewan kualitas super, dan membaca jurnal peternakan modern teruji.
                 </p>
 
-                <div class="flex flex-wrap gap-4 pt-2">
-                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
-                        <span class="material-symbols-outlined text-[#8EB69B]" style="font-size: 20px;">science</span>
-                        <div class="text-left">
-                            <p class="text-[10px] text-slate-300 font-medium">Riset Ilmiah</p>
-                            <p class="text-xs font-bold text-white">Teruji & Praktis</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
-                        <span class="material-symbols-outlined text-emerald-400" style="font-size: 20px;">clinical_notes</span>
-                        <div class="text-left">
-                            <p class="text-[10px] text-slate-300 font-medium">Panduan Medis</p>
-                            <p class="text-xs font-bold text-white">Kambing & Domba</p>
-                        </div>
-                    </div>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a href="{{ route('customer.produk') }}" 
+                       class="inline-flex items-center gap-2 py-3 px-6 rounded-full text-xs font-extrabold text-white uppercase tracking-widest transition-all duration-300 bg-goatin-green hover:bg-emerald-600 shadow-md hover:shadow-lg active:scale-95 group">
+                        <span>Pesan Ternak Baru</span>
+                        <span class="material-symbols-outlined text-sm transition-transform duration-200 group-hover:translate-x-0.5">storefront</span>
+                    </a>
+                    <a href="{{ route('customer.monitoring') }}" 
+                       class="inline-flex items-center gap-2 py-3 px-6 rounded-full text-xs font-extrabold text-[#DAF1DE] border border-[#DAF1DE]/30 uppercase tracking-widest transition-all duration-300 bg-white/5 hover:bg-white/10 active:scale-95 group">
+                        <span>Pantau Ternak</span>
+                        <span class="material-symbols-outlined text-sm">analytics</span>
+                    </a>
                 </div>
             </div>
 
             <div class="lg:col-span-4 flex justify-center lg:justify-end">
-                <!-- Outer soft glowing box -->
                 <div class="relative w-full max-w-[280px]">
                     <div class="absolute inset-0 bg-gradient-to-tr from-teal-400/20 to-transparent blur-2xl rounded-3xl opacity-60"></div>
                     
-                    <!-- Premium Glass Widget Card -->
+                    {{-- Premium Glass Widget Card --}}
                     <div class="relative z-10 w-full p-6 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-4 text-left transition-all duration-500 hover:scale-[1.02] hover:border-white/25"
                          style="background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         
                         <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                            <span class="text-[10px] font-bold text-[#8EB69B] uppercase tracking-widest">Goatin Intelligence</span>
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-[10px] font-bold text-[#8EB69B] uppercase tracking-widest">Status Akun</span>
+                            <span class="flex h-2 w-2 rounded-full {{ $isEmailVerified ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse' }}"></span>
                         </div>
 
-                        <div class="space-y-4">
-                            <!-- Item 1 -->
+                        <div class="space-y-3.5">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">library_books</span>
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">badge</span>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-slate-300">Wawasan Tersedia</div>
-                                    <div class="text-xs font-bold text-white">Riset & Tips</div>
+                                    <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Tipe Member</div>
+                                    <div class="text-xs font-black text-white">Pembeli Mitra</div>
                                 </div>
                             </div>
                             
-                            <!-- Item 2 -->
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-lg flex items-center justify-center text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">verified</span>
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">verified_user</span>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-slate-300">Validasi Wawasan</div>
-                                    <div class="text-xs font-bold text-white">Diulas Dokter Hewan</div>
+                                    <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Verifikasi</div>
+                                    <div class="text-xs font-black text-white">{{ $isEmailVerified ? 'Terverifikasi ✓' : 'Belum Verifikasi' }}</div>
                                 </div>
                             </div>
 
-                            <!-- Item 3 -->
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-amber-300 bg-amber-500/10 border border-amber-500/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-slate-300">Fokus Utama</div>
-                                    <div class="text-xs font-bold text-white">Optimasi Profit</div>
+                                    <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Bergabung</div>
+                                    <div class="text-xs font-black text-white">{{ auth()->user()->created_at->format('d M Y') }}</div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="pt-2 text-center border-t border-white/5">
-                            <span class="text-[9px] text-slate-400 font-medium">Diperbarui secara berkala</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
+
+    {{-- ── KPI Stats Summary Panel ── --}}
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-5" data-aos="fade-up" data-aos-delay="50">
+        
+        {{-- Card 1: Active Orders --}}
+        <a href="{{ route('customer.monitoring') }}" 
+           class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
+           style="background: rgba(255,255,255,0.7);">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Pesanan Aktif</span>
+                <div class="w-8 h-8 rounded-lg bg-goatin-green/10 text-goatin-green flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-2xl font-black text-primary-dark">{{ $activeOrdersCount }}</p>
+                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Menunggu konfirmasi/pengiriman</p>
+            </div>
+        </a>
+
+        {{-- Card 2: Monitored Goats --}}
+        <a href="{{ route('customer.monitoring') }}" 
+           class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
+           style="background: rgba(255,255,255,0.7);">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Ternak Dipantau</span>
+                <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">monitoring</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-2xl font-black text-primary-dark">{{ $monitoredGoatsCount }}</p>
+                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Rekam medis digital aktif</p>
+            </div>
+        </a>
+
+        {{-- Card 3: Total Investment --}}
+        <div class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
+             style="background: rgba(255,255,255,0.7);">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Belanja</span>
+                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">payments</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-xl font-black text-primary-dark">Rp {{ number_format($totalInvestment, 0, ',', '.') }}</p>
+                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Transaksi selesai disetujui</p>
+            </div>
+        </div>
+
+        {{-- Card 4: Security --}}
+        <a href="{{ route('customer.profile') }}" 
+           class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
+           style="background: rgba(255,255,255,0.7);">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sertifikasi Akun</span>
+                <div class="w-8 h-8 rounded-lg {{ $isEmailVerified ? 'bg-emerald-500/10 text-emerald-700' : 'bg-red-500/10 text-red-700' }} flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">{{ $isEmailVerified ? 'verified' : 'gpp_maybe' }}</span>
+                </div>
+            </div>
+            <div>
+                <p class="text-base font-black {{ $isEmailVerified ? 'text-emerald-700' : 'text-amber-600' }}">
+                    {{ $isEmailVerified ? 'Email Terverifikasi ✓' : 'Email Belum Verifikasi' }}
+                </p>
+                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">
+                    {{ $isEmailVerified ? 'Keamanan akun aman & aktif' : 'Verifikasi email di halaman profil' }}
+                </p>
+            </div>
+        </a>
+
     </section>
 
     {{-- ── Featured Article Section ── --}}
@@ -132,7 +211,8 @@
            class="group block relative rounded-[20px] overflow-hidden shadow-md transition-all duration-300"
            style="height: 380px; border: 1px solid rgba(226, 232, 240, 0.8);"
            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(5, 31, 32, 0.08)';"
-           onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.02)';">
+           onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.02)';"
+           id="featured-article-card">
             
             {{-- Background Featured Image --}}
             <div class="absolute inset-0 w-full h-full">
@@ -181,7 +261,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($otherArticles as $artikel)
             <a href="{{ route('customer.artikel.show', $artikel) }}"
-               class="group flex flex-col glass-card overflow-hidden h-full">
+               class="group flex flex-col glass-card overflow-hidden h-full rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm"
+               style="background: rgba(255,255,255,0.75);">
 
                 {{-- Image Box --}}
                 <div class="relative overflow-hidden h-48 bg-slate-100 shrink-0">
@@ -226,16 +307,16 @@
     {{-- ── Empty State ── --}}
     @if(!$featured && $otherArticles->isEmpty())
     <section class="text-center py-16 px-8 bg-white/30 backdrop-blur-md rounded-3xl border border-emerald-800/10 shadow-[0_8px_32px_rgba(5,31,32,0.02)] max-w-xl mx-auto relative overflow-hidden group transition-all duration-300 hover:border-emerald-600/20 hover:shadow-[0_12px_40px_rgba(5,31,32,0.05)]" data-aos="zoom-in">
-        <!-- Glowing background effects -->
+        {{-- Glowing background effects --}}
         <div class="absolute -top-10 -left-10 w-32 h-32 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
         <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
 
-        <!-- Floating Icon Container -->
+        {{-- Floating Icon Container --}}
         <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-emerald-600/10 border border-emerald-600/20 shadow-[0_8px_16px_rgba(42,120,68,0.04)] relative transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600/15">
             <span class="material-symbols-outlined text-3xl text-emerald-800">article</span>
         </div>
         
-        <!-- Typography -->
+        {{-- Typography --}}
         <h3 class="font-bold text-base mb-1.5" style="color:#051F20;">Belum Ada Panduan Perawatan</h3>
         <p class="text-xs max-w-sm mx-auto leading-relaxed" style="color:#64748B;">
             Artikel dan tips kesehatan ternak akan segera diunggah oleh admin kami. Kembali lagi nanti untuk informasi terbaru.

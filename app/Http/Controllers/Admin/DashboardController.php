@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $endOfMonth = Carbon::now()->endOfMonth();
 
         $pemasukanBulanIni = DB::table('laporan_keuangans')
-                        ->where('jenis_transaksi', 'Pemasukan')
+                        ->whereIn('jenis_transaksi', ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
                         ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
                         ->sum('jumlah');
         $pengeluaranBulanIni = DB::table('laporan_keuangans')
@@ -35,8 +35,37 @@ class DashboardController extends Controller
             ->where('is_read', false)
             ->orderBy('created_at', 'desc')
             ->get();
+            
+        // Calculate chart data for last 6 months
+        $chartData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthStart = Carbon::now()->subMonths($i)->startOfMonth();
+            $monthEnd = Carbon::now()->subMonths($i)->endOfMonth();
+            $label = $monthStart->translatedFormat('M'); // Jan, Feb, etc.
+            
+            $revenue = DB::table('laporan_keuangans')
+                        ->whereIn('jenis_transaksi', ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
+                        ->whereBetween('tanggal', [$monthStart, $monthEnd])
+                        ->sum('jumlah');
+            
+            $chartData[] = [
+                'label' => $label,
+                'revenue' => $revenue
+            ];
+        }
         
-        return view('admin.dashboard', compact('totalUsers', 'labaBersih', 'pendingOrders', 'currentMonth', 'unreadNotifications'));
+        $maxRevenue = max(array_column($chartData, 'revenue'));
+        if ($maxRevenue == 0) $maxRevenue = 10000;
+        
+        $svgPoints = [];
+        $xStep = 540 / 5; // 6 points: index 0 to 5
+        foreach ($chartData as $index => $data) {
+            $x = 30 + ($index * $xStep);
+            $y = 160 - (($data['revenue'] / $maxRevenue) * 140);
+            $svgPoints[] = [$x, $y, $data['label']];
+        }
+        
+        return view('admin.dashboard', compact('totalUsers', 'labaBersih', 'pendingOrders', 'currentMonth', 'unreadNotifications', 'svgPoints'));
     }
 
     public function markNotificationRead($id)
@@ -118,7 +147,7 @@ class DashboardController extends Controller
             $endOfMonth = Carbon::now()->endOfMonth();
 
             $pemasukanBulanIni = DB::table('laporan_keuangans')
-                            ->where('jenis_transaksi', 'Pemasukan')
+                            ->whereIn('jenis_transaksi', ['Pemasukan', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
                             ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
                             ->sum('jumlah');
             $pengeluaranBulanIni = DB::table('laporan_keuangans')
@@ -167,5 +196,35 @@ class DashboardController extends Controller
         }
 
         return redirect()->route('admin.dashboard')->with('success', 'Pesanan berhasil ditolak.');
+    }
+
+    public function checkNew(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $unreadCount = \App\Models\Notification::where('is_read', false)->count();
+            
+            $latestNotifications = \App\Models\Notification::with('pesanan.produk')
+                ->where('is_read', false)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $modalHtml = '';
+            $dashboardHtml = '';
+            if (view()->exists('admin.partials.notifications_modal_list')) {
+                $modalHtml = view('admin.partials.notifications_modal_list', ['unreadNotifications' => $latestNotifications])->render();
+            }
+            if (view()->exists('admin.partials.notifications_dashboard_list')) {
+                $dashboardHtml = view('admin.partials.notifications_dashboard_list', ['unreadNotifications' => $latestNotifications])->render();
+            }
+
+            return response()->json([
+                'success' => true,
+                'unread_count' => $unreadCount,
+                'modal_html' => $modalHtml,
+                'dashboard_html' => $dashboardHtml
+            ]);
+        }
+        
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 }

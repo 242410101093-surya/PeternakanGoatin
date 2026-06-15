@@ -59,6 +59,10 @@ class InventarisController extends Controller
         // Get unique jenis for filter dropdown
         $jenisOptions = Inventaris::distinct()->pluck('jenis')->sort();
         
+        if ($request->ajax()) {
+            return view('admin.inventaris.partials.table', compact('inventaris'))->render();
+        }
+
         return view('admin.inventaris.index', compact('inventaris', 'totalLivestock', 'countTersedia', 'countTerbooking', 'countTerjual', 'countPerawatan', 'jenisOptions'));
     }
 
@@ -71,9 +75,14 @@ class InventarisController extends Controller
             'umur' => 'required|integer|min:0',
             'berat' => 'required|numeric|min:0',
             'rekam_medis_general' => 'nullable|string',
+            'status_stok' => 'required|in:Tersedia,Terbooking,Terjual,Dalam Perawatan',
         ]);
 
         Inventaris::create($request->all());
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Inventaris berhasil ditambahkan.']);
+        }
 
         return redirect()->route('admin.inventaris.index')->with('success', 'Inventaris berhasil ditambahkan.');
     }
@@ -91,25 +100,47 @@ class InventarisController extends Controller
         ]);
 
         $inventaris = Inventaris::findOrFail($id);
+
+        if ($request->status_stok === 'Terjual' && $inventaris->status_stok !== 'Terjual') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Status "Terjual" hanya dapat diubah secara otomatis saat ada transaksi pesanan yang disetujui.'], 400);
+            }
+            return redirect()->back()->with('error', 'Status "Terjual" hanya dapat diubah secara otomatis saat ada transaksi pesanan yang disetujui.');
+        }
+
         $inventaris->update($request->all());
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Inventaris berhasil diperbarui.']);
+        }
 
         return redirect()->route('admin.inventaris.index')->with('success', 'Inventaris berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             $inventaris = Inventaris::findOrFail($id);
             
             // Cek apakah inventaris ini terkait dengan Produk (Katalog)
             if (\App\Models\Produk::where('inventaris_id', $inventaris->id)->exists()) {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Gagal menghapus! Inventaris ini sedang terdaftar di Katalog Produk.'], 400);
+                }
                 return redirect()->route('admin.inventaris.index')->with('error', 'Gagal menghapus! Inventaris ini sedang terdaftar di Katalog Produk.');
             }
             
             $inventaris->delete();
+            
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Inventaris berhasil dihapus.']);
+            }
             return redirect()->route('admin.inventaris.index')->with('success', 'Inventaris berhasil dihapus.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Inventaris deletion failed: ' . $e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem saat menghapus inventaris.'], 500);
+            }
             return redirect()->route('admin.inventaris.index')->with('error', 'Terjadi kesalahan sistem saat menghapus inventaris.');
         }
     }
@@ -143,11 +174,16 @@ class InventarisController extends Controller
             $inventaris->update(['status_stok' => 'Tersedia']);
             
             \Illuminate\Support\Facades\DB::commit();
-            return redirect()->route('admin.katalog.index')->with('success', 'Hewan berhasil dimasukkan ke katalog.');
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'Hewan berhasil dimasukkan ke katalog.']);
+            }
+            return redirect()->route('admin.inventaris.index')->with('success', 'Hewan berhasil dimasukkan ke katalog.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            \Illuminate\Support\Facades\Log::error('Jual inventaris failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat memasukkan hewan ke katalog.');
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal memasukkan hewan ke katalog. ' . $e->getMessage()], 500);
+            }
+            return back()->with('error', 'Gagal memasukkan hewan ke katalog: ' . $e->getMessage());
         }
     }
 }

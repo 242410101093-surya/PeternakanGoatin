@@ -152,9 +152,7 @@
             <!-- Action Buttons -->
             <div class="flex items-center gap-3 w-full mt-8">
                 <button type="button" onclick="document.getElementById('customerLogoutModal').classList.add('hidden'); document.getElementById('customerLogoutModal').classList.remove('flex');" 
-                        class="flex-1 py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300">
-                    Batal
-                </button>
+                        class="flex-1 py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 btn-batal">Batal</button>
                 <form method="POST" action="{{ route('logout') }}" class="flex-1">
                     @csrf
                     <button type="submit" 

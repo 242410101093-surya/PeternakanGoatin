@@ -254,7 +254,7 @@
                                 <p class="text-xs font-bold text-slate-700">Unggah Gambar</p>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Pilih file JPG, PNG, atau JPEG (Maks. 5MB)</p>
                                 <input type="file" name="foto_profil" id="foto_profil_file" class="hidden"
-                                       onchange="document.getElementById('selected-file-name-admin').textContent = this.files[0] ? this.files[0].name : ''">
+                                       onchange="handleProfileImageSelect(this)">
                                 <p id="selected-file-name-admin" class="text-xs font-bold text-emerald-700 mt-2"></p>
                             </div>
                         </div>
@@ -269,7 +269,7 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2" for="whatsapp">Nomor WhatsApp</label>
-                                <input type="text" name="whatsapp" id="whatsapp" value="{{ old('whatsapp', auth()->user()->whatsapp) }}"
+                                <input type="text" name="whatsapp" id="whatsapp" required value="{{ old('whatsapp', auth()->user()->whatsapp) }}"
                                        class="premium-input-profile text-xs font-semibold" placeholder="Contoh: 08123456789">
                             </div>
                         </div>
@@ -375,9 +375,7 @@
                     Verifikasi & Ubah Sandi
                 </button>
                 <button type="button" onclick="closeModal('passwordVerifyModal')" 
-                        class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all">
-                    Batal
-                </button>
+                        class="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-100 transition-all btn-batal">Batal</button>
             </div>
         </div>
         
@@ -401,6 +399,24 @@
         document.getElementById('passwordVerifyModal').addEventListener('click', function(e) {
             if (e.target === this) window.closeModal('passwordVerifyModal');
         });
+
+        // Handle Profile Image Selection and Size Validation
+        window.handleProfileImageSelect = function(input) {
+            const fileNameEl = document.getElementById('selected-file-name-admin');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                    if (window.showToast) window.showToast('Ukuran foto profil maksimal adalah 5MB.', 'error');
+                    else alert('Ukuran foto profil maksimal adalah 5MB.');
+                    input.value = '';
+                    fileNameEl.textContent = '';
+                    return;
+                }
+                fileNameEl.textContent = file.name;
+            } else {
+                fileNameEl.textContent = '';
+            }
+        };
 
         // AJAX logic for Profile Edit Form
         const profileForm = document.getElementById('profileUpdateForm');

@@ -100,14 +100,20 @@ class KatalogController extends Controller
             }
 
             $produk->update($data);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'Katalog berhasil diperbarui.']);
+            }
             return redirect()->route('admin.katalog.index')->with('success', 'Katalog berhasil diperbarui.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Katalog update failed: ' . $e->getMessage());
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem saat memperbarui katalog.'], 500);
+            }
             return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat memperbarui katalog.');
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             \Illuminate\Support\Facades\DB::beginTransaction();
@@ -115,6 +121,9 @@ class KatalogController extends Controller
 
             // Cek apakah produk ini ada di pesanan yang aktif
             if (\App\Models\Pesanan::where('produk_id', $produk->id)->exists()) {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Gagal menghapus! Produk ini sedang terkait dengan sebuah Pesanan.'], 400);
+                }
                 return redirect()->route('admin.katalog.index')->with('error', 'Gagal menghapus! Produk ini sedang terkait dengan sebuah Pesanan.');
             }
 
@@ -129,10 +138,16 @@ class KatalogController extends Controller
             $produk->delete();
             \Illuminate\Support\Facades\DB::commit();
             
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Produk dihapus dari katalog.']);
+            }
             return redirect()->route('admin.katalog.index')->with('success', 'Produk dihapus dari katalog.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             \Illuminate\Support\Facades\Log::error('Katalog destroy failed: ' . $e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem saat menghapus produk.'], 500);
+            }
             return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat menghapus produk.');
         }
     }

@@ -83,114 +83,16 @@
         </form>
     </div>
 
-    {{-- ── Products Card Grid ── --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        @forelse($produks as $produk)
-        <div class="group flex flex-col glass-card overflow-hidden" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-            
-            {{-- Header Image / Stylized Vector illustration if null --}}
-            <div class="h-52 relative overflow-hidden shrink-0 flex items-center justify-center bg-gradient-to-br"
-                 style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
-                
-                @if($produk->foto)
-                    <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                @else
-                    {{-- Luxurious Stylized Vector representation of livestock --}}
-                    <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
-                        <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full filter blur-xl opacity-20" style="background:#2A7844;"></div>
-                        <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);">
-                            <span class="material-symbols-outlined text-white text-3xl font-light">pets</span>
-                        </div>
-                        <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Goatin Prime</span>
-                    </div>
-                @endif
-
-                {{-- Status Tags (Hover trigger) --}}
-                @if($produk->inventaris)
-                <div class="absolute top-3 left-3 z-10">
-                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold shadow-sm flex items-center gap-1"
-                          style="background:rgba(255, 255, 255, 0.95); color:#2A7844; border:1px solid rgba(42, 120, 68, 0.15);">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        {{ $produk->inventaris->gender }}
-                    </span>
-                </div>
-                @endif
-            </div>
-
-            {{-- Body Info --}}
-            <div class="p-5 flex flex-col flex-grow space-y-3">
-                <h3 class="font-bold text-base leading-snug group-hover:text-emerald-700 transition-colors line-clamp-2" style="color:#051F20;">
-                    {{ $produk->nama_produk }}
-                </h3>
-                <p class="text-xs leading-relaxed line-clamp-2" style="color:#64748B;">
-                    {{ $produk->spesifikasi }}
-                </p>
-
-                {{-- Bottom Metadata, Price & Action --}}
-                <div class="mt-auto pt-4 flex flex-col">
-                    @if($produk->inventaris)
-                    <div class="text-[12px] font-medium mb-3 text-slate-500">
-                        Berat: {{ $produk->inventaris->berat }} kg | Umur: {{ $produk->inventaris->umur }} bulan
-                    </div>
-                    @else
-                    <div class="text-[12px] font-medium mb-3 text-slate-400">
-                        Produk Umum
-                    </div>
-                    @endif
-
-                    <div class="pt-4 flex items-center justify-between border-t border-slate-100">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Harga Ternak</span>
-                            <span class="text-base font-extrabold" style="color:#2A7844;">
-                                Rp {{ number_format($produk->harga, 0, ',', '.') }}
-                            </span>
-                        </div>
-
-                        <button type="button"
-                                class="open-product-modal w-9 h-9 rounded-xl flex items-center justify-center transition-all shadow-md shrink-0 cursor-pointer"
-                                style="background:linear-gradient(135deg,#2A7844 0%,#1e5c33 100%);color:#fff;"
-                                onmouseover="this.style.boxShadow='0 4px 12px rgba(42,120,68,0.3)';"
-                                onmouseout="this.style.boxShadow='0 2px 6px rgba(0,0,0,0.02)';"
-                                data-product-id="{{ $produk->id }}"
-                                data-product-name="{{ $produk->nama_produk }}"
-                                data-product-specs="{{ $produk->spesifikasi }}"
-                                data-product-price="Rp {{ number_format($produk->harga, 0, ',', '.') }}"
-                                data-product-gender="{{ $produk->inventaris?->jenis ?? '-' }}"
-                                data-product-age="{{ $produk->inventaris?->umur ? $produk->inventaris->umur . ' Bulan' : '-' }}"
-                                data-product-berat="{{ $produk->inventaris?->berat ? $produk->inventaris->berat . ' Kg' : '-' }}"
-                                data-product-image="{{ $produk->foto ? asset('storage/' . $produk->foto) : '' }}"
-                                data-product-rekam-medis="{{ json_encode($produk->inventaris?->rekamMedis ?? []) }}">
-                            <span class="material-symbols-outlined" style="font-size:18px;">shopping_basket</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+    {{-- ── Products Card Grid Container ── --}}
+    <div class="relative min-h-[400px]">
+        {{-- Modern Localized Loader --}}
+        <div id="produkGridLoader" class="absolute inset-0 z-20 hidden flex-col items-center justify-center bg-white/30 backdrop-blur-[2px] rounded-[28px] transition-all duration-300">
+            @include('partials.modern_loader')
         </div>
-        @empty
-        <div class="col-span-full py-16 px-8 text-center bg-white/30 backdrop-blur-md rounded-3xl border border-emerald-800/10 shadow-[0_8px_32px_rgba(5,31,32,0.02)] max-w-md mx-auto relative overflow-hidden group transition-all duration-300 hover:border-emerald-600/20 hover:shadow-[0_12px_40px_rgba(5,31,32,0.05)]" data-aos="zoom-in">
-            <!-- Glowing background effects -->
-            <div class="absolute -top-10 -left-10 w-24 h-24 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
-            <div class="absolute -bottom-10 -right-10 w-24 h-24 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none"></div>
-
-            <!-- Floating Icon Container -->
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-emerald-600/10 border border-emerald-600/20 shadow-[0_8px_16px_rgba(42,120,68,0.04)] relative transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-600/15">
-                <span class="material-symbols-outlined text-3xl text-emerald-800">storefront</span>
-            </div>
-            
-            <!-- Content -->
-            <h3 class="font-bold text-base mb-1.5" style="color:#051F20;">Belum Ada Bibit Ternak</h3>
-            <p class="text-xs max-w-xs mx-auto leading-relaxed" style="color:#64748B;">
-                Bibit ternak berkualitas tinggi akan segera tersedia untuk dibeli. Silakan periksa kembali nanti.
-            </p>
+        
+        <div id="produkGridContainer" class="transition-opacity duration-300">
+            @include('customer.partials.produk_grid')
         </div>
-        @endforelse
-    </div>
-
-    {{-- Pagination --}}
-    <div class="flex justify-center pt-6">
-        {{ $produks->links() }}
     </div>
 
     {{-- ── PREMIUM MODAL: Detail Ternak & Rekam Medis ── --}}
@@ -290,141 +192,155 @@
         panel.classList.toggle('hidden');
     }
 
+    let activeProductId = null;
+    const phoneNumber = '{{ config("app.whatsapp_number") }}';
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+        return `${String(d.getDate()).padStart(2,'0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function getStatusBadge(status) {
+        const s = (status || '').toLowerCase();
+        if (s === 'sehat') {
+            return `<span class="badge-premium-green text-[10px] py-0.5 px-2.5">Sehat</span>`;
+        }
+        if (s.includes('pemulihan')) {
+            return `<span class="badge-premium-amber text-[10px] py-0.5 px-2.5">Masa Pemulihan</span>`;
+        }
+        if (s === 'sakit') {
+            return `<span class="badge-premium-red text-[10px] py-0.5 px-2.5">Sakit</span>`;
+        }
+        return `<span class="badge-premium-blue text-[10px] py-0.5 px-2.5">${status || '-'}</span>`;
+    }
+
+    function renderRekamMedis(data) {
+        if (!data || data.length === 0) {
+            return `<div class="text-center py-6">
+                <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">medical_services</span>
+                <p class="text-xs text-slate-400">Belum ada riwayat medis tercatat.</p>
+            </div>`;
+        }
+
+        const sorted = [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+        let html = `<div class="overflow-x-auto rounded-lg border border-slate-100"><table class="w-full text-left text-xs border-collapse">
+            <thead><tr style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
+                <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Tanggal</th>
+                <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Dokter</th>
+                <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Diagnosa</th>
+                <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Tindakan</th>
+                <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Status</th>
+            </tr></thead><tbody>`;
+
+        sorted.forEach(rm => {
+            html += `<tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
+                <td class="px-4 py-2.5 text-slate-800 whitespace-nowrap font-semibold">${formatDate(rm.tanggal)}</td>
+                <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.dokter_hewan || '-'}</td>
+                <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.diagnosa || '-'}</td>
+                <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.tindakan || '-'}</td>
+                <td class="px-4 py-2.5">${getStatusBadge(rm.status)}</td>
+            </tr>`;
+        });
+
+        html += `</tbody></table></div>`;
+        return html;
+    }
+
+    window.openProductModal = function(button) {
+        activeProductId = button.dataset.productId;
+        document.getElementById('modalProductName').textContent = button.dataset.productName || 'Produk';
+        
+        const imgUrl = button.dataset.productImage || 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80';
+        document.getElementById('modalProductImage').src = imgUrl;
+
+        const gender = button.dataset.productGender || '';
+        const badge = document.getElementById('modalProductImageBadge');
+        if (gender && gender !== '-') {
+            document.getElementById('modalProductImageBadgeText').textContent = gender;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+
+        document.getElementById('modalProductSpecs').textContent = button.dataset.productSpecs || 'Tidak ada spesifikasi tambahan.';
+        document.getElementById('modalProductGender').textContent = button.dataset.productGender || '-';
+        document.getElementById('modalProductAge').textContent = button.dataset.productAge || '-';
+        document.getElementById('modalProductBerat').textContent = button.dataset.productBerat || '-';
+        document.getElementById('modalProductPrice').textContent = button.dataset.productPrice || '-';
+
+        const rekamMedisContent = document.getElementById('modalRekamMedisContent');
+        try {
+            const rekamMedisData = JSON.parse(button.dataset.productRekamMedis || '[]');
+            rekamMedisContent.innerHTML = renderRekamMedis(rekamMedisData);
+        } catch(e) {
+            rekamMedisContent.innerHTML = renderRekamMedis([]);
+        }
+
+        const message = encodeURIComponent(
+            `Halo Admin Goatin, saya berminat membeli ternak berikut:\n` +
+            `Nama Produk: ${button.dataset.productName}\n` +
+            `Jenis: ${button.dataset.productGender}\n` +
+            `Umur: ${button.dataset.productAge}\n` +
+            `Harga: ${button.dataset.productPrice}\n\n` +
+            `Mohon dikonfirmasi ketersediaan dan detail pengirimannya.`
+        );
+        document.getElementById('modalBuyButton').href = `https://wa.me/${phoneNumber}?text=${message}`;
+
+        window.openModal('productModal');
+    };
+
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('productModal');
-        const openButtons = Array.from(document.querySelectorAll('.open-product-modal'));
         const closeButton = document.getElementById('closeProductModal');
         const cancelButton = document.getElementById('modalCancelButton');
-        const productName = document.getElementById('modalProductName');
-        const productImage = document.getElementById('modalProductImage');
-        const productImageBadge = document.getElementById('modalProductImageBadge');
-        const productImageBadgeText = document.getElementById('modalProductImageBadgeText');
-        const productSpecs = document.getElementById('modalProductSpecs');
-        const productGender = document.getElementById('modalProductGender');
-        const productAge = document.getElementById('modalProductAge');
-        const productBerat = document.getElementById('modalProductBerat');
-        const productPrice = document.getElementById('modalProductPrice');
-        const rekamMedisContent = document.getElementById('modalRekamMedisContent');
         const buyButton = document.getElementById('modalBuyButton');
-        const phoneNumber = '{{ config('app.whatsapp_number') }}';
-        let activeProductId = null;
-
-        function formatDate(dateStr) {
-            if (!dateStr) return '-';
-            const d = new Date(dateStr);
-            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
-            return `${String(d.getDate()).padStart(2,'0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        }
-
-        function getStatusBadge(status) {
-            const s = (status || '').toLowerCase();
-            if (s === 'sehat') {
-                return `<span class="badge-premium-green text-[10px] py-0.5 px-2.5">Sehat</span>`;
-            }
-            if (s.includes('pemulihan')) {
-                return `<span class="badge-premium-amber text-[10px] py-0.5 px-2.5">Masa Pemulihan</span>`;
-            }
-            if (s === 'sakit') {
-                return `<span class="badge-premium-red text-[10px] py-0.5 px-2.5">Sakit</span>`;
-            }
-            return `<span class="badge-premium-blue text-[10px] py-0.5 px-2.5">${status || '-'}</span>`;
-        }
-
-        function renderRekamMedis(data) {
-            if (!data || data.length === 0) {
-                return `<div class="text-center py-6">
-                    <span class="material-symbols-outlined text-3xl text-slate-300 mb-2">medical_services</span>
-                    <p class="text-xs text-slate-400">Belum ada riwayat medis tercatat.</p>
-                </div>`;
-            }
-
-            const sorted = [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-            let html = `<div class="overflow-x-auto rounded-lg border border-slate-100"><table class="w-full text-left text-xs border-collapse">
-                <thead><tr style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
-                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Tanggal</th>
-                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Dokter</th>
-                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Diagnosa</th>
-                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Tindakan</th>
-                    <th class="px-4 py-3 font-bold text-slate-200 uppercase text-[10px] tracking-wider">Status</th>
-                </tr></thead><tbody>`;
-
-            sorted.forEach(rm => {
-                html += `<tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
-                    <td class="px-4 py-2.5 text-slate-800 whitespace-nowrap font-semibold">${formatDate(rm.tanggal)}</td>
-                    <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.dokter_hewan || '-'}</td>
-                    <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.diagnosa || '-'}</td>
-                    <td class="px-4 py-2.5 text-slate-600 font-medium">${rm.tindakan || '-'}</td>
-                    <td class="px-4 py-2.5">${getStatusBadge(rm.status)}</td>
-                </tr>`;
-            });
-
-            html += `</tbody></table></div>`;
-            return html;
-        }
-
-        function openModal(button) {
-            activeProductId = button.dataset.productId;
-            productName.textContent = button.dataset.productName || 'Produk';
-            
-            // Set goat/product image with unsplash fallback
-            const imgUrl = button.dataset.productImage || 'https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80';
-            productImage.src = imgUrl;
-
-            // Set dynamic gender badge
-            const gender = button.dataset.productGender || '';
-            if (gender && gender !== '-') {
-                productImageBadgeText.textContent = gender;
-                productImageBadge.classList.remove('hidden');
-            } else {
-                productImageBadge.classList.add('hidden');
-            }
-
-            productSpecs.textContent = button.dataset.productSpecs || 'Tidak ada spesifikasi tambahan.';
-            productGender.textContent = button.dataset.productGender || '-';
-            productAge.textContent = button.dataset.productAge || '-';
-            productBerat.textContent = button.dataset.productBerat || '-';
-            productPrice.textContent = button.dataset.productPrice || '-';
-
-            try {
-                const rekamMedisData = JSON.parse(button.dataset.productRekamMedis || '[]');
-                rekamMedisContent.innerHTML = renderRekamMedis(rekamMedisData);
-            } catch(e) {
-                rekamMedisContent.innerHTML = renderRekamMedis([]);
-            }
-
-            const message = encodeURIComponent(
-                `Halo Admin Goatin, saya berminat membeli ternak berikut:\n` +
-                `Nama Produk: ${button.dataset.productName}\n` +
-                `Jenis: ${button.dataset.productGender}\n` +
-                `Umur: ${button.dataset.productAge}\n` +
-                `Harga: ${button.dataset.productPrice}\n\n` +
-                `Mohon dikonfirmasi ketersediaan dan detail pengirimannya.`
-            );
-            buyButton.href = `https://wa.me/${phoneNumber}?text=${message}`;
-
-            window.openModal('productModal');
-        }
 
         function closeModal() {
             window.closeModal('productModal');
             activeProductId = null;
         }
 
-        openButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                openModal(this);
-            });
-        });
-
         buyButton.addEventListener('click', function() {
             if (activeProductId) {
+                // Tampilkan loading / disabled status sejenak
+                buyButton.style.opacity = '0.7';
+                buyButton.style.pointerEvents = 'none';
+
                 fetch(`/customer/produk/${activeProductId}/beli`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Tutup modal
+                        closeModal();
+                        
+                        // Tampilkan toast
+                        if (window.showToast) {
+                            window.showToast('Pesanan berhasil dibuat. Silakan lanjutkan di WhatsApp!', 'success');
+                        }
+                        
+                        // Kembalikan tombol beli
+                        buyButton.style.opacity = '1';
+                        buyButton.style.pointerEvents = 'auto';
+
+                        // Refresh katalog (silently update grid)
+                        setTimeout(() => {
+                            fetchProducts(window.location.href, true);
+                        }, 500);
+                    }
+                })
+                .catch(err => {
+                    buyButton.style.opacity = '1';
+                    buyButton.style.pointerEvents = 'auto';
+                    console.error('Beli error:', err);
                 });
             }
         });
@@ -434,6 +350,109 @@
         modal.addEventListener('click', function (event) {
             if (event.target === modal) {
                 closeModal();
+            }
+        });
+
+        // AJAX Filtering Logic
+        const filterForm = document.querySelector('form[action="{{ route("customer.produk") }}"]');
+        const gridContainer = document.getElementById('produkGridContainer');
+
+        function fetchProducts(url = null, silent = false) {
+            let fetchUrl = url;
+            if (!fetchUrl) {
+                const formData = new FormData(filterForm);
+                const params = new URLSearchParams(formData);
+                fetchUrl = filterForm.action + '?' + params.toString();
+            }
+
+            if (!silent) {
+                const loader = document.getElementById('produkGridLoader');
+                if (loader) {
+                    loader.classList.remove('hidden');
+                    loader.classList.add('flex');
+                }
+                gridContainer.style.opacity = '0.4';
+                gridContainer.style.pointerEvents = 'none';
+            }
+
+            fetch(fetchUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                if (silent) {
+                    // Update silently without disturbing the user if HTML changed
+                    if (gridContainer.innerHTML !== html) {
+                        gridContainer.innerHTML = html;
+                        if (typeof AOS !== 'undefined') {
+                            AOS.refreshHard();
+                        }
+                    }
+                } else {
+                    const loader = document.getElementById('produkGridLoader');
+                    if (loader) {
+                        loader.classList.add('hidden');
+                        loader.classList.remove('flex');
+                    }
+                    
+                    gridContainer.innerHTML = html;
+                    gridContainer.style.opacity = '1';
+                    gridContainer.style.pointerEvents = 'auto';
+                    
+                    if (typeof AOS !== 'undefined') {
+                        AOS.refreshHard();
+                    }
+                    window.history.pushState({}, '', fetchUrl);
+                }
+            })
+            .catch(err => {
+                console.error('AJAX Filter Error:', err);
+                if (!silent) {
+                    const loader = document.getElementById('produkGridLoader');
+                    if (loader) {
+                        loader.classList.add('hidden');
+                        loader.classList.remove('flex');
+                    }
+                    gridContainer.style.opacity = '1';
+                    gridContainer.style.pointerEvents = 'auto';
+                }
+            });
+        }
+
+        // Real-time polling every 15 seconds to update catalog automatically
+        setInterval(() => {
+            fetchProducts(window.location.href, true);
+        }, 15000);
+
+        if (filterForm) {
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                fetchProducts();
+            });
+
+            // Auto-submit on change for selects and inputs
+            const inputs = filterForm.querySelectorAll('select, input');
+            inputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    fetchProducts();
+                });
+            });
+        }
+
+        // Intercept Pagination Links
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('#produkGridContainer a[href*="page="]');
+            if (link) {
+                e.preventDefault();
+                fetchProducts(link.href);
+                // Scroll to top of grid
+                window.scrollTo({
+                    top: gridContainer.offsetTop - 100,
+                    behavior: 'smooth'
+                });
             }
         });
     });

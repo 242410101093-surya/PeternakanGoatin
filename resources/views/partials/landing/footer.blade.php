@@ -1,6 +1,6 @@
 <!-- FOOTER -->
 <footer class="bg-primary-dark text-slate-400 py-12 md:py-16 border-t border-white/5 relative z-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-10">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-10">
         
         <!-- Left Info -->
         <div class="md:col-span-5 space-y-6">
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Copyright -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-slate-400">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-slate-400">
         <p>
             © {{ date('Y') }} <strong style="color: #8EB69B;">Goatin Peternakan</strong>. Didesain secara premium untuk pengelolaan ternak modern.
         </p>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 <head>
     <meta charset="utf-8"/>
@@ -20,6 +20,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
     <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-dark": "#051F20",
+                        "accent-teal": "#235347",
+                        "accent-teal-dark": "#163832",
+                        "goatin-green": "#2A7844",
+                        "goatin-light": "#EDF4F8",
+                    },
+                    fontFamily: {
+                        "sans": ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -169,7 +190,6 @@
             width: 100%;
         }
     </style>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen antialiased select-none overflow-x-hidden">
 
@@ -193,7 +213,7 @@
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-goatin-green/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
         <div class="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-accent-teal/15 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
-        <div class="relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
             <!-- Left Grid: Copywriting & CTAs -->
             <div class="lg:col-span-7 space-y-6 md:space-y-8 text-left animate-left-to-right">
@@ -251,12 +271,12 @@
             </div>
 
             <!-- Right Grid: 3D Composition Cards -->
-            <div class="lg:col-span-5 relative flex items-center justify-center min-h-[420px] sm:min-h-[550px] animate-right-to-left lg:-translate-x-16">
+            <div class="lg:col-span-5 relative flex items-center justify-center min-h-[350px] sm:min-h-[450px] animate-right-to-left">
                 <!-- Large Rotating Underlay Circle -->
-                <div class="absolute w-[340px] sm:w-[450px] h-[340px] sm:h-[450px] rounded-full border border-white/5 bg-gradient-to-tr from-goatin-green/20 to-transparent animate-spin" style="animation-duration: 25s;"></div>
+                <div class="absolute w-[280px] sm:w-[350px] h-[280px] sm:h-[350px] rounded-full border border-white/5 bg-gradient-to-tr from-goatin-green/20 to-transparent animate-spin" style="animation-duration: 25s;"></div>
 
                 <!-- Main Glass Card Container -->
-                <div class="relative w-[300px] sm:w-[380px] h-[380px] sm:h-[480px] rounded-[32px] overflow-hidden shadow-2xl border border-white/15 bg-white/5 backdrop-blur-md p-1.5 flex flex-col justify-end animate-float">
+                <div class="relative w-[240px] sm:w-[310px] h-[320px] sm:h-[400px] rounded-[32px] overflow-hidden shadow-2xl border border-white/15 bg-white/5 backdrop-blur-md p-1.5 flex flex-col justify-end animate-float">
                     <div class="absolute inset-0 bg-cover bg-center z-0 scale-105 filter brightness-95 rounded-[30px]" style="background-image: url('{{ asset('images/background_goats.png') }}');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-primary-dark via-black/20 to-transparent z-10"></div>
                     
@@ -271,7 +291,7 @@
                 </div>
 
                 <!-- Floating Glass Card 1 (Top Left) -->
-                <div class="absolute top-0 -left-4 sm:top-2 sm:-left-8 glass-card rounded-2xl p-4 shadow-xl flex items-center gap-3 border border-white/40 max-w-[200px] sm:max-w-[240px] animate-float-delayed z-20">
+                <div class="absolute -top-4 -left-4 sm:-left-8 glass-card rounded-2xl p-4 shadow-xl flex items-center gap-3 border border-white/40 max-w-[170px] sm:max-w-[200px] animate-float-delayed z-20">
                     <div class="w-10 h-10 rounded-xl bg-goatin-green/10 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-goatin-green text-[20px] font-bold">clinical_notes</span>
                     </div>
@@ -282,7 +302,7 @@
                 </div>
 
                 <!-- Floating Glass Card 2 (Bottom Right) -->
-                <div class="absolute bottom-0 -right-4 sm:bottom-2 sm:-right-8 glass-card rounded-2xl p-4 shadow-xl flex items-center gap-3 border border-white/40 max-w-[200px] sm:max-w-[240px] animate-float z-20">
+                <div class="absolute -bottom-4 -right-4 sm:-right-8 glass-card rounded-2xl p-4 shadow-xl flex items-center gap-3 border border-white/40 max-w-[170px] sm:max-w-[200px] animate-float z-20">
                     <div class="w-10 h-10 rounded-xl bg-[#e3851c]/10 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[#e3851c] text-[20px] font-bold">monitoring</span>
                     </div>
@@ -298,7 +318,7 @@
 
 
     <!-- STATS BAR -->
-    <section class="relative z-20 -mt-10 max-w-[1280px] mx-auto px-4 sm:px-6">
+    <section class="relative z-20 -mt-10 max-w-5xl mx-auto px-4 sm:px-6">
         <div class="glass-card rounded-3xl shadow-xl p-8 border border-white/60 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-y-0 md:divide-x divide-slate-200/80 animate-on-scroll">
             
             <div class="text-center p-2 flex flex-col justify-center">
@@ -327,7 +347,7 @@
 
     <!-- KEY FEATURES / KEUNGGULAN -->
     <section id="features" class="py-20 lg:py-28 bg-[#EDF4F8]">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-16 space-y-3 animate-on-scroll">
@@ -415,7 +435,7 @@
 
     <!-- DYNAMIC CATALOG -->
     <section id="catalog" class="py-20 lg:py-28 bg-[#EDF4F8] border-t border-slate-100">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-16 space-y-3 animate-on-scroll">
@@ -712,7 +732,7 @@
 
     <!-- TESTIMONIALS -->
     <section id="testimonials" class="py-20 lg:py-28 bg-[#EDF4F8] border-t border-slate-100">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-16 space-y-3 animate-on-scroll">
@@ -808,7 +828,7 @@
 
     <!-- CTA BANNER -->
     <section class="py-16 bg-[#EDF4F8] relative overflow-hidden">
-        <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
             
             <div class="glass-card-dark rounded-[48px] shadow-2xl relative overflow-hidden p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/10 animate-on-scroll" style="background-image: url('{{ asset('images/background_goats.png') }}'); background-size: cover; background-position: center;">
                 <div class="absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/85 to-[#0b2b21]/80 z-0"></div>
@@ -839,7 +859,7 @@
 
     <!-- CONTACT SECTION -->
     <section id="contact" class="py-20 lg:py-28 bg-[#EDF4F8] border-t border-slate-100">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             <!-- Left Info (5 Cols) -->
             <div class="lg:col-span-5 space-y-8 animate-left-to-right">

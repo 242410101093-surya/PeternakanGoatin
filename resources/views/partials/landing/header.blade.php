@@ -64,8 +64,8 @@
 <div class="scroll-progress" id="scrollIndicator"></div>
 
 <!-- NAVBAR -->
-<nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-7xl z-50 glass-nav transition-all duration-300 py-3 rounded-2xl" id="mainNavbar">
-    <div class="max-w-7xl mx-auto px-6">
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1600px] z-50 glass-nav transition-all duration-300 py-3 rounded-2xl" id="mainNavbar">
+    <div class="max-w-[1600px] mx-auto px-6">
         <div class="flex items-center justify-between h-12">
             
             <!-- Logo & Brand -->

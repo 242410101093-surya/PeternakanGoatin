@@ -16,26 +16,6 @@
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-dark": "#051F20",
-                        "accent-teal": "#235347",
-                        "accent-teal-dark": "#163832",
-                        "goatin-green": "#2A7844",
-                        "goatin-light": "#EDF4F8",
-                    },
-                    fontFamily: {
-                        "sans": ['"Plus Jakarta Sans"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         /* ── Fallback Styling (when sandboxed or Tailwind CDN is blocked) ── */
         img {
@@ -183,6 +163,7 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen antialiased flex flex-col justify-between select-none overflow-x-hidden pt-[100px]">
 

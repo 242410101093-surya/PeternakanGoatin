@@ -20,133 +20,6 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              /* ── Brand Palette 2026 – Forest Green ── */
-              "primary-dark":    "#051F20",
-              "primary-dark-80": "#0B2B26",
-              "primary-dark-60": "#163832",
-              "primary-green":   "#235347",
-              "primary-green-80":"#2d6b5a",
-              "primary-green-10":"#ffffff",
-              "off-white":       "#ffffff",
-              "border-subtle":   "#E2E8F0",
-              "text-muted":      "#64748B",
-              "text-body":       "#1E293B",
-              "text-heading":    "#051F20",
-              /* ── Status Colors ── */
-              "status-green":    "#2A7844",
-              "status-green-bg": "#DCFCE7",
-              "status-amber":    "#D97706",
-              "status-amber-bg": "#FEF3C7",
-              "status-red":      "#DC2626",
-              "status-red-bg":   "#FEE2E2",
-              "status-blue":     "#2563EB",
-              "status-blue-bg":  "#DBEAFE",
-              /* ── Legacy compatibility ── */
-              "surface-bright":              "#ffffff",
-              "on-secondary-container":      "#16431b",
-              "inverse-surface":             "#1a1c1a",
-              "tertiary-fixed-dim":          "#f7d69a",
-              "on-primary-fixed":            "#0f2b10",
-              "error-container":             "#ffdad6",
-              "tertiary-fixed":              "#fde8c1",
-              "on-secondary":                "#ffffff",
-              "on-secondary-fixed":          "#0d2c17",
-              "background":                  "#ffffff",
-              "secondary-fixed":             "#dff2dd",
-              "surface-container-highest":   "#e8efe6",
-              "on-tertiary-fixed":           "#4d2d0a",
-              "surface-dim":                 "#dadacc",
-              "inverse-primary":             "#d8edd7",
-              "on-primary-container":        "#0f2a10",
-              "on-primary":                  "#ffffff",
-              "surface-container-low":       "#f8f9f4",
-              "on-primary-fixed-variant":    "#203c23",
-              "inverse-on-surface":          "#f4f5f1",
-              "error":                       "#ba1a1a",
-              "primary":                     "#2A7844",
-              "secondary-fixed-dim":         "#bdd9b2",
-              "on-tertiary-fixed-variant":   "#5f3f15",
-              "on-tertiary-container":       "#2f1d07",
-              "tertiary":                    "#d89e2a",
-              "primary-fixed-dim":           "#b7dbb8",
-              "outline":                     "#94a3b8",
-              "on-surface-variant":          "#64748B",
-              "surface":                     "#ffffff",
-              "surface-variant":             "#E2E8F0",
-              "surface-container-lowest":    "#ffffff",
-              "surface-tint":                "#2A7844",
-              "primary-container":           "#2A7844",
-              "surface-container":           "#f1f5f9",
-              "primary-fixed":               "#dcfce7",
-              "tertiary-container":          "#fde4a9",
-              "secondary-container":         "#dff2dd",
-              "on-tertiary":                 "#1f2b0b",
-              "on-surface":                  "#1E293B",
-              "on-error":                    "#ffffff",
-              "secondary":                   "#2A7844",
-              "on-secondary-fixed-variant":  "#2d4f28",
-              "outline-variant":             "#E2E8F0",
-              "surface-container-high":      "#e5efe2",
-              "on-error-container":          "#93000a",
-              "on-background":               "#1E293B",
-            },
-            borderRadius: {
-              "DEFAULT": "0.75rem",
-              "sm":      "0.5rem",
-              "md":      "0.75rem",
-              "lg":      "1rem",
-              "xl":      "1.25rem",
-              "2xl":     "1.5rem",
-              "full":    "9999px",
-            },
-            spacing: {
-              "margin-mobile":  "16px",
-              "margin-desktop": "32px",
-              "gutter":         "24px",
-              "stack-xs":       "4px",
-              "stack-sm":       "8px",
-              "stack-md":       "16px",
-              "stack-lg":       "32px",
-              "stack-xl":       "56px",
-              "unit":           "8px",
-              "container-max":  "1280px",
-            },
-            fontFamily: {
-              "sans":    ['"Plus Jakarta Sans"', 'sans-serif'],
-              "body-md": ['"Plus Jakarta Sans"', 'sans-serif'],
-              "body-lg": ['"Plus Jakarta Sans"', 'sans-serif'],
-              "label-sm":['"Plus Jakarta Sans"', 'sans-serif'],
-              "caption": ['"Plus Jakarta Sans"', 'sans-serif'],
-              "h1":      ['"Plus Jakarta Sans"', 'sans-serif'],
-              "h2":      ['"Plus Jakarta Sans"', 'sans-serif'],
-              "h3":      ['"Plus Jakarta Sans"', 'sans-serif'],
-            },
-            fontSize: {
-              "h1":       ["36px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "800" }],
-              "h2":       ["28px", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "700" }],
-              "h3":       ["20px", { lineHeight: "1.4", letterSpacing: "0",       fontWeight: "600" }],
-              "body-lg":  ["17px", { lineHeight: "1.7", letterSpacing: "0",       fontWeight: "400" }],
-              "body-md":  ["15px", { lineHeight: "1.6", letterSpacing: "0",       fontWeight: "400" }],
-              "label-sm": ["13px", { lineHeight: "1.3", letterSpacing: "0.04em",  fontWeight: "600" }],
-              "caption":  ["12px", { lineHeight: "1.4", letterSpacing: "0",       fontWeight: "500" }],
-            },
-            boxShadow: {
-              "card":  "0 1px 3px 0 rgba(0,0,0,.06), 0 4px 16px 0 rgba(5,31,32,.07)",
-              "card-hover": "0 4px 8px 0 rgba(0,0,0,.06), 0 12px 32px 0 rgba(5,31,32,.12)",
-              "sidebar":"4px 0 32px 0 rgba(5,31,32,.18)",
-              "topbar": "0 1px 0 0 #E2E8F0",
-            }
-          }
-        }
-      }
-    </script>
     <style>
       /* Batal Button Global */
       .btn-batal {
@@ -378,8 +251,9 @@
         animation: modalScaleOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-white text-text-body min-h-screen flex relative">
+<body class="bg-white text-text-body min-h-screen flex relative overflow-x-hidden">
 
     <!-- Mobile Sidebar Backdrop -->
     <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden transition-all duration-300"></div>

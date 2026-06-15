@@ -191,8 +191,9 @@
             padding-top: 8px;
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="overflow-x-hidden">
     @php
         $total = $rekamMedis->count();
         $sehat = $rekamMedis->filter(function($r) {

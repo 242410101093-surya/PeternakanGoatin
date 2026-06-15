@@ -19,40 +19,6 @@
     <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        /* ── Brand Palette 2026 ── */
-                        "primary-dark":    "#051F20",
-                        "primary-dark-80": "#0B2B26",
-                        "primary-green":   "#2A7844",
-                        "primary-green-10":"#f0faf3",
-                        "off-white":       "#ffffff",
-                        "border-subtle":   "#E2E8F0",
-                        "text-muted":      "#64748B",
-                        "text-body":       "#1E293B",
-                        "text-heading":    "#051F20",
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.75rem",
-                        "sm":      "0.5rem",
-                        "md":      "0.75rem",
-                        "lg":      "1rem",
-                        "xl":      "1.25rem",
-                        "2xl":     "1.5rem",
-                        "full":    "9999px",
-                    },
-                    fontFamily: {
-                        "sans":    ['"Plus Jakarta Sans"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         /* ── Premium Glassmorphic Toast ── */
         .premium-toast {
@@ -347,6 +313,7 @@
             100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-white text-text-body min-h-screen flex flex-col pt-[100px] w-full overflow-x-hidden">
 

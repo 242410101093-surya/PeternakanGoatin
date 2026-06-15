@@ -16,24 +16,6 @@
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-dark": "#051F20",
-                        "accent-teal": "#235347",
-                        "accent-teal-dark": "#163832",
-                    },
-                    fontFamily: {
-                        "sans": ['"Plus Jakarta Sans"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -72,6 +54,7 @@
             animation: containerEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen antialiased flex items-center justify-center text-slate-800 p-4 relative select-none bg-slate-950 overflow-x-hidden">
 

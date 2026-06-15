@@ -28,7 +28,7 @@
 </style>
 
 <div class="px-6 md:px-8 py-8 fade-in">
-    <div class="max-w-[1280px] mx-auto space-y-8">
+    <div class="max-w-container-max mx-auto space-y-8">
 
         {{-- Flash Messages --}}
         @if(session('success'))

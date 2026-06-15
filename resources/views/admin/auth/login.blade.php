@@ -45,8 +45,9 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="overflow-x-hidden">
     <div class="auth-layout" style="background: linear-gradient(135deg, var(--text-dark) 0%, var(--brown) 100%);">
         <div class="auth-card">
             <div class="logo" style="display: flex; justify-content: center; margin-bottom: 1rem;">

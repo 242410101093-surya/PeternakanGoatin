@@ -61,7 +61,7 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 rounded bg-surface-container flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     @if($artikel->foto)
-                                        <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url($artikel->foto) }}"/>
+                                        <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($artikel->foto) }}"/>
                                     @else
                                         <span class="material-symbols-outlined text-outline-variant">image</span>
                                     @endif

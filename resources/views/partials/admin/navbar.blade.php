@@ -132,7 +132,7 @@
            style="border: 2px solid rgba(42, 120, 68, 0.2); box-shadow: 0 4px 12px rgba(42, 120, 68, 0.08);"
            title="Lihat Profil" id="admin-navbar-avatar-container">
             @if(auth()->user()->foto_profil)
-                <img alt="Admin" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
+                <img alt="Admin" class="w-full h-full object-cover" src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })(auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
             @else
                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-green to-emerald-700 text-white font-extrabold" id="admin-navbar-avatar-placeholder">
                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}

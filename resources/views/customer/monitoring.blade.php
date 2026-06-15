@@ -3,7 +3,7 @@
 @section('title', 'Monitoring Pesanan')
 
 @section('content')
-<main class="max-w-[1200px] mx-auto px-6 py-10 space-y-12">
+<main class="max-w-[1600px] mx-auto px-6 py-10 space-y-12">
 
     {{-- ── Header Section ── --}}
     <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-slate-100" data-aos="fade-down">

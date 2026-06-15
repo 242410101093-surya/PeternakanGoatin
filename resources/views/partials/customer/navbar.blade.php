@@ -1,5 +1,5 @@
 <!-- ===== CUSTOMER NAV FLOATING CAPSULE — Goatin 2026 Premium ===== -->
-<nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1200px] z-50 transition-all duration-300" id="floating-navbar">
+<nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[1600px] z-50 transition-all duration-300" id="floating-navbar">
     <div class="px-6 py-3.5 rounded-2xl border flex items-center justify-between shadow-lg"
          style="background: rgba(5, 31, 32, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: rgba(35, 83, 71, 0.3); box-shadow: 0 8px 32px rgba(5, 31, 32, 0.25);">
 

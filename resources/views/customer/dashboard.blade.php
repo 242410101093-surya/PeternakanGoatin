@@ -12,7 +12,7 @@
     $isEmailVerified = !empty(auth()->user()->email_verified_at);
 @endphp
 
-<main class="max-w-[1200px] mx-auto px-6 py-10 space-y-12">
+<main class="max-w-[1600px] mx-auto px-6 py-10 space-y-12">
 
     {{-- ── Hero Welcome Banner Section ── --}}
     <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-slate-700/30 shadow-2xl"

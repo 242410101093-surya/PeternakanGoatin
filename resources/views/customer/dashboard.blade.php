@@ -7,24 +7,7 @@
     $featured = $artikels->first();
     $otherArticles = $artikels->skip(1);
     
-    // Compute customer statistics dynamically
-    $userId = auth()->id();
-    
-    // 1. Active Orders Count (Pending or approved/shipping)
-    $activeOrdersCount = \App\Models\Pesanan::where('user_id', $userId)
-        ->whereIn('status', ['Pending', 'Disetujui', 'Pengiriman Kurir'])
-        ->count();
-        
-    // 2. Monitored Goats Count (Approved, shipping or arrived)
-    $monitoredGoatsCount = \App\Models\Pesanan::where('user_id', $userId)
-        ->whereIn('status', ['Disetujui', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
-        ->count();
-        
-    // 3. Total Investment / Transaction Amount
-    $totalInvestment = \App\Models\Pesanan::where('user_id', $userId)
-        ->whereIn('status', ['Disetujui', 'Pengiriman Kurir', 'Pesanan Sudah Sampai'])
-        ->sum('harga_jual');
-        
+
     // 4. Security Status
     $isEmailVerified = !empty(auth()->user()->email_verified_at);
 @endphp
@@ -127,77 +110,7 @@
         </div>
     </section>
 
-    {{-- ── KPI Stats Summary Panel ── --}}
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-5" data-aos="fade-up" data-aos-delay="50">
-        
-        {{-- Card 1: Active Orders --}}
-        <a href="{{ route('customer.monitoring') }}" 
-           class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
-           style="background: rgba(255,255,255,0.7);">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Pesanan Aktif</span>
-                <div class="w-8 h-8 rounded-lg bg-goatin-green/10 text-goatin-green flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
-                </div>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-primary-dark">{{ $activeOrdersCount }}</p>
-                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Menunggu konfirmasi/pengiriman</p>
-            </div>
-        </a>
 
-        {{-- Card 2: Monitored Goats --}}
-        <a href="{{ route('customer.monitoring') }}" 
-           class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
-           style="background: rgba(255,255,255,0.7);">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Ternak Dipantau</span>
-                <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-700 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">monitoring</span>
-                </div>
-            </div>
-            <div>
-                <p class="text-2xl font-black text-primary-dark">{{ $monitoredGoatsCount }}</p>
-                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Rekam medis digital aktif</p>
-            </div>
-        </a>
-
-        {{-- Card 3: Total Investment --}}
-        <div class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
-             style="background: rgba(255,255,255,0.7);">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Belanja</span>
-                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-700 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">payments</span>
-                </div>
-            </div>
-            <div>
-                <p class="text-xl font-black text-primary-dark">Rp {{ number_format($totalInvestment, 0, ',', '.') }}</p>
-                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Transaksi selesai disetujui</p>
-            </div>
-        </div>
-
-        {{-- Card 4: Security --}}
-        <a href="{{ route('customer.profile') }}" 
-           class="glass-card p-5 rounded-2xl border border-white/60 hover-lift hover-glow shadow-sm flex flex-col justify-between"
-           style="background: rgba(255,255,255,0.7);">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sertifikasi Akun</span>
-                <div class="w-8 h-8 rounded-lg {{ $isEmailVerified ? 'bg-emerald-500/10 text-emerald-700' : 'bg-red-500/10 text-red-700' }} flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">{{ $isEmailVerified ? 'verified' : 'gpp_maybe' }}</span>
-                </div>
-            </div>
-            <div>
-                <p class="text-base font-black {{ $isEmailVerified ? 'text-emerald-700' : 'text-amber-600' }}">
-                    {{ $isEmailVerified ? 'Email Terverifikasi ✓' : 'Email Belum Verifikasi' }}
-                </p>
-                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">
-                    {{ $isEmailVerified ? 'Keamanan akun aman & aktif' : 'Verifikasi email di halaman profil' }}
-                </p>
-            </div>
-        </a>
-
-    </section>
 
     {{-- ── Featured Article Section ── --}}
     @if($featured)

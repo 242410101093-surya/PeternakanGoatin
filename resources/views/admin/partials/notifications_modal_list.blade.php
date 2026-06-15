@@ -129,19 +129,25 @@
     @endif
 
     {{-- Actions --}}
-    <div class="px-5 py-3.5 flex items-center gap-3 border-t border-slate-100" style="background:#F8FAFC;">
+    <div class="px-5 py-3.5 flex items-center gap-2 border-t border-slate-100" style="background:#F8FAFC;">
         <a href="{{ $waLink }}" target="_blank"
-           class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:opacity-80 shadow-sm"
-           style="background:#DCFCE7;color:#16a34a;border:1px solid #BBF7D0;">
+           class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all hover:opacity-80 shadow-sm"
+           style="background:#DCFCE7;color:#16a34a;border:1px solid #BBF7D0;" title="Chat via WhatsApp">
             <span class="material-symbols-outlined" style="font-size:13px;">chat</span>
             Chat WA
         </a>
         <div class="flex-1"></div>
-        <button onclick="openConfirmWithPrice({{ json_encode($notif) }}, {{ $notif->id }})"
-                class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider text-white shadow-md transition-all hover:shadow-lg active:scale-[0.98]"
+        <button onclick="rejectOrder({{ $notif->id }})"
+                class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider text-red-600 shadow-sm transition-all hover:bg-red-50 hover:border-red-200 active:scale-[0.98]"
+                style="background:#FEF2F2; border:1px solid #FEE2E2;">
+            <span class="material-symbols-outlined" style="font-size:14px;">cancel</span>
+            Tolak
+        </button>
+        <button onclick="confirmOrderDirect({{ $notif->id }}, '{{ addslashes($namaCustomer) }}', '{{ addslashes($idTernak) }}', '{{ addslashes($jenisTernak) }}', '{{ addslashes($rasTernak) }}')"
+                class="flex items-center gap-2 px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider text-white shadow-md transition-all hover:shadow-lg active:scale-[0.98]"
                 style="background:linear-gradient(135deg,#2A7844,#163832);">
             <span class="material-symbols-outlined" style="font-size:15px;">check_circle</span>
-            Konfirmasi Pesanan
+            Konfirmasi
         </button>
     </div>
 </div>

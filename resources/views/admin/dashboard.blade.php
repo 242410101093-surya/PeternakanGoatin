@@ -222,86 +222,10 @@
 {{-- ── MODAL: Notifikasi Pesanan ── --}}
 @include('admin.partials.notifications_order_modal')
 
-{{-- ── MODAL: Konfirmasi & Edit Pesanan ── --}}
-<div id="confirmOrderModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4"
-     style="background:rgba(5,31,32,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
-    <div class="bg-white rounded-[2rem] w-full max-w-xl shadow-2xl border border-white/20">
-        <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100">
-            <h3 class="font-black text-sm md:text-base uppercase tracking-wider flex items-center gap-2 text-primary-dark">
-                <span class="material-symbols-outlined text-goatin-green">edit_note</span>
-                Konfirmasi & Edit Pesanan
-            </h3>
-            <button onclick="closeConfirmOrderModal()" class="p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
-                <span class="material-symbols-outlined text-[20px]" style="color:#64748B;">close</span>
-            </button>
-        </div>
-        <form id="confirmOrderForm" method="POST" class="p-6 space-y-4">
-            @csrf
-            <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-400">Judul Notifikasi</label>
-                <input type="text" name="title" id="confirm_title" required
-                       class="w-full px-4 py-3 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-800 focus:outline-none">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-400">Harga Jual (Rp)</label>
-                <input type="number" name="harga_jual" id="confirm_harga_jual" required min="0"
-                       class="w-full px-4 py-3 rounded-xl text-xs border border-slate-200 focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-800 focus:outline-none">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-400">Isi Data Pesanan</label>
-                <textarea name="message" id="confirm_message" rows="5" required
-                          class="w-full px-4 py-3 rounded-xl text-xs font-mono leading-relaxed border border-slate-200 focus:ring-2 focus:ring-goatin-green bg-slate-50 text-slate-800 focus:outline-none"></textarea>
-                <p class="text-[10px] mt-1 text-slate-400 font-medium">Anda dapat menyesuaikan rincian sebelum menyetujui.</p>
-            </div>
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="rejectOrder()"
-                        class="text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 border border-red-200"
-                        style="background:#FEE2E2;color:#991B1B;"
-                        onmouseover="this.style.background='#FECACA';" onmouseout="this.style.background='#FEE2E2';">
-                    <span class="material-symbols-outlined text-[16px]">close</span>
-                    Tolak Pesanan
-                </button>
-                <div class="flex-1"></div>
-                <button type="button" onclick="closeConfirmOrderModal()"
-                        class="text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all bg-slate-100 text-slate-500 hover:bg-slate-200">
-                    Batal
-                </button>
-                <button type="submit" class="btn-cta text-xs font-bold py-2.5 px-4 rounded-xl flex items-center gap-1 hover-scale-btn shadow-md">
-                    <span class="material-symbols-outlined" style="font-size:16px;">check</span>
-                    Setujui & Proses
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
     function openNotificationsModal()  { const m=document.getElementById('notificationsModal'); if(m) { m.classList.remove('hidden'); m.classList.add('flex'); } }
     function closeNotificationsModal() { const m=document.getElementById('notificationsModal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
-    function openConfirmOrderModal(n) {
-        const form = document.getElementById('confirmOrderForm');
-        if (form) {
-            const baseUrl = "{{ url('/') }}";
-            form.action = `${baseUrl}/admin/notifications/${n.id}/confirm`;
-            form.dataset.notifId = n.id;
-        }
-        const t = document.getElementById('confirm_title'); if(t) t.value = n.title;
-        const msg = document.getElementById('confirm_message'); if(msg) msg.value = n.message;
-        const hj = document.getElementById('confirm_harga_jual'); if(hj) hj.value = Math.round(n.pesanan ? n.pesanan.harga_jual : 0);
-        const m=document.getElementById('confirmOrderModal'); if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
-    }
-    function openConfirmWithPrice(n, notifId) {
-        openConfirmOrderModal(n);
-        const input = document.querySelector(`.notif-harga-input[data-notif-id="${notifId}"]`);
-        if (input) {
-            const editedPrice = Number(input.value) || 0;
-            const hj = document.getElementById('confirm_harga_jual');
-            if (hj) {
-                hj.value = editedPrice;
-                hj.dispatchEvent(new Event('input'));
-            }
-        }
-    }
+    
     function focusNotificationInModal(notifId) {
         openNotificationsModal();
         setTimeout(() => {
@@ -318,8 +242,6 @@
             }
         }, 300);
     }
-    function closeConfirmOrderModal() { const m=document.getElementById('confirmOrderModal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
-
     document.addEventListener('DOMContentLoaded', function() {
         // Auto-focus notification from url parameter
         const urlParams = new URLSearchParams(window.location.search);
@@ -330,23 +252,6 @@
             setTimeout(() => {
                 focusNotificationInModal(notifId);
             }, 600);
-        }
-
-        // Sync harga_jual dengan teks di dalam textarea confirm_message
-        const confirmHargaInput = document.getElementById('confirm_harga_jual');
-        const confirmMessageInput = document.getElementById('confirm_message');
-        if (confirmHargaInput && confirmMessageInput) {
-            confirmHargaInput.addEventListener('input', function() {
-                const newPrice = Number(this.value);
-                const formattedPrice = new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(newPrice);
-                
-                let text = confirmMessageInput.value;
-                const regex = /(\*\*Harga:\*\*\s*(?:Rp\s*)?)([\d\.,]+)/i;
-                if (regex.test(text)) {
-                    text = text.replace(regex, `$1${formattedPrice}`);
-                    confirmMessageInput.value = text;
-                }
-            });
         }
 
         // AJAX-ify Tandai Semua Dibaca in Notifications Modal
@@ -423,69 +328,69 @@
         }
 
         // AJAX-ify Confirm Order Form Submission
-        const confirmOrderForm = document.getElementById('confirmOrderForm');
-        if (confirmOrderForm) {
-            confirmOrderForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const loader = document.getElementById('global-page-loader');
-                if(loader) loader.style.display = 'flex';
-                
-                const notifId = confirmOrderForm.dataset.notifId;
-                const formData = new FormData(confirmOrderForm);
-                
-                fetch(confirmOrderForm.getAttribute('action'), {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
+                window.confirmOrderDirect = function(notifId, user, idTernak, jenis, ras) {
+            const input = document.querySelector(`.notif-harga-input[data-notif-id="${notifId}"]`);
+            let harga = 0;
+            if (input) {
+                harga = input.value;
+            }
+            
+            const formattedHarga = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(harga);
+            
+            const loader = document.getElementById('global-page-loader');
+            if(loader) loader.style.display = 'flex';
+            
+            const formData = new FormData();
+            formData.append('harga_jual', harga);
+            // Include default title and message to bypass validation if needed by backend
+            formData.append('title', 'Pesanan Dikonfirmasi');
+            formData.append('message', `Pesanan untuk ${jenis} ${ras} telah dikonfirmasi dengan harga ${formattedHarga}.`);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '{{ csrf_token() }}');
+            
+            fetch(`/admin/notifications/${notifId}/confirm`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(loader) loader.style.display = 'none';
+                if (data.success) {
+                    if(window.showToast) window.showToast(data.message, 'success');
+                    
+                    const recentItem = document.getElementById(`dashboard-recent-notif-item-${notifId}`);
+                    if (recentItem) recentItem.remove();
+                    
+                    const modalItem = document.getElementById(`modal-notif-item-${notifId}`);
+                    if (modalItem) modalItem.remove();
+                    
+                    const navbarItem = document.getElementById(`navbar-notif-item-${notifId}`);
+                    if (navbarItem) navbarItem.remove();
+                    
+                    const profitCount = document.getElementById('dashboard-laba-bersih-count');
+                    if (profitCount && data.labaBersih !== undefined) profitCount.textContent = `Rp ${data.labaBersih}`;
+                    
+                    if (window.updateGlobalPendingCounts && data.pendingOrders !== undefined) {
+                        window.updateGlobalPendingCounts(data.pendingOrders);
                     }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if(loader) loader.style.display = 'none';
-                    if (data.success) {
-                        if(window.showToast) window.showToast(data.message, 'success');
-                        if(window.closeConfirmOrderModal) window.closeConfirmOrderModal();
-                        
-                        // Remove item from recent notifications list
-                        const recentItem = document.getElementById(`dashboard-recent-notif-item-${notifId}`);
-                        if (recentItem) recentItem.remove();
-                        
-                        // Remove item from notifications modal list
-                        const modalItem = document.getElementById(`modal-notif-item-${notifId}`);
-                        if (modalItem) modalItem.remove();
-                        
-                        // Remove item from navbar notification dropdown list
-                        const navbarItem = document.getElementById(`navbar-notif-item-${notifId}`);
-                        if (navbarItem) navbarItem.remove();
-                        
-                        // Update profit count card
-                        const profitCount = document.getElementById('dashboard-laba-bersih-count');
-                        if (profitCount) profitCount.textContent = `Rp ${data.labaBersih}`;
-                        
-                        // Update global counts
-                        if (window.updateGlobalPendingCounts) {
-                            window.updateGlobalPendingCounts(data.pendingOrders);
-                        }
-                        
-                        // Check if lists are now empty and render empty states
+                    if (typeof checkEmptyNotificationStates === 'function') {
                         checkEmptyNotificationStates(data.pendingOrders);
                     }
-                })
-                .catch(err => {
-                    if(loader) loader.style.display = 'none';
-                    if(window.showToast) window.showToast('Terjadi kesalahan jaringan.', 'error');
-                });
+                } else {
+                    if(window.showToast) window.showToast(data.message || 'Gagal mengonfirmasi', 'error');
+                }
+            })
+            .catch(err => {
+                if(loader) loader.style.display = 'none';
+                if(window.showToast) window.showToast('Terjadi kesalahan jaringan.', 'error');
             });
         }
 
-        window.rejectOrder = function() {
-            if (!confirm('Anda yakin ingin menolak pesanan ini secara permanen? Stok ternak akan dikembalikan.')) return;
-            
-            const form = document.getElementById('confirmOrderForm');
-            if(!form) return;
-            const notifId = form.dataset.notifId;
+        window.rejectOrder = function(directId = null) {
+            let notifId = directId;
+            if (!notifId) return;
             
             const loader = document.getElementById('global-page-loader');
             if(loader) loader.style.display = 'flex';

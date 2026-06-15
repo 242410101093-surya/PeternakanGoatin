@@ -61,8 +61,8 @@
 
             <!-- User Avatar Quick Link -->
             <a href="{{ route('customer.profile') }}" class="w-9 h-9 rounded-full overflow-hidden border-2 border-emerald-500 hover:border-emerald-600 transition-colors" id="customer-navbar-avatar-container">
-                @if(auth()->user()->foto_profil)
-                    <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="customer-navbar-avatar-img">
+                @if(auth()->user()->foto)
+                    <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="customer-navbar-avatar-img">
                 @else
                     <div class="w-full h-full bg-emerald-50 flex items-center justify-center text-emerald-800 text-xs font-bold uppercase" id="customer-navbar-avatar-placeholder">
                         {{ substr(auth()->user()->name, 0, 2) }}

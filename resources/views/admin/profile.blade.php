@@ -190,8 +190,8 @@
                     <div class="relative w-28 h-28 rounded-full p-1 mb-4 flex items-center justify-center shadow-lg"
                          style="background: linear-gradient(135deg, #235347 0%, #051F20 100%);">
                         <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
-                            @if(auth()->user()->foto_profil)
-                                <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
+                            @if(auth()->user()->foto)
+                                <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
                             @else
                                 <div class="w-full h-full bg-slate-50 flex items-center justify-center text-slate-800 text-3xl font-extrabold uppercase" id="profile-snapshot-avatar-placeholder">
                                     {{ substr(auth()->user()->name, 0, 2) }}
@@ -249,11 +249,11 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Foto Profil Baru</label>
                             <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-emerald-600 hover:bg-slate-50/50 transition-all relative cursor-pointer"
-                                 onclick="document.getElementById('foto_profil_file').click()">
+                                 onclick="document.getElementById('foto_file').click()">
                                 <span class="material-symbols-outlined text-slate-400 text-3xl mb-1.5">cloud_upload</span>
                                 <p class="text-xs font-bold text-slate-700">Unggah Gambar</p>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Pilih file JPG, PNG, atau JPEG (Maks. 5MB)</p>
-                                <input type="file" name="foto_profil" id="foto_profil_file" class="hidden"
+                                <input type="file" name="foto" id="foto_file" class="hidden"
                                        onchange="handleProfileImageSelect(this)">
                                 <p id="selected-file-name-admin" class="text-xs font-bold text-emerald-700 mt-2"></p>
                             </div>
@@ -660,14 +660,14 @@
                     const snapWa = document.getElementById('profile-snapshot-whatsapp');
                     if (snapWa) snapWa.textContent = user.whatsapp;
                     
-                    if (user.foto_profil) {
+                    if (user.foto) {
                         const avatarFrame = document.getElementById('profile-snapshot-avatar-frame');
                         if (avatarFrame) {
-                            avatarFrame.innerHTML = `<img src="${user.foto_profil}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">`;
+                            avatarFrame.innerHTML = `<img src="${user.foto}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">`;
                         }
                         const navAvatarContainer = document.getElementById('admin-navbar-avatar-container');
                         if (navAvatarContainer) {
-                            navAvatarContainer.innerHTML = `<img src="${user.foto_profil}" alt="${user.name}" class="w-full h-full object-cover" id="admin-navbar-avatar-img">`;
+                            navAvatarContainer.innerHTML = `<img src="${user.foto}" alt="${user.name}" class="w-full h-full object-cover" id="admin-navbar-avatar-img">`;
                         }
                     } else {
                         const initials = user.name.substring(0, 2).toUpperCase();

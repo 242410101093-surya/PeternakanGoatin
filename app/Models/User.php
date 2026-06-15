@@ -24,7 +24,7 @@ class User extends Authenticatable
         'role',
         'last_active_at',
         'whatsapp',
-        'foto_profil',
+        'foto',
         'alamat',
         'tipe_alamat',
         'latitude',

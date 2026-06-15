@@ -61,7 +61,7 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 rounded bg-surface-container flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     @if($artikel->foto)
-                                        <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ asset('storage/' . $artikel->foto) }}"/>
+                                        <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url($artikel->foto) }}"/>
                                     @else
                                         <span class="material-symbols-outlined text-outline-variant">image</span>
                                     @endif

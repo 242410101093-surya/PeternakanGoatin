@@ -91,7 +91,7 @@ class ProfileController extends Controller
                 if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto_profil)) {
                     \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
                 }
-                $path = $request->file('foto_profil')->store('profile_photos', 'public');
+                $path = $request->file('foto_profil')->store('profile_photos', 'supabase');
                 $data['foto_profil'] = $path;
             }
 

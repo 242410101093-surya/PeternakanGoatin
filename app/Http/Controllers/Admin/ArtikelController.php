@@ -55,7 +55,7 @@ class ArtikelController extends Controller
         $data = $request->except('foto');
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('artikel_fotos', 'public');
+            $data['foto'] = $request->file('foto')->store('artikel_fotos', 'supabase');
         }
 
         Artikel::create($data);
@@ -92,7 +92,7 @@ class ArtikelController extends Controller
             if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
                 Storage::disk('public')->delete($artikel->foto);
             }
-            $data['foto'] = $request->file('foto')->store('artikel_fotos', 'public');
+            $data['foto'] = $request->file('foto')->store('artikel_fotos', 'supabase');
         }
 
         $artikel->update($data);

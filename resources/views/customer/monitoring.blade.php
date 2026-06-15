@@ -126,7 +126,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
                     @if($pesanan->produk && $pesanan->produk->foto)
-                        <img src="{{ asset('storage/' . $pesanan->produk->foto) }}" alt="{{ $pesanan->produk->nama_produk }}" class="w-11 h-11 rounded-xl object-cover shrink-0 border border-slate-100 shadow-sm">
+                        <img src="{{ Storage::disk('supabase')->url($pesanan->produk->foto) }}" alt="{{ $pesanan->produk->nama_produk }}" class="w-11 h-11 rounded-xl object-cover shrink-0 border border-slate-100 shadow-sm">
                     @else
                         <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm bg-slate-50 border border-slate-100">
                             <span class="material-symbols-outlined text-slate-400" style="font-size: 20px;">pets</span>
@@ -243,7 +243,7 @@
                         <div class="flex flex-col gap-5">
                             @if($pesanan->produk && $pesanan->produk->foto)
                                 <div class="w-full rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-slate-100 bg-white relative group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-300">
-                                    <img src="{{ asset('storage/' . $pesanan->produk->foto) }}" alt="{{ $pesanan->produk->nama_produk }}" class="w-full h-auto block transition-transform duration-500 hover:scale-[1.03]">
+                                    <img src="{{ Storage::disk('supabase')->url($pesanan->produk->foto) }}" alt="{{ $pesanan->produk->nama_produk }}" class="w-full h-auto block transition-transform duration-500 hover:scale-[1.03]">
                                 </div>
                             @endif
 

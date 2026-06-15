@@ -8,7 +8,7 @@
              style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
             
             @if($produk->foto)
-                <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                <img src="{{ Storage::disk('supabase')->url($produk->foto) }}" alt="{{ $produk->nama_produk }}"
                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             @else
                 {{-- Luxurious Stylized Vector representation of livestock --}}
@@ -75,7 +75,7 @@
                             data-product-gender="{{ $produk->inventaris?->jenis ?? '-' }}"
                             data-product-age="{{ $produk->inventaris?->umur ? $produk->inventaris->umur . ' Bulan' : '-' }}"
                             data-product-berat="{{ $produk->inventaris?->berat ? $produk->inventaris->berat . ' Kg' : '-' }}"
-                            data-product-image="{{ $produk->foto ? asset('storage/' . $produk->foto) : '' }}"
+                            data-product-image="{{ $produk->foto ? Storage::disk('supabase')->url($produk->foto) : '' }}"
                             data-product-rekam-medis="{{ json_encode($produk->inventaris?->rekamMedis ?? []) }}">
                         <span class="material-symbols-outlined" style="font-size:18px;">shopping_basket</span>
                     </button>

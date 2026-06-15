@@ -96,7 +96,7 @@ class KatalogController extends Controller
                 if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
                     Storage::disk('public')->delete($produk->foto);
                 }
-                $data['foto'] = $request->file('foto')->store('produk_fotos', 'public');
+                $data['foto'] = $request->file('foto')->store('produk_fotos', 'supabase');
             }
 
             $produk->update($data);

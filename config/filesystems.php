@@ -60,6 +60,14 @@ return [
             'report' => false,
         ],
 
+        'supabase' => [
+            'driver' => 'supabase',
+            'key'    => env('SUPABASE_KEY'),
+            'url'    => env('SUPABASE_URL'),
+            'bucket' => env('SUPABASE_BUCKET', 'goatin-storage'),
+            'public_id' => env('SUPABASE_PROJECT_ID'), // for public URLs if needed depending on adapter
+        ],
+
     ],
 
     /*

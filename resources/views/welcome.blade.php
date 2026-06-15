@@ -437,7 +437,7 @@
                                 <!-- Image Header -->
                                 <div class="relative h-56 bg-slate-100 overflow-hidden">
                                     @if($produk->foto)
-                                        <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                                        <img src="{{ Storage::disk('supabase')->url($produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
                                     @else
                                         <!-- Fallback design using gradient and icon if no image uploaded -->
                                         <div class="w-full h-full bg-gradient-to-br from-accent-teal to-primary-dark flex flex-col items-center justify-center p-4">

@@ -15,45 +15,45 @@
 <main class="max-w-[1600px] mx-auto px-6 py-10 space-y-12">
 
     {{-- ── Hero Welcome Banner Section ── --}}
-    <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-slate-700/30 shadow-2xl"
-             style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 45%, #163832 85%, #235347 100%);"
+    <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-emerald-900/40 shadow-2xl"
+             style="background: linear-gradient(135deg, #062b25 0%, #0c4a3d 50%, #126b56 100%);"
              data-aos="fade-down">
         
         {{-- Futuristic background glows --}}
-        <div class="absolute right-0 top-0 w-[450px] h-[450px] rounded-full filter blur-[100px] opacity-35 pointer-events-none" style="background: radial-gradient(circle, #235347 0%, transparent 70%);"></div>
-        <div class="absolute left-[-10%] bottom-[-20%] w-[350px] h-[350px] rounded-full filter blur-[80px] opacity-25 pointer-events-none" style="background: radial-gradient(circle, #2A7844 0%, transparent 70%);"></div>
-        <div class="absolute right-[20%] bottom-[-30%] w-[300px] h-[300px] rounded-full filter blur-[100px] opacity-20 pointer-events-none" style="background: radial-gradient(circle, #8EB69B 0%, transparent 70%);"></div>
+        <div class="absolute right-0 top-0 w-[500px] h-[500px] rounded-full filter blur-[120px] opacity-40 pointer-events-none" style="background: radial-gradient(circle, #20c997 0%, transparent 70%);"></div>
+        <div class="absolute left-[-10%] bottom-[-20%] w-[400px] h-[400px] rounded-full filter blur-[100px] opacity-30 pointer-events-none" style="background: radial-gradient(circle, #10b981 0%, transparent 70%);"></div>
+        <div class="absolute right-[25%] bottom-[-30%] w-[350px] h-[350px] rounded-full filter blur-[120px] opacity-25 pointer-events-none" style="background: radial-gradient(circle, #34d399 0%, transparent 70%);"></div>
         
         {{-- Abstract Grid Overlay --}}
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] opacity-30 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50 pointer-events-none"></div>
 
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-8 space-y-4">
+            <div class="lg:col-span-8 space-y-5">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase"
-                     style="background: rgba(42, 120, 68, 0.15); border: 1px solid rgba(42, 120, 68, 0.3); backdrop-filter: blur(8px);">
+                     style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px);">
                     <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8EB69B] opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#8EB69B]"></span>
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-300"></span>
                     </span>
-                    <span class="text-[#8EB69B]">Goatin Digital Panel</span>
+                    <span class="text-emerald-100">Goatin Digital Panel</span>
                 </div>
                 
                 <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-                    Halo, <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-green-200">{{ auth()->user()->name }}</span>!
+                    Halo, <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-emerald-200 to-green-100">{{ auth()->user()->name }}</span>!
                 </h1>
                 
-                <p class="text-sm md:text-base text-slate-200/90 max-w-xl leading-relaxed font-medium">
+                <p class="text-sm md:text-base text-emerald-50/90 max-w-3xl leading-relaxed font-medium">
                     Selamat datang di dasbor utama Goatin. Di sini Anda dapat memantau kesehatan ternak secara real-time, memesan hewan kualitas super, dan membaca jurnal peternakan modern teruji.
                 </p>
 
-                <div class="flex flex-wrap gap-3 pt-2">
+                <div class="flex flex-wrap gap-4 pt-4">
                     <a href="{{ route('customer.produk') }}" 
-                       class="inline-flex items-center gap-2 py-3 px-6 rounded-full text-xs font-extrabold text-white uppercase tracking-widest transition-all duration-300 bg-goatin-green hover:bg-emerald-600 shadow-md hover:shadow-lg active:scale-95 group">
+                       class="inline-flex items-center gap-2 py-3 px-7 rounded-full text-xs font-extrabold text-[#062b25] uppercase tracking-widest transition-all duration-300 bg-gradient-to-r from-emerald-300 to-emerald-400 hover:from-emerald-200 hover:to-emerald-300 shadow-lg hover:shadow-xl active:scale-95 group">
                         <span>Pesan Ternak Baru</span>
                         <span class="material-symbols-outlined text-sm transition-transform duration-200 group-hover:translate-x-0.5">storefront</span>
                     </a>
                     <a href="{{ route('customer.monitoring') }}" 
-                       class="inline-flex items-center gap-2 py-3 px-6 rounded-full text-xs font-extrabold text-[#DAF1DE] border border-[#DAF1DE]/30 uppercase tracking-widest transition-all duration-300 bg-white/5 hover:bg-white/10 active:scale-95 group">
+                       class="inline-flex items-center gap-2 py-3 px-7 rounded-full text-xs font-extrabold text-white border border-white/30 uppercase tracking-widest transition-all duration-300 bg-white/10 hover:bg-white/20 active:scale-95 group">
                         <span>Pantau Ternak</span>
                         <span class="material-symbols-outlined text-sm">analytics</span>
                     </a>
@@ -61,46 +61,46 @@
             </div>
 
             <div class="lg:col-span-4 flex justify-center lg:justify-end">
-                <div class="relative w-full max-w-[280px]">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-teal-400/20 to-transparent blur-2xl rounded-3xl opacity-60"></div>
+                <div class="relative w-full max-w-[340px]">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-teal-300/30 to-emerald-400/20 blur-3xl rounded-[32px] opacity-70"></div>
                     
                     {{-- Premium Glass Widget Card --}}
-                    <div class="relative z-10 w-full p-6 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-4 text-left transition-all duration-500 hover:scale-[1.02] hover:border-white/25"
-                         style="background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                    <div class="relative z-10 w-full p-7 rounded-3xl border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] flex flex-col gap-5 text-left transition-all duration-500 hover:scale-[1.02] hover:border-white/40"
+                         style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);">
                         
-                        <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                            <span class="text-[10px] font-bold text-[#8EB69B] uppercase tracking-widest">Status Akun</span>
-                            <span class="flex h-2 w-2 rounded-full {{ $isEmailVerified ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse' }}"></span>
+                        <div class="flex items-center justify-between pb-3.5 border-b border-white/15">
+                            <span class="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">Status Akun</span>
+                            <span class="flex h-2.5 w-2.5 rounded-full {{ $isEmailVerified ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 animate-pulse shadow-[0_0_10px_rgba(251,191,36,0.8)]' }}"></span>
                         </div>
 
-                        <div class="space-y-3.5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">badge</span>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-100 bg-white/10 border border-white/20 shadow-inner">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">badge</span>
                                 </div>
                                 <div>
-                                    <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Tipe Member</div>
-                                    <div class="text-xs font-black text-white">Pembeli Mitra</div>
+                                    <div class="text-[10px] text-emerald-100/70 font-bold uppercase tracking-widest mb-0.5">Tipe Member</div>
+                                    <div class="text-sm font-black text-white">Pembeli Mitra</div>
                                 </div>
                             </div>
                             
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">verified_user</span>
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-teal-200 bg-teal-400/20 border border-teal-300/30 shadow-inner">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">verified_user</span>
                                 </div>
                                 <div>
-                                    <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Verifikasi</div>
-                                    <div class="text-xs font-black text-white">{{ $isEmailVerified ? 'Terverifikasi ✓' : 'Belum Verifikasi' }}</div>
+                                    <div class="text-[10px] text-emerald-100/70 font-bold uppercase tracking-widest mb-0.5">Verifikasi</div>
+                                    <div class="text-sm font-black text-white">{{ $isEmailVerified ? 'Terverifikasi ✓' : 'Belum Verifikasi' }}</div>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-amber-300 bg-amber-500/10 border border-amber-500/20">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span>
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-amber-200 bg-amber-400/20 border border-amber-300/30 shadow-inner">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">schedule</span>
                                 </div>
                                 <div>
-                                    <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Bergabung</div>
-                                    <div class="text-xs font-black text-white">{{ auth()->user()->created_at->format('d M Y') }}</div>
+                                    <div class="text-[10px] text-emerald-100/70 font-bold uppercase tracking-widest mb-0.5">Bergabung</div>
+                                    <div class="text-sm font-black text-white">{{ auth()->user()->created_at->format('d M Y') }}</div>
                                 </div>
                             </div>
                         </div>

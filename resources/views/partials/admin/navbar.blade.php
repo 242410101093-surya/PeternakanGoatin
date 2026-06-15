@@ -131,8 +131,8 @@
            class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center font-bold text-xs uppercase transition-all duration-300 hover:scale-105"
            style="border: 2px solid rgba(42, 120, 68, 0.2); box-shadow: 0 4px 12px rgba(42, 120, 68, 0.08);"
            title="Lihat Profil" id="admin-navbar-avatar-container">
-            @if(auth()->user()->foto)
-                <img alt="Admin" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url(auth()->user()->foto) }}" id="admin-navbar-avatar-img"/>
+            @if(auth()->user()->foto_profil)
+                <img alt="Admin" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
             @else
                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-green to-emerald-700 text-white font-extrabold" id="admin-navbar-avatar-placeholder">
                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}

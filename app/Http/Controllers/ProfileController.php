@@ -26,7 +26,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'whatsapp' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'foto' => ['nullable', 'image', 'max:5120'], // 5MB max
+            'foto_profil' => ['nullable', 'image', 'max:5120'], // 5MB max
             'alamat' => ['nullable', 'string'],
             'tipe_alamat' => ['nullable', 'string', 'in:Rumah,Kantor'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -86,13 +86,13 @@ class ProfileController extends Controller
         }
 
         try {
-            if ($request->hasFile('foto')) {
+            if ($request->hasFile('foto_profil')) {
                 // Delete old photo if exists
-                if ($user->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto);
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
                 }
-                $path = $request->file('foto')->store('profile_photos', 'supabase');
-                $data['foto'] = $path;
+                $path = $request->file('foto_profil')->store('profile_photos', 'supabase');
+                $data['foto_profil'] = $path;
             }
 
             $user->fill($data);
@@ -119,8 +119,8 @@ class ProfileController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'whatsapp' => $user->whatsapp ?? '-',
-                    'foto' => $user->foto ? asset('storage/' . $user->foto) : null,
-                    'foto_raw' => $user->foto,
+                    'foto_profil' => $user->foto_profil ? asset('storage/' . $user->foto_profil) : null,
+                    'foto_profil_raw' => $user->foto_profil,
                     'email_verified' => $user->email_verified_at ? true : false,
                     'alamat' => $user->alamat,
                     'tipe_alamat' => $user->tipe_alamat,

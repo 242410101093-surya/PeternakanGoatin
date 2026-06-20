@@ -165,7 +165,7 @@ class InventarisController extends Controller
 
             Produk::create([
                 'inventaris_id' => $inventaris->id,
-                'nama_produk' => $inventaris->jenis . ' ' . ($inventaris->ras ? $inventaris->ras : ''),
+                'nama_produk' => $inventaris->jenis . ' ' . $inventaris->gender . ' (Umur: ' . $inventaris->umur . ' bln)',
                 'spesifikasi' => $request->spesifikasi,
                 'harga' => $request->harga,
                 'foto' => $fotoPath,
@@ -180,10 +180,15 @@ class InventarisController extends Controller
             return redirect()->route('admin.inventaris.index')->with('success', 'Hewan berhasil dimasukkan ke katalog.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
+            
+            $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
+                ? 'Gagal memasukkan hewan ke katalog: Terjadi kendala sertifikat SSL pada server lokal.' 
+                : 'Gagal memasukkan hewan ke katalog: Terjadi kesalahan sistem saat menghubungi server cloud storage.';
+
             if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['success' => false, 'message' => 'Gagal memasukkan hewan ke katalog. ' . $e->getMessage()], 500);
+                return response()->json(['success' => false, 'message' => $pesanError], 500);
             }
-            return back()->with('error', 'Gagal memasukkan hewan ke katalog: ' . $e->getMessage());
+            return back()->with('error', $pesanError);
         }
     }
 }

@@ -55,7 +55,15 @@ class ArtikelController extends Controller
         $data = $request->except('foto');
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('artikel_fotos', 'supabase');
+            try {
+                $data['foto'] = $request->file('foto')->store('artikel_fotos', 'supabase');
+            } catch (\Exception $e) {
+                $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
+                    ? 'Gagal mengunggah gambar: Terjadi kendala sertifikat SSL pada server lokal.' 
+                    : 'Terjadi kesalahan sistem saat menghubungi server cloud storage.';
+
+                return redirect()->back()->withInput()->with('error', $pesanError);
+            }
         }
 
         Artikel::create($data);
@@ -81,18 +89,26 @@ class ArtikelController extends Controller
         $artikel = Artikel::findOrFail($id);
         $data = $request->except(['foto', 'hapus_foto']);
 
-        if ($request->input('hapus_foto') == '1') {
-            if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
-                Storage::disk('public')->delete($artikel->foto);
+        try {
+            if ($request->input('hapus_foto') == '1') {
+                if ($artikel->foto && Storage::disk('supabase')->exists($artikel->foto)) {
+                    Storage::disk('supabase')->delete($artikel->foto);
+                }
+                $data['foto'] = null;
             }
-            $data['foto'] = null;
-        }
 
-        if ($request->hasFile('foto')) {
-            if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
-                Storage::disk('public')->delete($artikel->foto);
+            if ($request->hasFile('foto')) {
+                if ($artikel->foto && Storage::disk('supabase')->exists($artikel->foto)) {
+                    Storage::disk('supabase')->delete($artikel->foto);
+                }
+                $data['foto'] = $request->file('foto')->store('artikel_fotos', 'supabase');
             }
-            $data['foto'] = $request->file('foto')->store('artikel_fotos', 'supabase');
+        } catch (\Exception $e) {
+            $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
+                ? 'Gagal memproses gambar: Terjadi kendala sertifikat SSL pada server lokal.' 
+                : 'Terjadi kesalahan sistem saat menghubungi server cloud storage.';
+
+            return redirect()->back()->withInput()->with('error', $pesanError);
         }
 
         $artikel->update($data);
@@ -104,8 +120,19 @@ class ArtikelController extends Controller
     {
         $artikel = Artikel::findOrFail($id);
 
-        if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
-            Storage::disk('public')->delete($artikel->foto);
+        try {
+            if ($artikel->foto && Storage::disk('supabase')->exists($artikel->foto)) {
+                Storage::disk('supabase')->delete($artikel->foto);
+            }
+        } catch (\Exception $e) {
+            $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
+                ? 'Gagal menghapus gambar: Terjadi kendala sertifikat SSL pada server lokal.' 
+                : 'Terjadi kesalahan sistem saat menghubungi server cloud storage.';
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => $pesanError], 500);
+            }
+            return redirect()->route('admin.artikel.index')->with('error', $pesanError);
         }
 
         $artikel->delete();
@@ -120,8 +147,16 @@ class ArtikelController extends Controller
     {
         $artikel = Artikel::findOrFail($id);
 
-        if ($artikel->foto && Storage::disk('public')->exists($artikel->foto)) {
-            Storage::disk('public')->delete($artikel->foto);
+        try {
+            if ($artikel->foto && Storage::disk('supabase')->exists($artikel->foto)) {
+                Storage::disk('supabase')->delete($artikel->foto);
+            }
+        } catch (\Exception $e) {
+            $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
+                ? 'Gagal menghapus gambar: Terjadi kendala sertifikat SSL pada server lokal.' 
+                : 'Terjadi kesalahan sistem saat menghubungi server cloud storage.';
+
+            return response()->json(['success' => false, 'message' => $pesanError], 500);
         }
 
         $artikel->update(['foto' => null]);

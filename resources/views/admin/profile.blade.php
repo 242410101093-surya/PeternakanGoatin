@@ -191,7 +191,7 @@
                          style="background: linear-gradient(135deg, #235347 0%, #051F20 100%);">
                         <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
                             @if(auth()->user()->foto_profil)
-                                @if(config('app.env') === 'production')
+                                @if(config('app.env') === 'production' || \Illuminate\Support\Str::startsWith(auth()->user()->foto_profil, 'profile_photos/'))
                                     <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
                                 @else
                                     <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">

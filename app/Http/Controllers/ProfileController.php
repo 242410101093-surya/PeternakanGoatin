@@ -26,7 +26,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'whatsapp' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'foto_profil' => ['nullable', 'image', 'max:5120'], // 5MB max
+            'foto_profil' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:5120'], // 5MB max
             'alamat' => ['nullable', 'string'],
             'tipe_alamat' => ['nullable', 'string', 'in:Rumah,Kantor'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -87,12 +87,16 @@ class ProfileController extends Controller
 
         try {
             if ($request->hasFile('foto_profil')) {
-                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-                // Delete old photo if exists
-                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk($disk)->exists($user->foto_profil)) {
-                    \Illuminate\Support\Facades\Storage::disk($disk)->delete($user->foto_profil);
+                // Delete old photo if exists on supabase disk
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('supabase')->exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::disk('supabase')->delete($user->foto_profil);
                 }
-                $path = $request->file('foto_profil')->store('profile_photos', $disk);
+                
+                $file = $request->file('foto_profil');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = 'profile_photos/' . $filename;
+                
+                \Illuminate\Support\Facades\Storage::disk('supabase')->put($path, file_get_contents($file));
                 $data['foto_profil'] = $path;
             }
 
@@ -120,7 +124,7 @@ class ProfileController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'whatsapp' => $user->whatsapp ?? '-',
-                    'foto_profil' => $user->foto_profil ? asset('storage/' . $user->foto_profil) : null,
+                    'foto_profil' => $user->foto_profil ? (\Illuminate\Support\Str::startsWith($user->foto_profil, 'profile_photos/') ? \Illuminate\Support\Facades\Storage::disk('supabase')->url($user->foto_profil) : asset('storage/' . $user->foto_profil)) : null,
                     'foto_profil_raw' => $user->foto_profil,
                     'email_verified' => $user->email_verified_at ? true : false,
                     'alamat' => $user->alamat,

@@ -132,7 +132,7 @@
            style="border: 2px solid rgba(42, 120, 68, 0.2); box-shadow: 0 4px 12px rgba(42, 120, 68, 0.08);"
            title="Lihat Profil" id="admin-navbar-avatar-container">
             @if(auth()->user()->foto_profil)
-                @if(config('app.env') === 'production')
+                @if(config('app.env') === 'production' || \Illuminate\Support\Str::startsWith(auth()->user()->foto_profil, 'profile_photos/'))
                     <img alt="Admin" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
                 @else
                     <img alt="Admin" class="w-full h-full object-cover" src="{{ asset('storage/' . auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>

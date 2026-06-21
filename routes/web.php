@@ -137,3 +137,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.role'])->grou
     Route::resource('rekam-medis', RekamMedisController::class)->except(['create', 'show', 'edit']);
     Route::post('rekam-medis/berat', [RekamMedisController::class, 'storeBerat'])->name('rekam-medis.berat');
 });
+
+// Fallback lokal untuk serve asset storage agar tidak terkena error 403 / masalah symlink Windows
+if (app()->environment('local')) {
+    app()->booted(function () {
+        Route::get('/storage/{path}', function ($path) {
+            $fullPath = storage_path('app/public/' . $path);
+            if (!file_exists($fullPath)) {
+                abort(404);
+            }
+            return response()->file($fullPath);
+        })->where('path', '.*')->name('storage.local');
+    });
+}
+

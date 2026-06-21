@@ -114,7 +114,11 @@
                  style="background: linear-gradient(135deg, #2A7844 0%, #051F20 100%);">
                 <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
                     @if(auth()->user()->foto_profil)
-                        <img src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })(auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
+                        @if(config('app.env') === 'production')
+                            <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
+                        @else
+                            <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
+                        @endif
                     @else
                         <div class="w-full h-full bg-slate-50 flex items-center justify-center text-slate-800 text-3xl font-extrabold uppercase" id="profile-snapshot-avatar-placeholder">
                             {{ substr(auth()->user()->name, 0, 2) }}

@@ -8,8 +8,13 @@
              style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
             
             @if($produk->foto)
-                <img src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                @if(config('app.env') === 'production')
+                    <img src="{{ Storage::disk('supabase')->url($produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                @else
+                    <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                @endif
             @else
                 {{-- Luxurious Stylized Vector representation of livestock --}}
                 <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
@@ -75,7 +80,7 @@
                             data-product-gender="{{ $produk->inventaris?->jenis ?? '-' }}"
                             data-product-age="{{ $produk->inventaris?->umur ? $produk->inventaris->umur . ' Bulan' : '-' }}"
                             data-product-berat="{{ $produk->inventaris?->berat ? $produk->inventaris->berat . ' Kg' : '-' }}"
-                            data-product-image="{{ $produk->foto ? (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($produk->foto) : '' }}"
+                            data-product-image="{{ $produk->foto ? (config('app.env') === 'production' ? Storage::disk('supabase')->url($produk->foto) : asset('storage/' . $produk->foto)) : '' }}"
                             data-product-rekam-medis="{{ json_encode($produk->inventaris?->rekamMedis ?? []) }}">
                         <span class="material-symbols-outlined" style="font-size:18px;">shopping_basket</span>
                     </button>

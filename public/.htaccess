@@ -1,3 +1,6 @@
+# Berikan izin ke Apache Laragon untuk membaca jembatan jalan pintas (Symlink) Windows
+Options +FollowSymLinks
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

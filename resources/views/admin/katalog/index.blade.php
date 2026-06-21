@@ -146,8 +146,13 @@
                  style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
 
                 @if($produk->foto)
-                    <img src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    @if(config('app.env') === 'production')
+                        <img src="{{ Storage::disk('supabase')->url($produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    @else
+                        <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    @endif
                 @else
                     <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
                         <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full filter blur-xl opacity-20" style="background:#2A7844;"></div>

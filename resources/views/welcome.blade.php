@@ -437,7 +437,11 @@
                                 <!-- Image Header -->
                                 <div class="relative h-56 bg-slate-100 overflow-hidden">
                                     @if($produk->foto)
-                                        <img src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                                        @if(config('app.env') === 'production')
+                                            <img src="{{ Storage::disk('supabase')->url($produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                                        @else
+                                            <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                                        @endif
                                     @else
                                         <!-- Fallback design using gradient and icon if no image uploaded -->
                                         <div class="w-full h-full bg-gradient-to-br from-accent-teal to-primary-dark flex flex-col items-center justify-center p-4">

@@ -52,10 +52,17 @@
 
     {{-- Article Hero Image --}}
     <div class="relative overflow-hidden rounded-[28px] shadow-lg border border-slate-200/60 bg-slate-100" style="height: 420px;">
-        <img alt="{{ $artikel->judul }}" 
-             class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
-             src="{{ $artikel->foto ? (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($artikel->foto) : asset('images/default-artikel.jpg') }}"
-             onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'"/>
+        @if(config('app.env') === 'production')
+            <img alt="{{ $artikel->judul }}" 
+                 class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
+                 src="{{ $artikel->foto ? Storage::disk('supabase')->url($artikel->foto) : asset('images/default-artikel.jpg') }}"
+                 onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'"/>
+        @else
+            <img alt="{{ $artikel->judul }}" 
+                 class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
+                 src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}"
+                 onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'"/>
+        @endif
     </div>
 
     {{-- Article Content Card --}}

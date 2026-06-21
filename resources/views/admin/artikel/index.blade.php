@@ -61,7 +61,11 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 rounded bg-surface-container flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     @if($artikel->foto)
-                                        <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($artikel->foto) }}"/>
+                                        @if(config('app.env') === 'production')
+                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url($artikel->foto) }}"/>
+                                        @else
+                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ asset('storage/' . $artikel->foto) }}"/>
+                                        @endif
                                     @else
                                         <span class="material-symbols-outlined text-outline-variant">image</span>
                                     @endif
@@ -82,7 +86,7 @@
                         </td>
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openEditArtikelModal({{ $artikel }})" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
+                                <button onclick="openEditArtikelModal({{ $artikel }}, '{{ $artikel->foto ? (config('app.env') === 'production' ? Storage::disk('supabase')->url($artikel->foto) : asset('storage/' . $artikel->foto)) : '' }}')" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
                                 <form action="{{ route('admin.artikel.destroy', $artikel->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus artikel '{{ $artikel->judul }}'? Tindakan ini tidak bisa dibatalkan.">
@@ -224,7 +228,7 @@
 </div>
 
 <script>
-    function openEditArtikelModal(artikel) {
+    function openEditArtikelModal(artikel, fotoUrl) {
         document.getElementById('editArtikelForm').action = `/admin/artikel/${artikel.id}`;
         document.getElementById('edit_judul').value = artikel.judul;
         document.getElementById('edit_kategori').value = artikel.kategori || '';
@@ -238,7 +242,7 @@
         const previewImg = document.getElementById('edit_foto_preview');
         
         if (artikel.foto) {
-            previewImg.src = `/storage/${artikel.foto}`;
+            previewImg.src = fotoUrl;
             previewContainer.classList.remove('hidden');
         } else {
             previewImg.src = '';

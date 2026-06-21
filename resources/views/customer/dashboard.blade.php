@@ -14,95 +14,110 @@
 
 <main class="max-w-[1600px] mx-auto px-6 py-10 space-y-12">
 
-    {{-- ── Hero Welcome Banner Section ── --}}
-    <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-emerald-900/40 shadow-2xl"
-             style="background: linear-gradient(135deg, #062b25 0%, #0c4a3d 50%, #126b56 100%);"
+    {{-- ── Hero Banner Section ── --}}
+    <section class="relative overflow-hidden rounded-[32px] p-8 md:p-12 lg:p-14 text-white border border-slate-700/30 shadow-2xl"
+             style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 45%, #163832 85%, #235347 100%);"
              data-aos="fade-down">
         
         {{-- Futuristic background glows --}}
-        <div class="absolute right-0 top-0 w-[500px] h-[500px] rounded-full filter blur-[120px] opacity-40 pointer-events-none" style="background: radial-gradient(circle, #20c997 0%, transparent 70%);"></div>
-        <div class="absolute left-[-10%] bottom-[-20%] w-[400px] h-[400px] rounded-full filter blur-[100px] opacity-30 pointer-events-none" style="background: radial-gradient(circle, #10b981 0%, transparent 70%);"></div>
-        <div class="absolute right-[25%] bottom-[-30%] w-[350px] h-[350px] rounded-full filter blur-[120px] opacity-25 pointer-events-none" style="background: radial-gradient(circle, #34d399 0%, transparent 70%);"></div>
+        <div class="absolute right-0 top-0 w-[450px] h-[450px] rounded-full filter blur-[100px] opacity-35 pointer-events-none" style="background: radial-gradient(circle, #235347 0%, transparent 70%);"></div>
+        <div class="absolute left-[-10%] bottom-[-20%] w-[350px] h-[350px] rounded-full filter blur-[80px] opacity-25 pointer-events-none" style="background: radial-gradient(circle, #2A7844 0%, transparent 70%);"></div>
+        <div class="absolute right-[20%] bottom-[-30%] w-[300px] h-[300px] rounded-full filter blur-[100px] opacity-20 pointer-events-none" style="background: radial-gradient(circle, #8EB69B 0%, transparent 70%);"></div>
         
         {{-- Abstract Grid Overlay --}}
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] opacity-30 pointer-events-none"></div>
 
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-8 space-y-5">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase"
-                     style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px);">
+            <div class="lg:col-span-8 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase animate-pulse"
+                     style="background: rgba(35, 83, 71, 0.15); border: 1px solid rgba(35, 83, 71, 0.3); backdrop-filter: blur(8px);">
                     <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-300"></span>
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8EB69B] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#8EB69B]"></span>
                     </span>
-                    <span class="text-emerald-100">Goatin Digital Panel</span>
+                    <span class="text-[#8EB69B]">Wawasan & Riset Peternakan</span>
                 </div>
                 
                 <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-                    Halo, <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-emerald-200 to-green-100">{{ auth()->user()->name }}</span>!
+                    Temukan Pengetahuan <br class="hidden md:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-green-200">
+                        Ternak Modern
+                    </span> Anda
                 </h1>
                 
-                <p class="text-sm md:text-base text-emerald-50/90 max-w-3xl leading-relaxed font-medium">
-                    Selamat datang di dasbor utama Goatin. Di sini Anda dapat memantau kesehatan ternak secara real-time, memesan hewan kualitas super, dan membaca jurnal peternakan modern teruji.
+                <p class="text-sm md:text-base text-slate-200/90 max-w-xl leading-relaxed font-medium">
+                    Akses wawasan, riset mutakhir, dan panduan praktis yang didesain khusus untuk mengoptimalkan kesehatan, pertumbuhan, serta profitabilitas peternakan kambing & domba Anda.
                 </p>
 
-                <div class="flex flex-wrap gap-4 pt-4">
-                    <a href="{{ route('customer.produk') }}" 
-                       class="inline-flex items-center gap-2 py-3 px-7 rounded-full text-xs font-extrabold text-[#062b25] uppercase tracking-widest transition-all duration-300 bg-gradient-to-r from-emerald-300 to-emerald-400 hover:from-emerald-200 hover:to-emerald-300 shadow-lg hover:shadow-xl active:scale-95 group">
-                        <span>Pesan Ternak Baru</span>
-                        <span class="material-symbols-outlined text-sm transition-transform duration-200 group-hover:translate-x-0.5">storefront</span>
-                    </a>
-                    <a href="{{ route('customer.monitoring') }}" 
-                       class="inline-flex items-center gap-2 py-3 px-7 rounded-full text-xs font-extrabold text-white border border-white/30 uppercase tracking-widest transition-all duration-300 bg-white/10 hover:bg-white/20 active:scale-95 group">
-                        <span>Pantau Ternak</span>
-                        <span class="material-symbols-outlined text-sm">analytics</span>
-                    </a>
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
+                        <span class="material-symbols-outlined text-[#8EB69B]" style="font-size: 20px;">science</span>
+                        <div class="text-left">
+                            <p class="text-[10px] text-slate-300 font-medium">Riset Ilmiah</p>
+                            <p class="text-xs font-bold text-white">Teruji & Praktis</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 transition-all hover:bg-white/10" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
+                        <span class="material-symbols-outlined text-emerald-400" style="font-size: 20px;">clinical_notes</span>
+                        <div class="text-left">
+                            <p class="text-[10px] text-slate-300 font-medium">Panduan Medis</p>
+                            <p class="text-xs font-bold text-white">Kambing & Domba</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="lg:col-span-4 flex justify-center lg:justify-end">
-                <div class="relative w-full max-w-[340px]">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-teal-300/30 to-emerald-400/20 blur-3xl rounded-[32px] opacity-70"></div>
+                <!-- Outer soft glowing box -->
+                <div class="relative w-full max-w-[280px]">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-teal-400/20 to-transparent blur-2xl rounded-3xl opacity-60"></div>
                     
-                    {{-- Premium Glass Widget Card --}}
-                    <div class="relative z-10 w-full p-7 rounded-3xl border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] flex flex-col gap-5 text-left transition-all duration-500 hover:scale-[1.02] hover:border-white/40"
-                         style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);">
+                    <!-- Premium Glass Widget Card -->
+                    <div class="relative z-10 w-full p-6 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-4 text-left transition-all duration-500 hover:scale-[1.02] hover:border-white/25"
+                         style="background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                         
-                        <div class="flex items-center justify-between pb-3.5 border-b border-white/15">
-                            <span class="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">Status Akun</span>
-                            <span class="flex h-2.5 w-2.5 rounded-full {{ $isEmailVerified ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 animate-pulse shadow-[0_0_10px_rgba(251,191,36,0.8)]' }}"></span>
+                        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                            <span class="text-[10px] font-bold text-[#8EB69B] uppercase tracking-widest">Goatin Intelligence</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         </div>
 
                         <div class="space-y-4">
-                            <div class="flex items-center gap-3.5">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-100 bg-white/10 border border-white/20 shadow-inner">
-                                    <span class="material-symbols-outlined" style="font-size: 20px;">badge</span>
+                            <!-- Item 1 -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">library_books</span>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-emerald-100/70 font-bold uppercase tracking-widest mb-0.5">Tipe Member</div>
-                                    <div class="text-sm font-black text-white">Pembeli Mitra</div>
+                                    <div class="text-[10px] text-slate-300">Wawasan Tersedia</div>
+                                    <div class="text-xs font-bold text-white">Riset & Tips</div>
                                 </div>
                             </div>
                             
-                            <div class="flex items-center gap-3.5">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-teal-200 bg-teal-400/20 border border-teal-300/30 shadow-inner">
-                                    <span class="material-symbols-outlined" style="font-size: 20px;">verified_user</span>
+                            <!-- Item 2 -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">verified</span>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-emerald-100/70 font-bold uppercase tracking-widest mb-0.5">Verifikasi</div>
-                                    <div class="text-sm font-black text-white">{{ $isEmailVerified ? 'Terverifikasi ✓' : 'Belum Verifikasi' }}</div>
+                                    <div class="text-[10px] text-slate-300">Validasi Wawasan</div>
+                                    <div class="text-xs font-bold text-white">Diulas Dokter Hewan</div>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-3.5">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-amber-200 bg-amber-400/20 border border-amber-300/30 shadow-inner">
-                                    <span class="material-symbols-outlined" style="font-size: 20px;">schedule</span>
+                            <!-- Item 3 -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[#8EB69B] bg-[#8EB69B]/10 border border-[#8EB69B]/20">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">trending_up</span>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-emerald-100/70 font-bold uppercase tracking-widest mb-0.5">Bergabung</div>
-                                    <div class="text-sm font-black text-white">{{ auth()->user()->created_at->format('d M Y') }}</div>
+                                    <div class="text-[10px] text-slate-300">Fokus Utama</div>
+                                    <div class="text-xs font-bold text-white">Optimasi Profit</div>
                                 </div>
                             </div>
+                        </div>
+                        
+                        <div class="pt-2 text-center border-t border-white/5">
+                            <span class="text-[9px] text-slate-400 font-medium">Diperbarui secara berkala</span>
                         </div>
                     </div>
                 </div>
@@ -129,10 +144,17 @@
             
             {{-- Background Featured Image --}}
             <div class="absolute inset-0 w-full h-full">
-                <img src="{{ $featured->foto ? (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($featured->foto) : asset('images/default-artikel.jpg') }}" 
-                     alt="{{ $featured->judul }}" 
-                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                     onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'">
+                @if(config('app.env') === 'production')
+                    <img src="{{ $featured->foto ? Storage::disk('supabase')->url($featured->foto) : asset('images/default-artikel.jpg') }}" 
+                         alt="{{ $featured->judul }}" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                         onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'">
+                @else
+                    <img src="{{ $featured->foto ? asset('storage/' . $featured->foto) : asset('images/default-artikel.jpg') }}" 
+                         alt="{{ $featured->judul }}" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                         onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'">
+                @endif
                 {{-- Gradient Overlay --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent"></div>
             </div>
@@ -179,10 +201,17 @@
 
                 {{-- Image Box --}}
                 <div class="relative overflow-hidden h-48 bg-slate-100 shrink-0">
-                    <img src="{{ $artikel->foto ? (function($p){ try { return $p ? Storage::disk(config('filesystems.default'))->url($p) : asset('images/placeholder.png'); } catch(\Exception $e) { return asset('images/placeholder.png'); } })($artikel->foto) : asset('images/default-artikel.jpg') }}" 
-                         alt="{{ $artikel->judul }}"
-                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                         onerror="this.src='https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80'">
+                    @if(config('app.env') === 'production')
+                        <img src="{{ $artikel->foto ? Storage::disk('supabase')->url($artikel->foto) : asset('images/default-artikel.jpg') }}" 
+                             alt="{{ $artikel->judul }}"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80'">
+                    @else
+                        <img src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}" 
+                             alt="{{ $artikel->judul }}"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.src='https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80'">
+                    @endif
                     <div class="absolute top-3 left-3 z-10">
                         <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm"
                               style="background:rgba(255, 255, 255, 0.92); color:#2A7844; backdrop-filter:blur(4px); border:1px solid rgba(42, 120, 68, 0.15);">

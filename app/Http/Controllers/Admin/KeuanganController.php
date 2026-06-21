@@ -85,9 +85,10 @@ class KeuanganController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('nota_pembayaran')) {
+            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
             $file = $request->file('nota_pembayaran');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('nota_pembayaran', $filename, 'public');
+            $file->storeAs('nota_pembayaran', $filename, $disk);
             $data['nota_pembayaran'] = $filename;
         }
 
@@ -120,14 +121,15 @@ class KeuanganController extends Controller
             $data = $request->all();
 
             if ($request->hasFile('nota_pembayaran')) {
+                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
                 // Hapus file lama jika ada
                 if ($laporan->nota_pembayaran) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                    \Illuminate\Support\Facades\Storage::disk($disk)->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
                 }
 
                 $file = $request->file('nota_pembayaran');
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('nota_pembayaran', $filename, 'public');
+                $file->storeAs('nota_pembayaran', $filename, $disk);
                 $data['nota_pembayaran'] = $filename;
             }
 
@@ -226,7 +228,8 @@ class KeuanganController extends Controller
                 }
 
                 if ($laporan->nota_pembayaran) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                    $disk = config('app.env') === 'production' ? 'supabase' : 'public';
+                    \Illuminate\Support\Facades\Storage::disk($disk)->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
                 }
 
                 $laporan->delete();
@@ -238,7 +241,8 @@ class KeuanganController extends Controller
             }
 
             if ($laporan->nota_pembayaran) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
+                \Illuminate\Support\Facades\Storage::disk($disk)->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
             }
 
             $laporan->delete();

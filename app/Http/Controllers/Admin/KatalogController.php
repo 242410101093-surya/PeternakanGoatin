@@ -93,10 +93,11 @@ class KatalogController extends Controller
             $data = $request->only(['harga', 'spesifikasi']);
 
             if ($request->hasFile('foto')) {
-                if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
-                    Storage::disk('public')->delete($produk->foto);
+                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
+                if ($produk->foto && Storage::disk($disk)->exists($produk->foto)) {
+                    Storage::disk($disk)->delete($produk->foto);
                 }
-                $data['foto'] = $request->file('foto')->store('produk_fotos', 'supabase');
+                $data['foto'] = $request->file('foto')->store('produk_fotos', $disk);
             }
 
             $produk->update($data);
@@ -131,8 +132,11 @@ class KatalogController extends Controller
                 $produk->inventaris->update(['status_stok' => 'Dalam Perawatan']); // Kembalikan ke perawatan, bukan tersedia
             }
 
-            if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
-                Storage::disk('public')->delete($produk->foto);
+            if ($produk->foto) {
+                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
+                if (Storage::disk($disk)->exists($produk->foto)) {
+                    Storage::disk($disk)->delete($produk->foto);
+                }
             }
 
             $produk->delete();

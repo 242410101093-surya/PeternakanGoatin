@@ -160,7 +160,8 @@ class InventarisController extends Controller
 
             $fotoPath = null;
             if ($request->hasFile('foto')) {
-                $fotoPath = $request->file('foto')->store('produk_fotos', 'supabase');
+                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
+                $fotoPath = $request->file('foto')->store('produk_fotos', $disk);
             }
 
             Produk::create([

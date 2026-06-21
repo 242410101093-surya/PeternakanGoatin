@@ -87,11 +87,12 @@ class ProfileController extends Controller
 
         try {
             if ($request->hasFile('foto_profil')) {
+                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
                 // Delete old photo if exists
-                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto_profil)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk($disk)->exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::disk($disk)->delete($user->foto_profil);
                 }
-                $path = $request->file('foto_profil')->store('profile_photos', 'supabase');
+                $path = $request->file('foto_profil')->store('profile_photos', $disk);
                 $data['foto_profil'] = $path;
             }
 

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Goatin Local to Live Product Pusher
+ * Goatin Local to Live Product, Inventaris, and Rekam Medis Pusher
  * 
- * This script synchronizes new products and their corresponding inventaris records, 
- * along with their image files, from the local MySQL database to the live 
+ * This script synchronizes new inventaris records, products (katalog), and rekam medis,
+ * along with product photos from the local MySQL database to the live 
  * PostgreSQL database (Railway) and Supabase Storage.
  * 
  * Usage:
@@ -13,7 +13,7 @@
  */
 
 echo "=========================================================\n";
-echo "       GOATIN LOCAL TO LIVE PRODUCT PUSHER               \n";
+echo "       GOATIN LOCAL TO LIVE DATA AUTO-SYNCER             \n";
 echo "=========================================================\n\n";
 
 // 1. Bootstrap Laravel Framework
@@ -83,119 +83,225 @@ try {
     exit(1);
 }
 
-// 5. Fetch Data
+// Global counters
+$inventarisCopied = 0;
+$productsPushed = 0;
+$rekamMedisCopied = 0;
+
+// -----------------------------------------------------------------------------
+// FASE 1: SINKRONISASI TABEL INVENTARIS
+// -----------------------------------------------------------------------------
+echo "=========================================================\n";
+echo " FASE 1: SINKRONISASI INVENTARIS\n";
+echo "=========================================================\n";
+
 try {
-    // Get all products from local MySQL database
+    $localInventarisList = DB::connection('mysql')->table('inventaris')->orderBy('id', 'asc')->get();
+    echo "Local database has " . $localInventarisList->count() . " inventaris records.\n";
+
+    $liveInventarisIds = DB::connection('live')->table('inventaris')->pluck('id')->toArray();
+    echo "Live database has " . count($liveInventarisIds) . " inventaris records.\n\n";
+
+    $newInventaris = [];
+    foreach ($localInventarisList as $item) {
+        if (!in_array($item->id, $liveInventarisIds)) {
+            $newInventaris[] = $item;
+        }
+    }
+
+    if (count($newInventaris) === 0) {
+        echo "✅ All inventaris records are already synchronized.\n";
+    } else {
+        echo "Found " . count($newInventaris) . " new inventaris record(s) to push.\n";
+        foreach ($newInventaris as $item) {
+            echo "🐾 Syncing Inventaris ID {$item->id}: {$item->jenis} ({$item->ras}, {$item->gender})\n";
+            if (!$dryRun) {
+                DB::connection('live')->table('inventaris')->insert((array)$item);
+            }
+            $inventarisCopied++;
+        }
+        echo "   -> Completed Fase 1.\n";
+    }
+} catch (\Exception $e) {
+    echo "❌ Error during Inventaris sync: " . $e->getMessage() . "\n";
+}
+
+echo "\n";
+
+// -----------------------------------------------------------------------------
+// FASE 2: SINKRONISASI TABEL PRODUK
+// -----------------------------------------------------------------------------
+echo "=========================================================\n";
+echo " FASE 2: SINKRONISASI PRODUK (KATALOG)\n";
+echo "=========================================================\n";
+
+try {
     $localProducts = DB::connection('mysql')->table('produks')->orderBy('id', 'asc')->get();
     echo "Local database has " . $localProducts->count() . " products.\n";
 
-    // Get all product names from live PostgreSQL database
+    $liveProductIds = DB::connection('live')->table('produks')->pluck('id')->toArray();
     $liveProductNames = DB::connection('live')->table('produks')->pluck('nama_produk')->toArray();
-    echo "Live database has " . count($liveProductNames) . " products.\n\n";
+    
+    // Refresh live inventaris IDs in case we just inserted new ones
+    $liveInventarisIds = DB::connection('live')->table('inventaris')->pluck('id')->toArray();
+    
+    echo "Live database has " . count($liveProductIds) . " products.\n\n";
 
-    // 6. Filter products that are missing on live database
     $newProducts = [];
     foreach ($localProducts as $product) {
-        if (!in_array($product->nama_produk, $liveProductNames)) {
+        // A product is new if:
+        // 1. Its ID is missing on live
+        // 2. OR, its Name is missing on live
+        // 3. OR, its related inventaris_id is missing on live
+        $isNew = !in_array($product->id, $liveProductIds) ||
+                 !in_array($product->nama_produk, $liveProductNames) ||
+                 ($product->inventaris_id !== null && !in_array($product->inventaris_id, $liveInventarisIds));
+
+        if ($isNew) {
             $newProducts[] = $product;
         }
     }
 
     if (count($newProducts) === 0) {
-        echo "✅ All products are already synchronized. Nothing to push!\n";
-        exit(0);
-    }
+        echo "✅ All products are already synchronized.\n";
+    } else {
+        echo "Found " . count($newProducts) . " new product(s) to push.\n";
+        foreach ($newProducts as $product) {
+            echo "📦 Processing Product ID {$product->id}: '{$product->nama_produk}'\n";
 
-    echo "Found " . count($newProducts) . " new product(s) to push to live database.\n";
-    echo "---------------------------------------------------------\n";
+            // Safety check for foreign key reference
+            if ($product->inventaris_id !== null && !in_array($product->inventaris_id, $liveInventarisIds)) {
+                echo "   ⚠️ Warning: Inventaris ID {$product->inventaris_id} does not exist on live! Skipping product.\n";
+                continue;
+            }
 
-    $pushedCount = 0;
-
-    foreach ($newProducts as $product) {
-        echo "📦 Processing Product ID {$product->id}: '{$product->nama_produk}'\n";
-
-        // A. Handle Inventaris relationship (foreign key constraint)
-        if ($product->inventaris_id !== null) {
-            $liveInventarisExists = DB::connection('live')
-                ->table('inventaris')
-                ->where('id', $product->inventaris_id)
-                ->exists();
-
-            if (!$liveInventarisExists) {
-                echo "   -> Copying related inventaris ID {$product->inventaris_id} ... ";
-                $localInventaris = DB::connection('mysql')
-                    ->table('inventaris')
-                    ->where('id', $product->inventaris_id)
-                    ->first();
-
-                if ($localInventaris) {
+            // Image Upload
+            if ($product->foto) {
+                $localFilePath = storage_path('app/public/' . $product->foto);
+                if (file_exists($localFilePath)) {
+                    echo "   -> Uploading photo '{$product->foto}' to Supabase ... ";
                     if (!$dryRun) {
-                        DB::connection('live')->table('inventaris')->insert((array)$localInventaris);
-                    }
-                    echo "SUCCESS (copied).\n";
-                } else {
-                    echo "FAILED (local record not found).\n";
-                    echo "   ⚠️ Skipping product due to missing inventaris source data.\n";
-                    continue;
-                }
-            } else {
-                echo "   -> Related inventaris ID {$product->inventaris_id} already exists on live database.\n";
-            }
-        }
-
-        // B. Handle Image upload to Supabase Storage
-        if ($product->foto) {
-            $localFilePath = storage_path('app/public/' . $product->foto);
-            
-            if (file_exists($localFilePath)) {
-                echo "   -> Uploading photo '{$product->foto}' to Supabase Storage ... ";
-                if (!$dryRun) {
-                    try {
-                        $fileContents = file_get_contents($localFilePath);
-                        Storage::disk('supabase')->put($product->foto, $fileContents);
-                        echo "SUCCESS.\n";
-                    } catch (\Exception $uploadEx) {
-                        echo "FAILED (" . $uploadEx->getMessage() . ").\n";
-                        echo "   ⚠️ Continuing without photo upload blocks.\n";
+                        try {
+                            $fileContents = file_get_contents($localFilePath);
+                            Storage::disk('supabase')->put($product->foto, $fileContents);
+                            echo "SUCCESS.\n";
+                        } catch (\Exception $uploadEx) {
+                            echo "FAILED (" . $uploadEx->getMessage() . ").\n";
+                        }
+                    } else {
+                        echo "SIMULATED (dry-run).\n";
                     }
                 } else {
-                    echo "SIMULATED (dry-run).\n";
+                    echo "   -> ⚠️ Image file not found locally at: {$localFilePath}\n";
                 }
-            } else {
-                echo "   -> ⚠️ Image file not found locally at: {$localFilePath}\n";
             }
-        }
 
-        // C. Insert Product to Live Database
-        echo "   -> Inserting product record to live PostgreSQL ... ";
-        if (!$dryRun) {
-            DB::connection('live')->table('produks')->insert((array)$product);
+            // DB Insert
+            echo "   -> Inserting product record to live PostgreSQL ... ";
+            if (!$dryRun) {
+                // Ensure we don't cause duplicate ID errors if ID already exists but other criteria matched.
+                // If ID exists on live, delete the old one or skip. In this case, if the ID exists, we delete it to overwrite.
+                if (in_array($product->id, $liveProductIds)) {
+                    DB::connection('live')->table('produks')->where('id', $product->id)->delete();
+                }
+                DB::connection('live')->table('produks')->insert((array)$product);
+            }
+            echo "SUCCESS.\n";
+            $productsPushed++;
         }
-        echo "SUCCESS.\n";
-        $pushedCount++;
+        echo "   -> Completed Fase 2.\n";
+    }
+} catch (\Exception $e) {
+    echo "❌ Error during Product sync: " . $e->getMessage() . "\n";
+}
+
+echo "\n";
+
+// -----------------------------------------------------------------------------
+// FASE 3: SINKRONISASI TABEL REKAM MEDIS
+// -----------------------------------------------------------------------------
+echo "=========================================================\n";
+echo " FASE 3: SINKRONISASI REKAM MEDIS\n";
+echo "=========================================================\n";
+
+try {
+    $localRekamMedis = DB::connection('mysql')->table('rekam_medis')->orderBy('id', 'asc')->get();
+    echo "Local database has " . $localRekamMedis->count() . " medical records.\n";
+
+    $liveRekamMedisIds = DB::connection('live')->table('rekam_medis')->pluck('id')->toArray();
+    $liveInventarisIds = DB::connection('live')->table('inventaris')->pluck('id')->toArray();
+    echo "Live database has " . count($liveRekamMedisIds) . " medical records.\n\n";
+
+    $newRekamMedis = [];
+    foreach ($localRekamMedis as $rm) {
+        if (!in_array($rm->id, $liveRekamMedisIds)) {
+            $newRekamMedis[] = $rm;
+        }
     }
 
-    // 7. Reset sequences in live PostgreSQL to prevent auto-increment collisions
-    if (!$dryRun && $pushedCount > 0) {
-        echo "\n🔄 Synchronizing PostgreSQL auto-increment sequences ... ";
+    if (count($newRekamMedis) === 0) {
+        echo "✅ All medical records are already synchronized.\n";
+    } else {
+        echo "Found " . count($newRekamMedis) . " new medical record(s) to push.\n";
+        foreach ($newRekamMedis as $rm) {
+            echo "🩺 Syncing Medical Record ID {$rm->id}: Date {$rm->tanggal} (Inventaris ID {$rm->inventaris_id})\n";
+
+            // Safety check for foreign key reference
+            if (!in_array($rm->inventaris_id, $liveInventarisIds)) {
+                echo "   ⚠️ Warning: Inventaris ID {$rm->inventaris_id} does not exist on live! Skipping medical record.\n";
+                continue;
+            }
+
+            if (!$dryRun) {
+                DB::connection('live')->table('rekam_medis')->insert((array)$rm);
+            }
+            $rekamMedisCopied++;
+        }
+        echo "   -> Completed Fase 3.\n";
+    }
+} catch (\Exception $e) {
+    echo "❌ Error during Rekam Medis sync: " . $e->getMessage() . "\n";
+}
+
+echo "\n";
+
+// -----------------------------------------------------------------------------
+// SEQUENCE RESETS (POSTGRESQL ONLY)
+// -----------------------------------------------------------------------------
+if (!$dryRun && ($inventarisCopied > 0 || $productsPushed > 0 || $rekamMedisCopied > 0)) {
+    echo "=========================================================\n";
+    echo " SYNCHRONIZING AUTO-INCREMENT SEQUENCES\n";
+    echo "=========================================================\n";
+
+    $sequences = [
+        'inventaris' => 'id',
+        'produks' => 'id',
+        'rekam_medis' => 'id',
+    ];
+
+    foreach ($sequences as $table => $column) {
+        echo "Resetting sequence for '{$table}' ... ";
         try {
-            DB::connection('live')->statement("SELECT setval(pg_get_serial_sequence('produks', 'id'), coalesce(max(id), 1)) FROM produks;");
-            DB::connection('live')->statement("SELECT setval(pg_get_serial_sequence('inventaris', 'id'), coalesce(max(id), 1)) FROM inventaris;");
+            DB::connection('live')->statement(
+                "SELECT setval(pg_get_serial_sequence('{$table}', '{$column}'), coalesce(max({$column}), 0) + 1, false) FROM {$table};"
+            );
             echo "SUCCESS.\n";
         } catch (\Exception $seqEx) {
             echo "FAILED (" . $seqEx->getMessage() . ").\n";
-            echo "   ⚠️ You may need to manually sync sequence IDs later.\n";
         }
     }
-
-    echo "\n---------------------------------------------------------\n";
-    if ($dryRun) {
-        echo "🏁 Dry-run completed. " . count($newProducts) . " product(s) would be pushed.\n";
-    } else {
-        echo "🏁 Sync completed successfully! Pushed {$pushedCount} product(s) to live database.\n";
-    }
-
-} catch (\Exception $e) {
-    echo "\n❌ System Error: " . $e->getMessage() . "\n";
-    exit(1);
 }
+
+echo "\n---------------------------------------------------------\n";
+if ($dryRun) {
+    echo "🏁 Dry-run completed.\n";
+    echo "   - Inventaris to push: " . count($newInventaris) . "\n";
+    echo "   - Products to push:   " . count($newProducts) . "\n";
+    echo "   - Rekam Medis to push:" . count($newRekamMedis) . "\n";
+} else {
+    echo "🏁 Sync completed successfully!\n";
+    echo "   - Inventaris copied:  {$inventarisCopied}\n";
+    echo "   - Products pushed:    {$productsPushed}\n";
+    echo "   - Rekam Medis copied: {$rekamMedisCopied}\n";
+}
+echo "=========================================================\n";

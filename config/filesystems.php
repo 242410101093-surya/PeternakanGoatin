@@ -61,12 +61,12 @@ return [
         ],
 
         'supabase' => [
-            'driver'    => 'supabase',
-            'key'       => env('SUPABASE_KEY'),
-            'endpoint'  => env('SUPABASE_ENDPOINT', env('SUPABASE_URL')),
-            'bucket'    => env('SUPABASE_BUCKET', 'goatin-storage'),
-            
-            ],
+            'driver'   => 'supabase',
+            'key'      => env('SUPABASE_KEY'),
+            'endpoint' => env('SUPABASE_ENDPOINT', env('SUPABASE_URL')),
+            'url'      => env('SUPABASE_URL', env('SUPABASE_ENDPOINT')),
+            'bucket'   => env('SUPABASE_BUCKET', 'goatin-storage'),
+        ],
         ],
     
 

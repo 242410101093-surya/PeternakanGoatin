@@ -113,7 +113,7 @@
             <div class="relative w-24 h-24 rounded-full p-0.5 shrink-0 shadow-lg"
                  style="background: linear-gradient(135deg, #2A7844 0%, #051F20 100%);">
                 <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
-                            <img src="{{ auth()->user()->foto_profil ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . auth()->user()->foto_profil . '?render=image' : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
+                            <img src="{{ auth()->user()->foto_profil ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . auth()->user()->foto_profil . '?render=image' : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                 </div>
             </div>
 
@@ -826,11 +826,11 @@
                             const avatarUrl = `https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/${user.foto_profil_raw}?render=image`;
                             const avatarFrame = document.getElementById('profile-snapshot-avatar-frame');
                             if (avatarFrame) {
-                                avatarFrame.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">`;
+                                avatarFrame.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img" onerror="this.onerror=null; this.src='/images/default-avatar.png';">`;
                             }
                             const navAvatarContainer = document.getElementById('customer-navbar-avatar-container');
                             if (navAvatarContainer) {
-                                navAvatarContainer.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="customer-navbar-avatar-img">`;
+                                navAvatarContainer.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="customer-navbar-avatar-img" onerror="this.onerror=null; this.src='/images/default-avatar.png';">`;
                             }
                         } else {
                             const initials = user.name.substring(0, 2).toUpperCase();

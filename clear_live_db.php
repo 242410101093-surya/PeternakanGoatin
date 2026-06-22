@@ -1,52 +1,75 @@
 <?php
 
 /**
- * Goatin Live Database Truncator
+ * Goatin - Live Database Cleaner
  * 
- * This script empties key tables in the live PostgreSQL database (Railway/Supabase)
- * to prepare for a fresh storage push.
+ * Skrip ini berfungsi untuk MENGOSONGKAN (TRUNCATE) tabel artikels dan produks 
+ * di database PostgreSQL Live (Supabase). Ini sangat berguna sebelum 
+ * melakukan sinkronisasi ulang secara penuh.
+ * 
+ * Penggunaan: php clear_live_db.php
  */
 
-echo "=========================================================\n";
-echo "       GOATIN LIVE DATABASE TABLES TRUNCATOR             \n";
-echo "=========================================================\n\n";
-
-// Bootstrap Laravel Kernel
 require __DIR__ . '/vendor/autoload.php';
 $app = require_once __DIR__ . '/bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
-// Hardcoded Live PostgreSQL Credentials
-$liveHost = "aws-1-ap-northeast-1.pooler.supabase.com";
-$liveDb   = "postgres";
-$liveUser = "postgres.yzvshrhziexfcjhamrfk";
-$livePass = "Suray231-ok.";
-$livePort = "5432";
+use Illuminate\Support\Facades\DB;
 
-try {
-    $dsn = "pgsql:host=$liveHost;port=$livePort;dbname=$liveDb;";
-    $livePdo = new PDO($dsn, $liveUser, $livePass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-    echo "📡 Connected to Live Database (PostgreSQL)... CONNECTED.\n\n";
-} catch (PDOException $e) {
-    echo "❌ Live DB connection error: " . $e->getMessage() . "\n";
+echo "=========================================================\n";
+echo "       GOATIN LIVE DATABASE CLEANER (DANGER ZONE)        \n";
+echo "=========================================================\n\n";
+
+$liveHost = env('LIVE_DB_HOST');
+$liveDb   = env('LIVE_DB_DATABASE');
+$liveUser = env('LIVE_DB_USERNAME');
+$livePass = env('LIVE_DB_PASSWORD');
+$livePort = env('LIVE_DB_PORT', '5432');
+
+if (empty($liveHost) || empty($liveDb) || empty($liveUser)) {
+    echo "❌ Missing live PostgreSQL database configuration in your .env file!\n";
     exit(1);
 }
 
+config(['database.connections.live' => [
+    'driver' => 'pgsql',
+    'host' => $liveHost,
+    'port' => $livePort,
+    'database' => $liveDb,
+    'username' => $liveUser,
+    'password' => $livePass,
+    'charset' => 'utf8',
+    'prefix' => '',
+    'schema' => 'public',
+    'sslmode' => 'prefer',
+]]);
+
+echo "Mengkoneksikan ke Live Database PostgreSQL...\n";
 try {
-    echo "🧹 Truncating 'artikels' table ... ";
-    $livePdo->exec("TRUNCATE TABLE artikels RESTART IDENTITY CASCADE;");
-    echo "TRUNCATED.\n";
+    $livePdo = DB::connection('live')->getPdo();
+    echo "✅ KONEKSI BERHASIL.\n\n";
+} catch (\Exception $e) {
+    echo "❌ KONEKSI GAGAL: " . $e->getMessage() . "\n";
+    exit(1);
+}
 
-    echo "🧹 Truncating 'produks' table ... ";
-    $livePdo->exec("TRUNCATE TABLE produks RESTART IDENTITY CASCADE;");
-    echo "TRUNCATED.\n";
+echo "⚠️ PERINGATAN: Skrip ini akan MENGHAPUS SEMUA DATA di tabel 'artikels' dan 'produks' secara LIVE!\n";
+echo "Ketik 'Y' untuk melanjutkan, atau apa saja untuk membatalkan: ";
+$handle = fopen("php://stdin", "r");
+$line = fgets($handle);
+if (trim(strtoupper($line)) != 'Y') {
+    echo "Proses dibatalkan.\n";
+    exit(0);
+}
 
-    echo "\n✅ Live database cleanup completed successfully!\n";
-} catch (PDOException $e) {
-    echo "❌ Error executing truncate queries: " . $e->getMessage() . "\n";
+try {
+    echo "\nSedang mengeksekusi TRUNCATE pada tabel artikels dan produks...\n";
+    $livePdo->exec("TRUNCATE TABLE artikels, produks RESTART IDENTITY CASCADE;");
+    echo "✅ BERHASIL: Tabel artikels dan produks telah dikosongkan secara permanen.\n";
+    echo "   Sequence ID (auto-increment) telah di-reset ke angka 1.\n";
+    echo "   Anda kini siap untuk menjalankan push_to_live.php untuk fresh sync.\n";
+} catch (\Exception $e) {
+    echo "❌ GAGAL MENGOSONGKAN TABEL: " . $e->getMessage() . "\n";
     exit(1);
 }
 

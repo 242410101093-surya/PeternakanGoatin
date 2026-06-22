@@ -61,11 +61,14 @@ return [
         ],
 
         'supabase' => [
-            'driver'   => 'supabase',
-            'key'      => env('SUPABASE_KEY'),
-            'endpoint' => env('SUPABASE_ENDPOINT', env('SUPABASE_URL')),
-            'url'      => env('SUPABASE_URL', env('SUPABASE_ENDPOINT')),
-            'bucket'   => env('SUPABASE_BUCKET', 'goatin-storage'),
+            'driver' => 's3',
+            'key' => env('SUPABASE_KEY'),
+            'secret' => env('SUPABASE_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'bucket' => env('SUPABASE_BUCKET', 'goatin-storage'),
+            'endpoint' => env('SUPABASE_URL') . '/storage/v1/s3',
+            'use_path_style_endpoint' => true,
+            'url' => env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET'),
         ],
         ],
     

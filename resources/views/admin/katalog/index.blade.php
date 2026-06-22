@@ -147,7 +147,7 @@
 
                 @if($produk->foto)
                     @if(config('app.env') === 'production')
-                        <img src="https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}"
+                        <img src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}"
                              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                              onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                     @else

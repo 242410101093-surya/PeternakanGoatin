@@ -86,14 +86,14 @@
                             <div class="flex items-center gap-2">
                                 {{-- Animal Photo --}}
                                 <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/60 shadow-sm flex items-center justify-center flex-shrink-0" title="Foto Kambing (Katalog)">
-                                    <img src="{{ $rekam->inventaris && $rekam->inventaris->produk && $rekam->inventaris->produk->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $rekam->inventaris->produk->foto . '?render=image' : asset('images/placeholder-kambing.png') }}" 
+                                    <img src="{{ $rekam->inventaris && $rekam->inventaris->produk && $rekam->inventaris->produk->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $rekam->inventaris->produk->foto . '?render=image' : asset('images/placeholder-kambing.png') }}" 
                                          alt="Kambing" 
                                          class="w-full h-full object-cover" 
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                                 </div>
                                 {{-- Medical Condition Photo --}}
                                 <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/60 shadow-sm flex items-center justify-center flex-shrink-0" title="Foto Kondisi Medis">
-                                    <img src="{{ isset($rekam->foto_kondisi) && $rekam->foto_kondisi ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $rekam->foto_kondisi . '?render=image' : asset('images/placeholder-medis.png') }}" 
+                                    <img src="{{ isset($rekam->foto_kondisi) && $rekam->foto_kondisi ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $rekam->foto_kondisi . '?render=image' : asset('images/placeholder-medis.png') }}" 
                                          alt="Medis" 
                                          class="w-full h-full object-cover" 
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-medis.png') }}';">

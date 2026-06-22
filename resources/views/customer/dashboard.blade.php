@@ -145,7 +145,7 @@
             {{-- Background Featured Image --}}
             <div class="absolute inset-0 w-full h-full">
                 @if(config('app.env') === 'production')
-                    <img src="{{ $featured->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $featured->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
+                    <img src="{{ $featured->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $featured->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
                           alt="{{ $featured->judul }}" 
                           class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
@@ -202,7 +202,7 @@
                 {{-- Image Box --}}
                 <div class="relative overflow-hidden h-48 bg-slate-100 shrink-0">
                     @if(config('app.env') === 'production')
-                        <img src="{{ $artikel->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
+                        <img src="{{ $artikel->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
                              alt="{{ $artikel->judul }}"
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                              onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">

@@ -31,44 +31,22 @@ if ($dryRun) {
     echo "🚀 RUNNING IN WRITE MODE: Changes will be saved directly to the database.\n\n";
 }
 
-// 2. Validate Live PostgreSQL Credentials
-$liveHost = env('LIVE_DB_HOST');
-$liveDb   = env('LIVE_DB_DATABASE');
-$liveUser = env('LIVE_DB_USERNAME');
-$livePass = env('LIVE_DB_PASSWORD');
-$livePort = env('LIVE_DB_PORT', '5432');
-
-if (empty($liveHost) || empty($liveDb) || empty($liveUser)) {
-    echo "❌ Missing live PostgreSQL database configuration in your .env file!\n";
-    echo "   Please define the following variables in your local .env file first:\n\n";
-    echo "   LIVE_DB_HOST=...\n";
-    echo "   LIVE_DB_PORT=5432\n";
-    echo "   LIVE_DB_DATABASE=...\n";
-    echo "   LIVE_DB_USERNAME=...\n";
-    echo "   LIVE_DB_PASSWORD=...\n\n";
-    exit(1);
-}
-
-// 3. Dynamic Registration of Live Connection
-config(['database.connections.live' => [
-    'driver' => 'pgsql',
-    'host' => $liveHost,
-    'port' => $livePort,
-    'database' => $liveDb,
-    'username' => $liveUser,
-    'password' => $livePass,
-    'charset' => 'utf8',
-    'prefix' => '',
-    'schema' => 'public',
-    'sslmode' => 'prefer',
-]]);
+// 2. Hardcoded Live PostgreSQL Credentials
+$liveHost = "aws-1-ap-northeast-1.pooler.supabase.com";
+$liveDb   = "postgres";
+$liveUser = "postgres.yzvshrhziexfcjhamrfk";
+$livePass = "Suray231-ok.";
+$livePort = "5432";
 
 try {
-    echo "Checking Live Database Connection (PostgreSQL)... ";
-    $livePdo = DB::connection('live')->getPdo();
-    echo "CONNECTED.\n\n";
-} catch (\Exception $e) {
-    echo "FAILED.\n❌ Live DB connection error: " . $e->getMessage() . "\n";
+    $dsn = "pgsql:host=$liveHost;port=$livePort;dbname=$liveDb;";
+    $livePdo = new PDO($dsn, $liveUser, $livePass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+    echo "📡 Connected to Live Database (PostgreSQL)... CONNECTED.\n\n";
+} catch (PDOException $e) {
+    echo "❌ Live DB connection error: " . $e->getMessage() . "\n";
     exit(1);
 }
 

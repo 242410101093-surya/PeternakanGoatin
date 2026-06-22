@@ -76,7 +76,7 @@ try {
 
 try {
     echo "Checking Live Database Connection (PostgreSQL)... ";
-    DB::connection('live')->getPdo();
+    $livePdo = DB::connection('live')->getPdo();
     echo "CONNECTED.\n\n";
 } catch (\Exception $e) {
     echo "FAILED.\n❌ Live DB connection error: " . $e->getMessage() . "\n";
@@ -87,6 +87,7 @@ try {
 $inventarisCopied = 0;
 $productsPushed = 0;
 $rekamMedisCopied = 0;
+$articlesPushed = 0;
 
 // -----------------------------------------------------------------------------
 // FASE 1: SINKRONISASI TABEL INVENTARIS
@@ -266,9 +267,81 @@ try {
 echo "\n";
 
 // -----------------------------------------------------------------------------
+// FASE 4: SINKRONISASI TABEL ARTIKEL
+// -----------------------------------------------------------------------------
+echo "=========================================================\n";
+echo " FASE 4: SINKRONISASI ARTIKEL\n";
+echo "=========================================================\n";
+
+try {
+    $localArticles = DB::connection('mysql')->table('artikels')->orderBy('id', 'asc')->get();
+    echo "Local database has " . $localArticles->count() . " articles.\n";
+
+    $stmt = $livePdo->query("SELECT id FROM artikels");
+    $liveArticleIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    echo "Live database has " . count($liveArticleIds) . " articles.\n\n";
+
+    $newArticles = [];
+    foreach ($localArticles as $article) {
+        if (!in_array($article->id, $liveArticleIds)) {
+            $newArticles[] = $article;
+        }
+    }
+
+    if (count($newArticles) === 0) {
+        echo "✅ All articles are already synchronized.\n";
+    } else {
+        echo "Found " . count($newArticles) . " new article(s) to push.\n";
+        foreach ($newArticles as $article) {
+            echo "📝 Processing Article ID {$article->id}: '{$article->judul}'\n";
+
+            // Image Upload
+            if ($article->foto) {
+                $localFilePath = storage_path('app/public/' . $article->foto);
+                if (file_exists($localFilePath)) {
+                    echo "   -> Uploading photo '{$article->foto}' to Supabase ... ";
+                    if (!$dryRun) {
+                        try {
+                            $fileContents = file_get_contents($localFilePath);
+                            Storage::disk('supabase')->put($article->foto, $fileContents);
+                            echo "SUCCESS.\n";
+                        } catch (\Exception $uploadEx) {
+                            echo "FAILED (" . $uploadEx->getMessage() . ").\n";
+                        }
+                    } else {
+                        echo "SIMULATED (dry-run).\n";
+                    }
+                } else {
+                    echo "   -> ⚠️ Image file not found locally at: {$localFilePath}\n";
+                }
+            }
+
+            // DB Insert using $livePdo prepared statement
+            echo "   -> Inserting article record to live PostgreSQL ... ";
+            if (!$dryRun) {
+                $articleData = (array)$article;
+                $keys = array_keys($articleData);
+                $fields = implode(', ', $keys);
+                $placeholders = ':' . implode(', :', $keys);
+                $insertSql = "INSERT INTO artikels ({$fields}) VALUES ({$placeholders})";
+                $insertStmt = $livePdo->prepare($insertSql);
+                $insertStmt->execute($articleData);
+            }
+            echo "SUCCESS.\n";
+            $articlesPushed++;
+        }
+        echo "   -> Completed Fase 4.\n";
+    }
+} catch (\Exception $e) {
+    echo "❌ Error during Article sync: " . $e->getMessage() . "\n";
+}
+
+echo "\n";
+
+// -----------------------------------------------------------------------------
 // SEQUENCE RESETS (POSTGRESQL ONLY)
 // -----------------------------------------------------------------------------
-if (!$dryRun && ($inventarisCopied > 0 || $productsPushed > 0 || $rekamMedisCopied > 0)) {
+if (!$dryRun && ($inventarisCopied > 0 || $productsPushed > 0 || $rekamMedisCopied > 0 || $articlesPushed > 0)) {
     echo "=========================================================\n";
     echo " SYNCHRONIZING AUTO-INCREMENT SEQUENCES\n";
     echo "=========================================================\n";
@@ -290,6 +363,15 @@ if (!$dryRun && ($inventarisCopied > 0 || $productsPushed > 0 || $rekamMedisCopi
             echo "FAILED (" . $seqEx->getMessage() . ").\n";
         }
     }
+
+    // Reset sequence for artikels using $livePdo as requested
+    echo "Resetting sequence for 'artikels' ... ";
+    try {
+        $livePdo->exec("SELECT setval('artikels_id_seq', coalesce(max(id), 0) + 1, false) FROM artikels;");
+        echo "SUCCESS.\n";
+    } catch (\Exception $seqEx) {
+        echo "FAILED (" . $seqEx->getMessage() . ").\n";
+    }
 }
 
 echo "\n---------------------------------------------------------\n";
@@ -298,10 +380,12 @@ if ($dryRun) {
     echo "   - Inventaris to push: " . count($newInventaris) . "\n";
     echo "   - Products to push:   " . count($newProducts) . "\n";
     echo "   - Rekam Medis to push:" . count($newRekamMedis) . "\n";
+    echo "   - Articles to push:   " . (isset($newArticles) ? count($newArticles) : 0) . "\n";
 } else {
     echo "🏁 Sync completed successfully!\n";
     echo "   - Inventaris copied:  {$inventarisCopied}\n";
     echo "   - Products pushed:    {$productsPushed}\n";
     echo "   - Rekam Medis copied: {$rekamMedisCopied}\n";
+    echo "   - Articles copied:    {$articlesPushed}\n";
 }
 echo "=========================================================\n";

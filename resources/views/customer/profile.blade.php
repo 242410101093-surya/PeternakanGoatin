@@ -200,7 +200,7 @@
 
                         {{-- Foto Profil Upload --}}
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Foto Profil Baru</label>
+                            <label for="foto_profil" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Foto Profil Baru</label>
                             <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-emerald-600 hover:bg-slate-50/50 transition-all relative cursor-pointer"
                                  onclick="document.getElementById('foto_profil').click()">
                                 <span class="material-symbols-outlined text-slate-400 text-3xl mb-1.5">cloud_upload</span>
@@ -267,7 +267,7 @@
 
                         {{-- Tipe Alamat --}}
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tipe Alamat</label>
+                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tipe Alamat</span>
                             <div class="flex gap-4">
                                 <label class="flex items-center gap-2 cursor-pointer bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 transition-all w-fit text-xs font-semibold">
                                     <input type="radio" name="tipe_alamat" value="Rumah" class="text-emerald-700 focus:ring-emerald-700 border-slate-300" {{ old('tipe_alamat', auth()->user()->tipe_alamat) == 'Rumah' ? 'checked' : '' }}>
@@ -290,7 +290,7 @@
 
                         {{-- Map Picker --}}
                         <div class="space-y-2">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Sesuaikan Titik Lokasi Peta</label>
+                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Sesuaikan Titik Lokasi Peta</span>
                             
                             {{-- Search Box --}}
                             <div class="flex gap-2">

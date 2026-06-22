@@ -251,7 +251,7 @@
 
                         {{-- Dynamic Avatar drag-and-drop box --}}
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Foto Profil Baru</label>
+                            <label for="foto_profil_file" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Foto Profil Baru</label>
                             <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-emerald-600 hover:bg-slate-50/50 transition-all relative cursor-pointer"
                                  onclick="document.getElementById('foto_profil_file').click()">
                                 <span class="material-symbols-outlined text-slate-400 text-3xl mb-1.5">cloud_upload</span>

@@ -26,7 +26,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'whatsapp' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'foto_profil' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:5120'], // 5MB max
+            'foto_profil' => ['nullable', 'file', 'max:5120'], // 5MB max
             'alamat' => ['nullable', 'string'],
             'tipe_alamat' => ['nullable', 'string', 'in:Rumah,Kantor'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -92,11 +92,8 @@ class ProfileController extends Controller
                     \Illuminate\Support\Facades\Storage::disk('supabase')->delete($user->foto_profil);
                 }
                 
-                $file = $request->file('foto_profil');
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $path = 'profile_photos/' . $filename;
-                
-                \Illuminate\Support\Facades\Storage::disk('supabase')->put($path, file_get_contents($file));
+                // Store explicitly on supabase disk using Laravel's file streaming/putting
+                $path = \Illuminate\Support\Facades\Storage::disk('supabase')->put('profile_photos', $request->file('foto_profil'));
                 $data['foto_profil'] = $path;
             }
 
@@ -110,10 +107,10 @@ class ProfileController extends Controller
             
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
-                    'errors' => ['system' => ['Terjadi kesalahan sistem saat memperbarui profil.']]
+                    'errors' => ['system' => [$e->getMessage()]]
                 ], 500);
             }
-            return back()->with('error', 'Terjadi kesalahan sistem saat memperbarui profil.');
+            return back()->with('error', $e->getMessage());
         }
 
         if ($request->ajax() || $request->wantsJson()) {

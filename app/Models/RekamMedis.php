@@ -21,4 +21,16 @@ class RekamMedis extends Model
     {
         return $this->belongsTo(Inventaris::class);
     }
+
+    public function produk()
+    {
+        return $this->hasOneThrough(
+            Produk::class,
+            Inventaris::class,
+            'id', // Foreign key on inventaris table
+            'inventaris_id', // Foreign key on produks table
+            'inventaris_id', // Local key on rekam_medis table
+            'id' // Local key on inventaris table
+        );
+    }
 }

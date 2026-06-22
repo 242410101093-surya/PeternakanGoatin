@@ -67,6 +67,7 @@
                 <thead>
                     <tr class="font-label-sm text-xs text-slate-400 uppercase tracking-widest font-bold">
                         <th class="pb-2 px-6">Tanggal</th>
+                        <th class="pb-2 px-6">Visual</th>
                         <th class="pb-2 px-6">Hewan (ID)</th>
                         <th class="pb-2 px-6">Dokter Hewan</th>
                         <th class="pb-2 px-6">Diagnosa</th>
@@ -82,12 +83,30 @@
                             {{ \Carbon\Carbon::parse($rekam->tanggal)->format('d M Y') }}
                         </td>
                         <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
+                            <div class="flex items-center gap-2">
+                                {{-- Animal Photo --}}
+                                <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/60 shadow-sm flex items-center justify-center flex-shrink-0" title="Foto Kambing (Katalog)">
+                                    <img src="{{ $rekam->inventaris && $rekam->inventaris->produk && $rekam->inventaris->produk->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $rekam->inventaris->produk->foto . '?render=image' : asset('images/placeholder-kambing.png') }}" 
+                                         alt="Kambing" 
+                                         class="w-full h-full object-cover" 
+                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
+                                </div>
+                                {{-- Medical Condition Photo --}}
+                                <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/60 shadow-sm flex items-center justify-center flex-shrink-0" title="Foto Kondisi Medis">
+                                    <img src="{{ isset($rekam->foto_kondisi) && $rekam->foto_kondisi ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $rekam->foto_kondisi . '?render=image' : asset('images/placeholder-medis.png') }}" 
+                                         alt="Medis" 
+                                         class="w-full h-full object-cover" 
+                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-medis.png') }}';">
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
                             <div class="flex flex-col gap-1.5">
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#2A7844]/10 to-[#1e5c33]/5 border border-[#2A7844]/20 text-[#2A7844] font-mono font-black text-xs tracking-widest w-fit">
                                     <span class="material-symbols-outlined text-[14px]">tag</span>
-                                    {{ str_pad($rekam->inventaris->id, 4, '0', STR_PAD_LEFT) }}
+                                    {{ $rekam->inventaris ? str_pad($rekam->inventaris->id, 4, '0', STR_PAD_LEFT) : '-' }}
                                 </span>
-                                <div class="font-bold text-slate-700">{{ $rekam->inventaris->jenis }}</div>
+                                <div class="font-bold text-slate-700">{{ $rekam->inventaris->jenis ?? '-' }}</div>
                             </div>
                         </td>
                         <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 text-slate-600 font-medium transition-colors">
@@ -132,7 +151,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="py-16 px-6 text-center text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
+                        <td colspan="8" class="py-16 px-6 text-center text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
                             <div class="w-16 h-16 mx-auto mb-4 bg-slate-50 rounded-full flex items-center justify-center">
                                 <span class="material-symbols-outlined text-3xl opacity-50">medical_information</span>
                             </div>

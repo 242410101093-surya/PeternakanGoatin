@@ -68,7 +68,7 @@ return [
             'bucket' => env('SUPABASE_BUCKET', 'goatin-storage'),
             'endpoint' => env('SUPABASE_URL') . '/storage/v1/s3',
             'use_path_style_endpoint' => true,
-            'url' => env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET'),
+            'url' => env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/',
         ],
 
     ], // <-- Penutup 'disks' yang benar ditaruh di sini

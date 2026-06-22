@@ -190,7 +190,7 @@
                     <div class="relative w-28 h-28 rounded-full p-1 mb-4 flex items-center justify-center shadow-lg"
                          style="background: linear-gradient(135deg, #235347 0%, #051F20 100%);">
                         <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
-                            <img src="{{ auth()->user()->foto_profil ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . auth()->user()->foto_profil : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
+                            <img src="{{ auth()->user()->foto_profil ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . auth()->user()->foto_profil . '?render=image' : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
                         </div>
                     </div>
 
@@ -655,7 +655,7 @@
                     if (snapWa) snapWa.textContent = user.whatsapp;
                     
                     if (user.foto_profil_raw) {
-                        const avatarUrl = `https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/${user.foto_profil_raw}`;
+                        const avatarUrl = `https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/${user.foto_profil_raw}?render=image`;
                         const avatarFrame = document.getElementById('profile-snapshot-avatar-frame');
                         if (avatarFrame) {
                             avatarFrame.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">`;

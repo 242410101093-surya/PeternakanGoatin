@@ -304,7 +304,9 @@
 
     <script>
         function openEditProdukModal(produk) {
-            document.getElementById('editProdukForm').action = `/admin/katalog/${produk.id}`;
+            // 🛠️ PAKSA METODE PUT MELALUI QUERY PARAMETER AGAR PHP PRODUCTION BISA PARSE MULTIPART DATA
+            document.getElementById('editProdukForm').action = `/admin/katalog/${produk.id}?_method=PUT`;
+            
             document.getElementById('edit_produk_harga').value = Number(produk.harga);
 
             let spec = produk.spesifikasi;

@@ -948,7 +948,8 @@
                     input.classList.remove('border-red-500');
                     input.classList.remove('focus:border-red-500');
                 });
-                form.querySelectorAll('.form-field-error').forEach(msg => {
+                // Batasi hanya menghapus elemen teks span/p error agar tidak merusak DOM kontainer avatar
+                form.querySelectorAll('span.form-field-error, p.form-field-error').forEach(msg => {
                     msg.remove();
                 });
             }

@@ -86,14 +86,15 @@ class ProfileController extends Controller
         }
 
         try {
+            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
             if ($request->hasFile('foto_profil')) {
-                // Delete old photo if exists on supabase disk
-                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('supabase')->exists($user->foto_profil)) {
-                    \Illuminate\Support\Facades\Storage::disk('supabase')->delete($user->foto_profil);
+                // Delete old photo if exists on dynamic disk
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk($disk)->exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::disk($disk)->delete($user->foto_profil);
                 }
                 
-                // Store explicitly on supabase disk using Laravel's file streaming/putting
-                $path = \Illuminate\Support\Facades\Storage::disk('supabase')->put('profile_photos', $request->file('foto_profil'));
+                // Store explicitly on dynamic disk using Laravel's file streaming/putting
+                $path = \Illuminate\Support\Facades\Storage::disk($disk)->put('profile_photos', $request->file('foto_profil'));
                 $data['foto_profil'] = $path;
             }
 
@@ -121,7 +122,7 @@ class ProfileController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'whatsapp' => $user->whatsapp ?? '-',
-                    'foto_profil' => $user->foto_profil ? (\Illuminate\Support\Str::startsWith($user->foto_profil, 'profile_photos/') ? \Illuminate\Support\Facades\Storage::disk('supabase')->url($user->foto_profil) : asset('storage/' . $user->foto_profil)) : null,
+                    'foto_profil' => $user->foto_profil ? (\Illuminate\Support\Str::startsWith($user->foto_profil, 'profile_photos/') ? \Illuminate\Support\Facades\Storage::disk($disk)->url($user->foto_profil) : asset('storage/' . $user->foto_profil)) : null,
                     'foto_profil_raw' => $user->foto_profil,
                     'email_verified' => $user->email_verified_at ? true : false,
                     'alamat' => $user->alamat,

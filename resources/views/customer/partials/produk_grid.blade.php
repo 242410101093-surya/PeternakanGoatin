@@ -9,11 +9,13 @@
             
             @if($produk->foto)
                 @if(config('app.env') === 'production')
-                    <img src="{{ Storage::disk('supabase')->url($produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <img src="https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}"
+                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                 @else
                     <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                 @endif
             @else
                 {{-- Luxurious Stylized Vector representation of livestock --}}
@@ -80,7 +82,7 @@
                             data-product-gender="{{ $produk->inventaris?->jenis ?? '-' }}"
                             data-product-age="{{ $produk->inventaris?->umur ? $produk->inventaris->umur . ' Bulan' : '-' }}"
                             data-product-berat="{{ $produk->inventaris?->berat ? $produk->inventaris->berat . ' Kg' : '-' }}"
-                            data-product-image="{{ $produk->foto ? (config('app.env') === 'production' ? Storage::disk('supabase')->url($produk->foto) : asset('storage/' . $produk->foto)) : '' }}"
+                            data-product-image="{{ $produk->foto ? (config('app.env') === 'production' ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $produk->foto . '?render=image' : asset('storage/' . $produk->foto)) : '' }}"
                             data-product-rekam-medis="{{ json_encode($produk->inventaris?->rekamMedis ?? []) }}">
                         <span class="material-symbols-outlined" style="font-size:18px;">shopping_basket</span>
                     </button>

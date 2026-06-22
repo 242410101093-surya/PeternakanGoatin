@@ -55,13 +55,13 @@
         @if(config('app.env') === 'production')
             <img alt="{{ $artikel->judul }}" 
                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
-                 src="{{ $artikel->foto ? Storage::disk('supabase')->url($artikel->foto) : asset('images/default-artikel.jpg') }}"
-                 onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'"/>
+                 src="{{ $artikel->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}"
+                 onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
         @else
             <img alt="{{ $artikel->judul }}" 
                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
                  src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}"
-                 onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'"/>
+                 onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
         @endif
     </div>
 

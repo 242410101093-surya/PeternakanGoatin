@@ -145,15 +145,15 @@
             {{-- Background Featured Image --}}
             <div class="absolute inset-0 w-full h-full">
                 @if(config('app.env') === 'production')
-                    <img src="{{ $featured->foto ? Storage::disk('supabase')->url($featured->foto) : asset('images/default-artikel.jpg') }}" 
-                         alt="{{ $featured->judul }}" 
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                         onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'">
+                    <img src="{{ $featured->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $featured->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
+                          alt="{{ $featured->judul }}" 
+                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                 @else
                     <img src="{{ $featured->foto ? asset('storage/' . $featured->foto) : asset('images/default-artikel.jpg') }}" 
-                         alt="{{ $featured->judul }}" 
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                         onerror="this.src='https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1200&q=80'">
+                          alt="{{ $featured->judul }}" 
+                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                 @endif
                 {{-- Gradient Overlay --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent"></div>
@@ -202,15 +202,15 @@
                 {{-- Image Box --}}
                 <div class="relative overflow-hidden h-48 bg-slate-100 shrink-0">
                     @if(config('app.env') === 'production')
-                        <img src="{{ $artikel->foto ? Storage::disk('supabase')->url($artikel->foto) : asset('images/default-artikel.jpg') }}" 
+                        <img src="{{ $artikel->foto ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
                              alt="{{ $artikel->judul }}"
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             onerror="this.src='https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80'">
+                             onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                     @else
                         <img src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}" 
                              alt="{{ $artikel->judul }}"
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             onerror="this.src='https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&w=600&q=80'">
+                             onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                     @endif
                     <div class="absolute top-3 left-3 z-10">
                         <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm"

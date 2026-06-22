@@ -133,9 +133,9 @@
            title="Lihat Profil" id="admin-navbar-avatar-container">
             @if(auth()->user()->foto_profil)
                 @if(config('app.env') === 'production' || \Illuminate\Support\Str::startsWith(auth()->user()->foto_profil, 'profile_photos/'))
-                    <img alt="Admin" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
+                    <img alt="Admin" class="w-full h-full object-cover" src="https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/{{ auth()->user()->foto_profil }}?render=image" id="admin-navbar-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';"/>
                 @else
-                    <img alt="Admin" class="w-full h-full object-cover" src="{{ asset('storage/' . auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img"/>
+                    <img alt="Admin" class="w-full h-full object-cover" src="{{ asset('storage/' . auth()->user()->foto_profil) }}" id="admin-navbar-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';"/>
                 @endif
             @else
                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-green to-emerald-700 text-white font-extrabold" id="admin-navbar-avatar-placeholder">

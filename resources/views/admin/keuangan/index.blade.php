@@ -232,10 +232,10 @@
                                 @php
                                     $isPdf = Str::endsWith(strtolower($laporan->nota_pembayaran), '.pdf');
                                     $notaUrl = config('app.env') === 'production' 
-                                        ? Storage::disk('supabase')->url('nota_pembayaran/' . $laporan->nota_pembayaran) 
+                                        ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/nota_pembayaran/' . $laporan->nota_pembayaran . '?render=image' 
                                         : asset('storage/nota_pembayaran/' . $laporan->nota_pembayaran);
                                 @endphp
-                                <button type="button" onclick="openViewNotaModal('{{ $notaUrl }}', {{ $isPdf ? 'true' : 'false' }})" class="inline-flex items-center gap-1 px-3 py-1 bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-lg text-[11px] font-bold border border-slate-200 transition-colors shadow-sm">
+                                <button type="button" onclick="if(typeof openViewNotaModal === 'function') openViewNotaModal('{{ $notaUrl }}', {{ $isPdf ? 'true' : 'false' }})" class="inline-flex items-center gap-1 px-3 py-1 bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-lg text-[11px] font-bold border border-slate-200 transition-colors shadow-sm">
                                     <span class="material-symbols-outlined text-[14px]">receipt_long</span>
                                     Lihat Nota
                                 </button>
@@ -258,7 +258,7 @@
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-300">
                                 <button onclick="openEditKeuanganModal(this)" 
                                         data-laporan="{{ json_encode($laporan) }}" 
-                                        data-nota-url="{{ $laporan->nota_pembayaran ? (config('app.env') === 'production' ? Storage::disk('supabase')->url('nota_pembayaran/' . $laporan->nota_pembayaran) : asset('storage/nota_pembayaran/' . $laporan->nota_pembayaran)) : '' }}" 
+                                        data-nota-url="{{ $laporan->nota_pembayaran ? (config('app.env') === 'production' ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/nota_pembayaran/' . $laporan->nota_pembayaran . '?render=image' : asset('storage/nota_pembayaran/' . $laporan->nota_pembayaran)) : '' }}" 
                                         data-nota-is-pdf="{{ $laporan->nota_pembayaran && Str::endsWith(strtolower($laporan->nota_pembayaran), '.pdf') ? 'true' : 'false' }}"
                                         class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#2A7844] hover:border-[#2A7844] hover:bg-[#2A7844]/5 rounded-xl shadow-sm transition-all" title="Edit Transaksi">
                                     <span class="material-symbols-outlined text-[16px]">edit</span>
@@ -456,7 +456,7 @@
         </div>
         <div class="p-4 flex-1 overflow-auto bg-slate-50/30 flex items-center justify-center min-h-[300px]">
             <iframe id="notaIframe" src="" class="w-full h-[60vh] rounded-xl border border-slate-200 hidden" frameborder="0"></iframe>
-            <img id="notaImage" src="" class="max-w-full max-h-[60vh] rounded-xl object-contain hidden shadow-sm border border-slate-200" alt="Nota Pembayaran">
+            <img id="notaImage" src="" class="max-w-full max-h-[60vh] rounded-xl object-contain hidden shadow-sm border border-slate-200" alt="Nota Pembayaran" onerror="this.onerror=null; this.src='{{ asset('images/placeholder-medis.png') }}';">
         </div>
         <div class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center">
             <a id="downloadNotaBtn" href="#" download class="inline-flex items-center gap-2 px-4 py-2 font-bold text-sm text-[#2A7844] hover:bg-[#2A7844]/10 rounded-xl transition-colors">
@@ -484,7 +484,14 @@
         const encodedUrl = encodeURI(fileUrl);
         downloadBtn.href = encodedUrl;
 
-        if (isPdf) {
+        // Ensure isPdf is correctly evaluated as boolean, or fallback to URL extension check (stripping query parameters)
+        let isPdfBool = isPdf === true || isPdf === 'true';
+        if (typeof isPdf === 'undefined' || isPdf === null) {
+            const urlWithoutQuery = fileUrl.split('?')[0];
+            isPdfBool = urlWithoutQuery.toLowerCase().endsWith('.pdf');
+        }
+
+        if (isPdfBool) {
             iframe.src = encodedUrl;
             iframe.classList.remove('hidden');
         } else {

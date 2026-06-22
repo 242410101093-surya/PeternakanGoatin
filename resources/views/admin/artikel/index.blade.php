@@ -62,9 +62,9 @@
                                 <div class="w-16 h-16 rounded bg-surface-container flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     @if($artikel->foto)
                                         @if(config('app.env') === 'production')
-                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ Storage::disk('supabase')->url($artikel->foto) }}"/>
+                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/{{ $artikel->foto }}?render=image" onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
                                         @else
-                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ asset('storage/' . $artikel->foto) }}"/>
+                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ asset('storage/' . $artikel->foto) }}" onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
                                         @endif
                                     @else
                                         <span class="material-symbols-outlined text-outline-variant">image</span>
@@ -86,7 +86,7 @@
                         </td>
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openEditArtikelModal({{ $artikel }}, '{{ $artikel->foto ? (config('app.env') === 'production' ? Storage::disk('supabase')->url($artikel->foto) : asset('storage/' . $artikel->foto)) : '' }}')" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
+                                <button onclick="openEditArtikelModal({{ $artikel }}, '{{ $artikel->foto ? (config('app.env') === 'production' ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . $artikel->foto . '?render=image' : asset('storage/' . $artikel->foto)) : '' }}')" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
                                 <form action="{{ route('admin.artikel.destroy', $artikel->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus artikel '{{ $artikel->judul }}'? Tindakan ini tidak bisa dibatalkan.">
@@ -201,7 +201,7 @@
                     </div>
                     
                     <div id="edit_foto_preview_container" class="hidden flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                        <img id="edit_foto_preview" src="" class="w-20 h-20 object-cover rounded-lg shadow-sm border border-slate-200">
+                        <img id="edit_foto_preview" src="" class="w-20 h-20 object-cover rounded-lg shadow-sm border border-slate-200" onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                         <div class="flex-1">
                             <span class="text-sm font-bold text-slate-700 block">Foto Saat Ini</span>
                             <p class="text-xs text-slate-500 mb-2">Ini adalah foto artikel yang saat ini ditampilkan.</p>

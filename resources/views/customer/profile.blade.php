@@ -113,17 +113,7 @@
             <div class="relative w-24 h-24 rounded-full p-0.5 shrink-0 shadow-lg"
                  style="background: linear-gradient(135deg, #2A7844 0%, #051F20 100%);">
                 <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
-                    @if(auth()->user()->foto_profil)
-                        @if(config('app.env') === 'production' || \Illuminate\Support\Str::startsWith(auth()->user()->foto_profil, 'profile_photos/'))
-                            <img src="{{ Storage::disk('supabase')->url(auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
-                        @else
-                            <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
-                        @endif
-                    @else
-                        <div class="w-full h-full bg-slate-50 flex items-center justify-center text-slate-800 text-3xl font-extrabold uppercase" id="profile-snapshot-avatar-placeholder">
-                            {{ substr(auth()->user()->name, 0, 2) }}
-                        </div>
-                    @endif
+                            <img src="{{ auth()->user()->foto_profil ? 'https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/' . auth()->user()->foto_profil : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">
                 </div>
             </div>
 
@@ -832,14 +822,15 @@
                         const snapWa = document.getElementById('profile-snapshot-whatsapp');
                         if (snapWa) snapWa.textContent = user.whatsapp;
                         
-                        if (user.foto_profil) {
+                        if (user.foto_profil_raw) {
+                            const avatarUrl = `https://yzvshrhziexfcjhamrfk.supabase.co/object/public/goatin-storage/${user.foto_profil_raw}`;
                             const avatarFrame = document.getElementById('profile-snapshot-avatar-frame');
                             if (avatarFrame) {
-                                avatarFrame.innerHTML = `<img src="${user.foto_profil}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">`;
+                                avatarFrame.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img">`;
                             }
                             const navAvatarContainer = document.getElementById('customer-navbar-avatar-container');
                             if (navAvatarContainer) {
-                                navAvatarContainer.innerHTML = `<img src="${user.foto_profil}" alt="${user.name}" class="w-full h-full object-cover" id="customer-navbar-avatar-img">`;
+                                navAvatarContainer.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="customer-navbar-avatar-img">`;
                             }
                         } else {
                             const initials = user.name.substring(0, 2).toUpperCase();

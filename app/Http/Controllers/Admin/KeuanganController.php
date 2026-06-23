@@ -85,11 +85,8 @@ class KeuanganController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('nota_pembayaran')) {
-            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-            $file = $request->file('nota_pembayaran');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('nota_pembayaran', $filename, $disk);
-            $data['nota_pembayaran'] = $filename;
+            $path = $request->file('nota_pembayaran')->store('nota_pembayaran');
+            $data['nota_pembayaran'] = basename($path);
         }
 
         LaporanKeuangan::create($data);
@@ -121,16 +118,12 @@ class KeuanganController extends Controller
             $data = $request->all();
 
             if ($request->hasFile('nota_pembayaran')) {
-                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-                // Hapus file lama jika ada
-                if ($laporan->nota_pembayaran) {
-                    \Illuminate\Support\Facades\Storage::disk($disk)->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                if ($laporan->nota_pembayaran && \Illuminate\Support\Facades\Storage::exists('nota_pembayaran/' . $laporan->nota_pembayaran)) {
+                    \Illuminate\Support\Facades\Storage::delete('nota_pembayaran/' . $laporan->nota_pembayaran);
                 }
 
-                $file = $request->file('nota_pembayaran');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('nota_pembayaran', $filename, $disk);
-                $data['nota_pembayaran'] = $filename;
+                $path = $request->file('nota_pembayaran')->store('nota_pembayaran');
+                $data['nota_pembayaran'] = basename($path);
             }
 
             $laporan->update($data);
@@ -227,9 +220,8 @@ class KeuanganController extends Controller
                     }
                 }
 
-                if ($laporan->nota_pembayaran) {
-                    $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-                    \Illuminate\Support\Facades\Storage::disk($disk)->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+                if ($laporan->nota_pembayaran && \Illuminate\Support\Facades\Storage::exists('nota_pembayaran/' . $laporan->nota_pembayaran)) {
+                    \Illuminate\Support\Facades\Storage::delete('nota_pembayaran/' . $laporan->nota_pembayaran);
                 }
 
                 $laporan->delete();
@@ -240,9 +232,8 @@ class KeuanganController extends Controller
                 return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi dibatalkan. Pesanan telah diubah statusnya dan stok ternak dikembalikan.');
             }
 
-            if ($laporan->nota_pembayaran) {
-                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-                \Illuminate\Support\Facades\Storage::disk($disk)->delete('nota_pembayaran/' . $laporan->nota_pembayaran);
+            if ($laporan->nota_pembayaran && \Illuminate\Support\Facades\Storage::exists('nota_pembayaran/' . $laporan->nota_pembayaran)) {
+                \Illuminate\Support\Facades\Storage::delete('nota_pembayaran/' . $laporan->nota_pembayaran);
             }
 
             $laporan->delete();

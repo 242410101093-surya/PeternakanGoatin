@@ -62,11 +62,7 @@
             <!-- User Avatar Quick Link -->
             <a href="{{ route('customer.profile') }}" class="w-9 h-9 rounded-full overflow-hidden border-2 border-emerald-500 hover:border-emerald-600 transition-colors" id="customer-navbar-avatar-container">
                 @if(auth()->user()->foto_profil)
-                    @if(config('app.env') === 'production' || \Illuminate\Support\Str::startsWith(auth()->user()->foto_profil, 'profile_photos/'))
-                        <img src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ auth()->user()->foto_profil }}?render=image" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="customer-navbar-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
-                    @else
-                        <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="customer-navbar-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
-                    @endif
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url(auth()->user()->foto_profil) }}?t={{ time() }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="customer-navbar-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                 @else
                     <div class="w-full h-full bg-emerald-50 flex items-center justify-center text-emerald-800 text-xs font-bold uppercase" id="customer-navbar-avatar-placeholder">
                         {{ substr(auth()->user()->name, 0, 2) }}

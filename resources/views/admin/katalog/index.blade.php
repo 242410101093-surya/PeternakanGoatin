@@ -145,16 +145,9 @@
             <div class="h-52 relative overflow-hidden shrink-0 flex items-center justify-center"
                  style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
 
-                @if($produk->foto)
-                    @if(config('app.env') === 'production')
-                        <img src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}"
-                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                             onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
-                    @else
-                        <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                             onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
-                    @endif
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($produk->foto) . '?t=' . strtotime($produk->updated_at) }}" alt="{{ $produk->nama_produk }}"
+                         class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                 @else
                     <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
                         <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full filter blur-xl opacity-20" style="background:#2A7844;"></div>

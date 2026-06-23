@@ -190,7 +190,7 @@
                     <div class="relative w-28 h-28 rounded-full p-1 mb-4 flex items-center justify-center shadow-lg"
                          style="background: linear-gradient(135deg, #235347 0%, #051F20 100%);">
                         <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center" id="profile-snapshot-avatar-frame">
-                            <img src="{{ auth()->user()->foto_profil ? Storage::disk('supabase')->url(auth()->user()->foto_profil) . '?t=' . time() : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
+                            <img src="{{ auth()->user()->foto_profil ? \Illuminate\Support\Facades\Storage::url(auth()->user()->foto_profil) . '?t=' . time() : asset('images/default-avatar.png') }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img" onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                         </div>
                     </div>
 
@@ -654,8 +654,8 @@
                     const snapWa = document.getElementById('profile-snapshot-whatsapp');
                     if (snapWa) snapWa.textContent = user.whatsapp;
                     
-                    if (user.foto_profil_raw) {
-                        const avatarUrl = `${user.foto_profil}?t=${new Date().getTime()}`;
+                    if (user.foto_profil) {
+                        const avatarUrl = user.foto_profil;
                         const avatarFrame = document.getElementById('profile-snapshot-avatar-frame');
                         if (avatarFrame) {
                             avatarFrame.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" class="w-full h-full object-cover" id="profile-snapshot-avatar-img" onerror="this.onerror=null; this.src='/images/default-avatar.png';">`;

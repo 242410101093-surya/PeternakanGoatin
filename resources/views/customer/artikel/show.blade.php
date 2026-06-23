@@ -52,17 +52,10 @@
 
     {{-- Article Hero Image --}}
     <div class="relative overflow-hidden rounded-[28px] shadow-lg border border-slate-200/60 bg-slate-100" style="height: 420px;">
-        @if(config('app.env') === 'production')
             <img alt="{{ $artikel->judul }}" 
                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
-                 src="{{ $artikel->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}"
+                 src="{{ $artikel->foto ? \Illuminate\Support\Facades\Storage::url($artikel->foto) . '?t=' . strtotime($artikel->updated_at) : asset('images/default-artikel.jpg') }}"
                  onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
-        @else
-            <img alt="{{ $artikel->judul }}" 
-                 class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
-                 src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}"
-                 onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
-        @endif
     </div>
 
     {{-- Article Content Card --}}

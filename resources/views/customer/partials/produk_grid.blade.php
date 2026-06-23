@@ -8,15 +8,9 @@
              style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
             
             @if($produk->foto)
-                @if(config('app.env') === 'production')
-                    <img src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}"
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($produk->foto) . '?t=' . strtotime($produk->updated_at) }}" alt="{{ $produk->nama_produk }}"
                           class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                           onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
-                @else
-                    <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}"
-                          class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
-                @endif
             @else
                 {{-- Luxurious Stylized Vector representation of livestock --}}
                 <div class="absolute inset-0 flex flex-col items-center justify-center p-4">
@@ -82,7 +76,7 @@
                             data-product-gender="{{ $produk->inventaris?->jenis ?? '-' }}"
                             data-product-age="{{ $produk->inventaris?->umur ? $produk->inventaris->umur . ' Bulan' : '-' }}"
                             data-product-berat="{{ $produk->inventaris?->berat ? $produk->inventaris->berat . ' Kg' : '-' }}"
-                            data-product-image="{{ $produk->foto ? (config('app.env') === 'production' ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $produk->foto . '?render=image' : asset('storage/' . $produk->foto)) : '' }}"
+                            data-product-image="{{ $produk->foto ? \Illuminate\Support\Facades\Storage::url($produk->foto) . '?t=' . strtotime($produk->updated_at) : '' }}"
                             data-product-rekam-medis="{{ json_encode($produk->inventaris?->rekamMedis ?? []) }}">
                         <span class="material-symbols-outlined" style="font-size:18px;">shopping_basket</span>
                     </button>

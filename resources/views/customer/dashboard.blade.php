@@ -144,17 +144,10 @@
             
             {{-- Background Featured Image --}}
             <div class="absolute inset-0 w-full h-full">
-                @if(config('app.env') === 'production')
-                    <img src="{{ $featured->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $featured->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
+                    <img src="{{ $featured->foto ? \Illuminate\Support\Facades\Storage::url($featured->foto) . '?t=' . strtotime($featured->updated_at) : asset('images/default-artikel.jpg') }}" 
                           alt="{{ $featured->judul }}" 
                           class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                           onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
-                @else
-                    <img src="{{ $featured->foto ? asset('storage/' . $featured->foto) : asset('images/default-artikel.jpg') }}" 
-                          alt="{{ $featured->judul }}" 
-                          class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                          onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
-                @endif
                 {{-- Gradient Overlay --}}
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent"></div>
             </div>
@@ -201,17 +194,10 @@
 
                 {{-- Image Box --}}
                 <div class="relative overflow-hidden h-48 bg-slate-100 shrink-0">
-                    @if(config('app.env') === 'production')
-                        <img src="{{ $artikel->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
+                        <img src="{{ $artikel->foto ? \Illuminate\Support\Facades\Storage::url($artikel->foto) . '?t=' . strtotime($artikel->updated_at) : asset('images/default-artikel.jpg') }}" 
                              alt="{{ $artikel->judul }}"
                              class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                              onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
-                    @else
-                        <img src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}" 
-                             alt="{{ $artikel->judul }}"
-                             class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                             onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
-                    @endif
                     <div class="absolute top-3 left-3 z-10">
                         <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm"
                               style="background:rgba(255, 255, 255, 0.92); color:#2A7844; backdrop-filter:blur(4px); border:1px solid rgba(42, 120, 68, 0.15);">

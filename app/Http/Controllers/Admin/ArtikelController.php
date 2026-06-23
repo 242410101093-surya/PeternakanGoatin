@@ -56,8 +56,7 @@ class ArtikelController extends Controller
 
         if ($request->hasFile('foto')) {
             try {
-                $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-                $data['foto'] = $request->file('foto')->store('artikel_fotos', $disk);
+                $data['foto'] = $request->file('foto')->store('artikel_fotos');
             } catch (\Exception $e) {
                 $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
                     ? 'Gagal mengunggah gambar: Terjadi kendala sertifikat SSL pada server lokal.' 
@@ -91,19 +90,18 @@ class ArtikelController extends Controller
         $data = $request->except(['foto', 'hapus_foto']);
 
         try {
-            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
             if ($request->input('hapus_foto') == '1') {
-                if ($artikel->foto && Storage::disk($disk)->exists($artikel->foto)) {
-                    Storage::disk($disk)->delete($artikel->foto);
+                if ($artikel->foto && Storage::exists($artikel->foto)) {
+                    Storage::delete($artikel->foto);
                 }
                 $data['foto'] = null;
             }
 
             if ($request->hasFile('foto')) {
-                if ($artikel->foto && Storage::disk($disk)->exists($artikel->foto)) {
-                    Storage::disk($disk)->delete($artikel->foto);
+                if ($artikel->foto && Storage::exists($artikel->foto)) {
+                    Storage::delete($artikel->foto);
                 }
-                $data['foto'] = $request->file('foto')->store('artikel_fotos', $disk);
+                $data['foto'] = $request->file('foto')->store('artikel_fotos');
             }
         } catch (\Exception $e) {
             $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
@@ -123,9 +121,8 @@ class ArtikelController extends Controller
         $artikel = Artikel::findOrFail($id);
 
         try {
-            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-            if ($artikel->foto && Storage::disk($disk)->exists($artikel->foto)) {
-                Storage::disk($disk)->delete($artikel->foto);
+            if ($artikel->foto && Storage::exists($artikel->foto)) {
+                Storage::delete($artikel->foto);
             }
         } catch (\Exception $e) {
             $pesanError = str_contains($e->getMessage(), 'cURL error 77') 
@@ -151,9 +148,8 @@ class ArtikelController extends Controller
         $artikel = Artikel::findOrFail($id);
 
         try {
-            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-            if ($artikel->foto && Storage::disk($disk)->exists($artikel->foto)) {
-                Storage::disk($disk)->delete($artikel->foto);
+            if ($artikel->foto && Storage::exists($artikel->foto)) {
+                Storage::delete($artikel->foto);
             }
         } catch (\Exception $e) {
             $pesanError = str_contains($e->getMessage(), 'cURL error 77') 

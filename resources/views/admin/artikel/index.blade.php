@@ -61,11 +61,7 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 rounded bg-surface-container flex-shrink-0 overflow-hidden flex items-center justify-center">
                                     @if($artikel->foto)
-                                        @if(config('app.env') === 'production')
-                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ $artikel->foto }}?render=image" onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
-                                        @else
-                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ asset('storage/' . $artikel->foto) }}" onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
-                                        @endif
+                                            <img alt="{{ $artikel->judul }}" class="w-full h-full object-cover" src="{{ \Illuminate\Support\Facades\Storage::url($artikel->foto) . '?t=' . strtotime($artikel->updated_at) }}" onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';"/>
                                     @else
                                         <span class="material-symbols-outlined text-outline-variant">image</span>
                                     @endif
@@ -86,7 +82,7 @@
                         </td>
                         <td class="p-4 text-center">
                             <div class="flex items-center justify-center gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                                <button onclick="openEditArtikelModal({{ $artikel }}, '{{ $artikel->foto ? (config('app.env') === 'production' ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $artikel->foto . '?render=image' : asset('storage/' . $artikel->foto)) : '' }}')" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
+                                <button onclick="openEditArtikelModal({{ $artikel }}, '{{ $artikel->foto ? \Illuminate\Support\Facades\Storage::url($artikel->foto) . '?t=' . strtotime($artikel->updated_at) : '' }}')" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
                                 <form action="{{ route('admin.artikel.destroy', $artikel->id) }}" method="POST" class="inline delete-form" data-message="Yakin ingin menghapus artikel '{{ $artikel->judul }}'? Tindakan ini tidak bisa dibatalkan.">

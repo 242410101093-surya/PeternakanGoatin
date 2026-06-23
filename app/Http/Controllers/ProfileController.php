@@ -86,22 +86,22 @@ class ProfileController extends Controller
         }
 
         try {
-            $disk = config('app.env') === 'production' ? 'supabase' : 'public';
-            if ($request->hasFile('foto_profil')) {
-                // Delete old photo if exists on dynamic disk
-                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk($disk)->exists($user->foto_profil)) {
-                    \Illuminate\Support\Facades\Storage::disk($disk)->delete($user->foto_profil);
+            // Perbaikan Bug: Cek request->file('foto')
+            if ($request->hasFile('foto')) {
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::delete($user->foto_profil);
                 }
-                
-                // Store explicitly on dynamic disk using Laravel's file streaming/putting
-                $path = \Illuminate\Support\Facades\Storage::disk($disk)->put('profile_photos', $request->file('foto_profil'));
-                $data['foto_profil'] = $path;
+                $path = $request->file('foto')->store('profile_photos');
+                $user->foto_profil = $path;
+            } elseif ($request->hasFile('foto_profil')) {
+                if ($user->foto_profil && \Illuminate\Support\Facades\Storage::exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::delete($user->foto_profil);
+                }
+                $path = $request->file('foto_profil')->store('profile_photos');
+                $user->foto_profil = $path;
             }
 
             $user->fill($data);
-            if (isset($data['foto_profil'])) {
-                $user->foto_profil = $data['foto_profil'];
-            }
             if ($request->email !== $user->email) {
                 $user->email_verified_at = null;
             }
@@ -125,7 +125,7 @@ class ProfileController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'whatsapp' => $user->whatsapp ?? '-',
-                    'foto_profil' => $user->foto_profil ? (\Illuminate\Support\Str::startsWith($user->foto_profil, 'profile_photos/') ? \Illuminate\Support\Facades\Storage::disk($disk)->url($user->foto_profil) : asset('storage/' . $user->foto_profil)) : null,
+                    'foto_profil' => $user->foto_profil ? (\Illuminate\Support\Facades\Storage::url($user->foto_profil) . '?t=' . time()) : null,
                     'foto_profil_raw' => $user->foto_profil,
                     'email_verified' => $user->email_verified_at ? true : false,
                     'alamat' => $user->alamat,

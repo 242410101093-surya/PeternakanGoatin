@@ -55,24 +55,33 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'role' => 'required|string|in:admin,user',
-            'whatsapp' => 'nullable|string|max:255',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
+                'role' => 'required|string|in:admin,user',
+                'whatsapp' => 'nullable|string|max:255',
+            ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'role' => $request->role,
-            'last_active_at' => now(), // Active by default
-            'whatsapp' => $request->whatsapp,
-        ]);
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+                'role' => $request->role,
+                'last_active_at' => now(), // Active by default
+                'whatsapp' => $request->whatsapp,
+                'foto_profil' => null, // Explicitly null
+            ]);
 
-        return redirect()->route('admin.accounts.index')->with('success', 'Akun berhasil ditambahkan.');
+            return redirect()->route('admin.accounts.index')->with('success', 'Akun berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error AccountController@store: ' . $e->getMessage());
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal: ' . $e->getMessage()], 500);
+            }
+            return back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
 
     /**

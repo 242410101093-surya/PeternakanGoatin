@@ -231,9 +231,7 @@
                                 @if($laporan->nota_pembayaran)
                                 @php
                                     $isPdf = Str::endsWith(strtolower($laporan->nota_pembayaran), '.pdf');
-                                    $notaUrl = config('app.env') === 'production' 
-                                        ? Storage::disk('supabase')->url('nota_pembayaran/' . $laporan->nota_pembayaran) . '?render=image' 
-                                        : asset('storage/nota_pembayaran/' . $laporan->nota_pembayaran);
+                                    $notaUrl = \Illuminate\Support\Facades\Storage::url('nota_pembayaran/' . $laporan->nota_pembayaran) . '?t=' . strtotime($laporan->updated_at);
                                 @endphp
                                 <button type="button" onclick="if(typeof openViewNotaModal === 'function') openViewNotaModal('{{ $notaUrl }}', {{ $isPdf ? 'true' : 'false' }})" class="inline-flex items-center gap-1 px-3 py-1 bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 rounded-lg text-[11px] font-bold border border-slate-200 transition-colors shadow-sm">
                                     <span class="material-symbols-outlined text-[14px]">receipt_long</span>
@@ -258,7 +256,7 @@
                             <div class="flex items-center justify-end gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity translate-x-0 lg:translate-x-4 lg:group-hover:translate-x-0 duration-300">
                                 <button onclick="openEditKeuanganModal(this)" 
                                         data-laporan="{{ json_encode($laporan) }}" 
-                                        data-nota-url="{{ $laporan->nota_pembayaran ? (config('app.env') === 'production' ? Storage::disk('supabase')->url('nota_pembayaran/' . $laporan->nota_pembayaran) . '?render=image' : asset('storage/nota_pembayaran/' . $laporan->nota_pembayaran)) : '' }}" 
+                                        data-nota-url="{{ $laporan->nota_pembayaran ? \Illuminate\Support\Facades\Storage::url('nota_pembayaran/' . $laporan->nota_pembayaran) . '?t=' . strtotime($laporan->updated_at) : '' }}" 
                                         data-nota-is-pdf="{{ $laporan->nota_pembayaran && Str::endsWith(strtolower($laporan->nota_pembayaran), '.pdf') ? 'true' : 'false' }}"
                                         class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#2A7844] hover:border-[#2A7844] hover:bg-[#2A7844]/5 rounded-xl shadow-sm transition-all" title="Edit Transaksi">
                                     <span class="material-symbols-outlined text-[16px]">edit</span>

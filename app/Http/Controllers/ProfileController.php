@@ -99,6 +99,9 @@ class ProfileController extends Controller
             }
 
             $user->fill($data);
+            if (isset($data['foto_profil'])) {
+                $user->foto_profil = $data['foto_profil'];
+            }
             if ($request->email !== $user->email) {
                 $user->email_verified_at = null;
             }

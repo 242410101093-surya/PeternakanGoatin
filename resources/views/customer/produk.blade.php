@@ -119,7 +119,7 @@
                 {{-- Product Image Container --}}
                 <div id="modalProductImageContainer" class="w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/60 relative shrink-0 shadow-sm flex items-center justify-center">
                     <!-- Main image containing the full product image -->
-                    <img id="modalProductImage" src="" alt="Foto Kambing" class="w-full h-auto max-h-[450px] object-cover">
+                    <img id="modalProductImage" src="" alt="Foto Kambing" class="w-full h-auto max-h-[450px] object-cover object-top">
                     
                     {{-- Gender Badge overlay --}}
                     <div id="modalProductImageBadge" class="absolute top-4 left-4 z-20">

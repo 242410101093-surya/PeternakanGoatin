@@ -85,7 +85,7 @@
                             <span class="text-on-surface-variant text-sm">{{ $artikel->created_at->format('M d, Y') }}</span>
                         </td>
                         <td class="p-4 text-center">
-                            <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center justify-center gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                 <button onclick="openEditArtikelModal({{ $artikel }}, '{{ $artikel->foto ? (config('app.env') === 'production' ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $artikel->foto . '?render=image' : asset('storage/' . $artikel->foto)) : '' }}')" class="text-on-surface-variant hover:text-primary-container p-1 rounded transition-colors">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>

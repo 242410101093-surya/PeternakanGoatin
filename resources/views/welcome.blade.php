@@ -438,9 +438,9 @@
                                 <div class="relative h-56 bg-slate-100 overflow-hidden">
                                     @if($produk->foto)
                                         @if(config('app.env') === 'production')
-                                            <img src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
+                                            <img src="{{ env('SUPABASE_URL') }}/storage/v1/object/public/{{ env('SUPABASE_BUCKET') }}/{{ $produk->foto }}?render=image" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105" onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                                         @else
-                                            <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
+                                            <img src="{{ asset('storage/' . $produk->foto) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105" onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
                                         @endif
                                     @else
                                         <!-- Fallback design using gradient and icon if no image uploaded -->

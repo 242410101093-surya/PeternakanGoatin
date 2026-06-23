@@ -67,7 +67,7 @@
                 <thead>
                     <tr class="font-label-sm text-xs text-slate-400 uppercase tracking-widest font-bold">
                         <th class="pb-2 px-6">Tanggal</th>
-                        <th class="pb-2 px-6">Visual</th>
+
                         <th class="pb-2 px-6">Hewan (ID)</th>
                         <th class="pb-2 px-6">Dokter Hewan</th>
                         <th class="pb-2 px-6">Diagnosa</th>
@@ -82,24 +82,7 @@
                         <td class="py-5 px-6 rounded-l-2xl border-y border-l border-slate-100 group-hover:border-[#2A7844]/20 group-hover:text-[#2A7844] text-slate-500 font-semibold transition-colors">
                             {{ \Carbon\Carbon::parse($rekam->tanggal)->format('d M Y') }}
                         </td>
-                        <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
-                            <div class="flex items-center gap-2">
-                                {{-- Animal Photo --}}
-                                <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/60 shadow-sm flex items-center justify-center flex-shrink-0" title="Foto Kambing (Katalog)">
-                                    <img src="{{ $rekam->inventaris && $rekam->inventaris->produk && $rekam->inventaris->produk->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $rekam->inventaris->produk->foto . '?render=image' : asset('images/placeholder-kambing.png') }}" 
-                                         alt="Kambing" 
-                                         class="w-full h-full object-cover" 
-                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">
-                                </div>
-                                {{-- Medical Condition Photo --}}
-                                <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/60 shadow-sm flex items-center justify-center flex-shrink-0" title="Foto Kondisi Medis">
-                                    <img src="{{ isset($rekam->foto_kondisi) && $rekam->foto_kondisi ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $rekam->foto_kondisi . '?render=image' : asset('images/placeholder-medis.png') }}" 
-                                         alt="Medis" 
-                                         class="w-full h-full object-cover" 
-                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-medis.png') }}';">
-                                </div>
-                            </div>
-                        </td>
+
                         <td class="py-5 px-6 border-y border-slate-100 group-hover:border-[#2A7844]/20 transition-colors">
                             <div class="flex flex-col gap-1.5">
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#2A7844]/10 to-[#1e5c33]/5 border border-[#2A7844]/20 text-[#2A7844] font-mono font-black text-xs tracking-widest w-fit">
@@ -135,7 +118,7 @@
                             </span>
                         </td>
                         <td class="py-5 px-6 rounded-r-2xl border-y border-r border-slate-100 group-hover:border-[#2A7844]/20 text-right transition-colors">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-300">
+                            <div class="flex items-center justify-end gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity translate-x-0 lg:translate-x-4 lg:group-hover:translate-x-0 duration-300">
                                 <button onclick="openEditRekamModal({{ $rekam }})" class="w-8 h-8 flex items-center justify-center bg-white border border-slate-200 text-slate-400 hover:text-[#2A7844] hover:border-[#2A7844] hover:bg-[#2A7844]/5 rounded-xl shadow-sm transition-all">
                                     <span class="material-symbols-outlined text-[16px]">edit</span>
                                 </button>

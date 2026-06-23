@@ -147,12 +147,12 @@
                 @if(config('app.env') === 'production')
                     <img src="{{ $featured->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $featured->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
                           alt="{{ $featured->judul }}" 
-                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                           onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                 @else
                     <img src="{{ $featured->foto ? asset('storage/' . $featured->foto) : asset('images/default-artikel.jpg') }}" 
                           alt="{{ $featured->judul }}" 
-                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                           onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                 @endif
                 {{-- Gradient Overlay --}}
@@ -204,12 +204,12 @@
                     @if(config('app.env') === 'production')
                         <img src="{{ $artikel->foto ? env('SUPABASE_URL') . '/storage/v1/object/public/' . env('SUPABASE_BUCKET') . '/' . $artikel->foto . '?render=image' : asset('images/default-artikel.jpg') }}" 
                              alt="{{ $artikel->judul }}"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                              onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                     @else
                         <img src="{{ $artikel->foto ? asset('storage/' . $artikel->foto) : asset('images/default-artikel.jpg') }}" 
                              alt="{{ $artikel->judul }}"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                              onerror="this.onerror=null; this.src='{{ asset('images/default-artikel.jpg') }}';">
                     @endif
                     <div class="absolute top-3 left-3 z-10">

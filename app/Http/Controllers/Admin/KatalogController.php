@@ -46,6 +46,13 @@ class KatalogController extends Controller
             });
         }
 
+        // Filter by status_stok
+        if ($request->filled('status_stok')) {
+            $query->whereHas('inventaris', function ($q) use ($request) {
+                $q->where('status_stok', $request->input('status_stok'));
+            });
+        }
+
         // Filter by price range
         if ($request->filled('min_harga')) {
             $query->where('harga', '>=', $request->input('min_harga'));

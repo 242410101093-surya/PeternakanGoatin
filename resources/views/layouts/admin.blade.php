@@ -314,19 +314,18 @@
             document.addEventListener('click', function(e) {
                 const link = e.target.closest('a[href]');
                 if (!link) return;
+                
+                if (link.target === '_blank' || link.hasAttribute('download') || e.ctrlKey || e.metaKey || e.shiftKey) return;
+                
                 const href = link.getAttribute('href');
                 // Skip anchors, javascript:, external, new-tab, and download links
                 if (!href || href.startsWith('#') || href.startsWith('javascript') ||
                     href.startsWith('mailto') || href.startsWith('tel') ||
-                    link.target === '_blank' || link.hasAttribute('download') ||
                     href.includes('/export-pdf') || href.includes('.pdf')) return;
                 
-                // Wait for other listeners to execute and check if default was prevented
-                setTimeout(() => {
-                    if (!e.defaultPrevented) {
-                        showLoader();
-                    }
-                }, 10);
+                if (!e.defaultPrevented) {
+                    showLoader();
+                }
             });
 
             // Automatically disable native validation globally

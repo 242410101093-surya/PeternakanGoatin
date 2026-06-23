@@ -20,7 +20,7 @@
 <!-- Summary Bento Grid -->
 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 mb-8">
     <!-- Total Ternak -->
-    <div class="bg-gradient-to-br from-[#2A7844] to-[#1e5c33] rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#2A7844]/40 transition-all duration-300 col-span-2 lg:col-span-1 border border-[#2A7844]/50">
+    <a href="{{ route('admin.inventaris.index') }}" class="block cursor-pointer bg-gradient-to-br from-[#2A7844] to-[#1e5c33] rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#2A7844]/40 transition-all duration-300 col-span-2 lg:col-span-1 border border-[#2A7844]/50">
         <div class="flex items-center justify-between mb-4 relative z-10">
             <div class="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur-md">
                 <span class="material-symbols-outlined text-2xl">pets</span>
@@ -34,10 +34,10 @@
         <!-- Decorative shapes -->
         <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors"></div>
         <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl group-hover:bg-emerald-400/40 transition-colors"></div>
-    </div>
+    </a>
 
     <!-- Tersedia -->
-    <div class="bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
+    <a href="{{ route('admin.inventaris.index', ['status_stok' => 'Tersedia']) }}" class="block cursor-pointer bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4 relative z-10">
             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                 <span class="material-symbols-outlined text-2xl">check_circle</span>
@@ -49,10 +49,10 @@
             <p class="text-sm font-medium text-slate-500 mt-1">Siap dijual</p>
         </div>
         <div class="absolute -bottom-8 -right-8 w-28 h-28 bg-blue-50/80 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
-    </div>
+    </a>
 
     <!-- Terbooking -->
-    <div class="bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
+    <a href="{{ route('admin.inventaris.index', ['status_stok' => 'Terbooking']) }}" class="block cursor-pointer bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4 relative z-10">
             <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300">
                 <span class="material-symbols-outlined text-2xl">book_online</span>
@@ -64,10 +64,10 @@
             <p class="text-sm font-medium text-slate-500 mt-1">Menunggu bayar</p>
         </div>
         <div class="absolute -bottom-8 -right-8 w-28 h-28 bg-orange-50/80 rounded-full blur-2xl group-hover:bg-orange-100 transition-colors"></div>
-    </div>
+    </a>
 
     <!-- Terjual -->
-    <div class="bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
+    <a href="{{ route('admin.inventaris.index', ['status_stok' => 'Terjual']) }}" class="block cursor-pointer bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4 relative z-10">
             <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
                 <span class="material-symbols-outlined text-2xl">shopping_bag</span>
@@ -79,10 +79,10 @@
             <p class="text-sm font-medium text-slate-500 mt-1">Transaksi sukses</p>
         </div>
         <div class="absolute -bottom-8 -right-8 w-28 h-28 bg-emerald-50/80 rounded-full blur-2xl group-hover:bg-emerald-100 transition-colors"></div>
-    </div>
+    </a>
 
     <!-- Dalam Perawatan -->
-    <div class="bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(239,68,68,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
+    <a href="{{ route('admin.inventaris.index', ['status_stok' => 'Dalam Perawatan']) }}" class="block cursor-pointer bg-white rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(239,68,68,0.12)] transition-all duration-300 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4 relative z-10">
             <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
                 <span class="material-symbols-outlined text-2xl">healing</span>
@@ -94,7 +94,7 @@
             <p class="text-sm font-medium text-slate-500 mt-1">Sedang diobati</p>
         </div>
         <div class="absolute -bottom-8 -right-8 w-28 h-28 bg-red-50/80 rounded-full blur-2xl group-hover:bg-red-100 transition-colors"></div>
-    </div>
+    </a>
 </div>
 
 <!-- Main Inventory List -->

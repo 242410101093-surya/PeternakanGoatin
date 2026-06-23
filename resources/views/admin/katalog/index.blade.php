@@ -26,7 +26,7 @@
     {{-- ── Premium Bento Grid Metrics ── --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Total Produk -->
-        <div class="bg-gradient-to-br from-[#FEFCE8] to-[#FFFcf2] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(234,179,8,0.15)] transition-all duration-300 border border-yellow-200/60 flex flex-col justify-between">
+        <a href="{{ route('admin.katalog.index') }}" class="block cursor-pointer bg-gradient-to-br from-[#FEFCE8] to-[#FFFcf2] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(234,179,8,0.15)] transition-all duration-300 border border-yellow-200/60 flex flex-col justify-between">
             <div class="flex items-start justify-between mb-6 relative z-10">
                 <div class="w-14 h-14 rounded-2xl bg-yellow-100 text-yellow-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-yellow-500 group-hover:text-white transition-all duration-300 shadow-sm border border-yellow-200">
                     <span class="material-symbols-outlined text-[28px]">inventory_2</span>
@@ -43,10 +43,10 @@
             <!-- Decorative shapes -->
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-yellow-300/20 rounded-full blur-2xl group-hover:bg-yellow-400/30 transition-colors"></div>
             <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-amber-200/20 rounded-full blur-3xl group-hover:bg-amber-300/30 transition-colors"></div>
-        </div>
+        </a>
 
         <!-- Tersedia di Katalog -->
-        <div class="bg-gradient-to-br from-[#2A7844] to-[#164e28] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(42,120,68,0.3)] transition-all duration-300 border border-[#2A7844]/50 flex flex-col justify-between">
+        <a href="{{ route('admin.katalog.index', ['status_stok' => 'Tersedia']) }}" class="block cursor-pointer bg-gradient-to-br from-[#2A7844] to-[#164e28] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(42,120,68,0.3)] transition-all duration-300 border border-[#2A7844]/50 flex flex-col justify-between">
             <div class="flex items-start justify-between mb-6 relative z-10">
                 <div class="w-14 h-14 rounded-2xl bg-white/10 text-white flex items-center justify-center backdrop-blur-md group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300 shadow-inner">
                     <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
@@ -63,10 +63,10 @@
             <!-- Decorative shapes -->
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors"></div>
             <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl group-hover:bg-emerald-400/30 transition-colors"></div>
-        </div>
+        </a>
 
         <!-- Terbooking Customer -->
-        <div class="bg-gradient-to-br from-[#FFF8F1] to-[#FFF1E5] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(249,115,22,0.15)] transition-all duration-300 border border-orange-100 flex flex-col justify-between">
+        <a href="{{ route('admin.katalog.index', ['status_stok' => 'Terbooking']) }}" class="block cursor-pointer bg-gradient-to-br from-[#FFF8F1] to-[#FFF1E5] rounded-[24px] p-6 relative overflow-hidden group hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(249,115,22,0.15)] transition-all duration-300 border border-orange-100 flex flex-col justify-between">
             <div class="flex items-start justify-between mb-6 relative z-10">
                 <div class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300 shadow-sm border border-orange-200">
                     <span class="material-symbols-outlined text-[28px]">bookmark_added</span>
@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-200/40 rounded-full blur-3xl group-hover:bg-orange-300/40 transition-colors"></div>
-        </div>
+        </a>
     </div>
 
     {{-- ── Search and Filter Bar ── --}}
@@ -144,7 +144,7 @@
             {{-- ── Header Image — identik dengan customer ── --}}
             <div class="h-52 relative overflow-hidden shrink-0 flex items-center justify-center"
                  style="background: linear-gradient(135deg, #051F20 0%, #0B2B26 100%);">
-
+                @if($produk->foto)
                     <img src="{{ \Illuminate\Support\Facades\Storage::url($produk->foto) . '?t=' . strtotime($produk->updated_at) }}" alt="{{ $produk->nama_produk }}"
                          class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-kambing.png') }}';">

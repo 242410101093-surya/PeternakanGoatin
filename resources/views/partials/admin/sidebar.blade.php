@@ -202,13 +202,15 @@
     .sidebar-link-idle {
         color: #94A3B8;
     }
-    .sidebar-link-idle:hover {
-        background: rgba(255, 255, 255, 0.03);
-        color: #FFFFFF;
-        padding-left: 1.25rem;
-    }
-    .sidebar-link-idle:hover .material-symbols-outlined {
-        color: #FFFFFF;
+    @media (hover: hover) {
+        .sidebar-link-idle:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #FFFFFF;
+            padding-left: 1.25rem;
+        }
+        .sidebar-link-idle:hover .material-symbols-outlined {
+            color: #FFFFFF;
+        }
     }
 
     .sidebar-link-active {

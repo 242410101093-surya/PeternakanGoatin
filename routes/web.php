@@ -17,7 +17,7 @@ Route::get('/', function () {
         if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('customer.dashboard');
+        return redirect()->route('customer.produk');
     }
 
     $featuredProducts = \App\Models\Produk::with(['inventaris.rekamMedis'])
@@ -35,7 +35,7 @@ Route::get('/dashboard', function () {
         return redirect()->route('admin.dashboard');
     }
 
-    return redirect()->route('customer.dashboard');
+    return redirect()->route('customer.produk');
 })->middleware('auth')->name('dashboard');
 
 // Login

@@ -61,11 +61,11 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Selamat, Anda selesai registrasi akun!',
-                    'redirect' => route('customer.dashboard')
+                    'redirect' => route('customer.produk')
                 ]);
             }
 
-            return redirect()->route('customer.dashboard')->with('success', 'Selamat datang di Goatin! Akun Anda berhasil dibuat.');
+            return redirect()->route('customer.produk')->with('success', 'Selamat datang di Goatin! Akun Anda berhasil dibuat.');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Registration Error: ' . $e->getMessage());
             return back()->withErrors(['email' => 'Terjadi kesalahan sistem saat mendaftar. Silakan coba lagi.'])->withInput();
@@ -89,7 +89,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('customer.dashboard');
+            return redirect()->route('customer.produk');
         }
 
         // If email attempt fails, try attempting using name (username)
@@ -101,7 +101,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('customer.dashboard');
+            return redirect()->route('customer.produk');
         }
 
         return back()->withErrors([
@@ -273,6 +273,6 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->route('customer.dashboard');
+        return redirect()->route('customer.produk');
     }
 }
